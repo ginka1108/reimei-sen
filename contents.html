@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コンテンツ — 黎明戦</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:#06020e;
+  color:#e8e0d0;
+  font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+  min-height:100vh;
+}
+
+/* ── header ── */
+#header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:56px;
+  background:rgba(4,1,10,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(200,168,75,0.2);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+}
+#header-logo{
+  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size:20px;letter-spacing:0.18em;
+  color:#fff;
+  text-decoration:none;
+  display:flex;align-items:center;gap:12px;
+}
+#header-logo img{
+  height:32px;
+  filter:drop-shadow(0 0 6px rgba(255,160,60,0.4));
+}
+#header-logo span{
+  font-size:10px;letter-spacing:0.3em;
+  color:rgba(200,168,75,0.6);
+  font-family:sans-serif;
+}
+#header-back{
+  font-size:11px;letter-spacing:0.18em;
+  color:rgba(200,168,75,0.7);
+  text-decoration:none;
+  border:1px solid rgba(200,168,75,0.3);
+  padding:5px 14px;
+  border-radius:2px;
+  transition:all 0.2s;
+}
+#header-back:hover{
+  background:rgba(200,168,75,0.1);
+  color:rgba(200,168,75,1);
+}
+
+/* ── page title ── */
+#page-hero{
+  padding:96px 24px 40px;
+  text-align:center;
+  position:relative;
+}
+#page-hero::after{
+  content:'';
+  display:block;
+  width:120px;height:1px;
+  margin:20px auto 0;
+  background:linear-gradient(90deg,transparent,rgba(200,168,75,0.6),transparent);
+}
+#page-title{
+  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size:28px;letter-spacing:0.3em;
+  color:#fff;
+}
+#page-subtitle{
+  margin-top:8px;
+  font-size:11px;letter-spacing:0.28em;
+  color:rgba(200,168,75,0.55);
+  text-transform:uppercase;
+}
+
+/* ── filter tabs ── */
+#filter-bar{
+  display:flex;justify-content:center;gap:8px;
+  padding:0 24px 32px;
+  flex-wrap:wrap;
+}
+.filter-btn{
+  font-size:11px;letter-spacing:0.18em;
+  color:rgba(200,168,75,0.6);
+  background:transparent;
+  border:1px solid rgba(200,168,75,0.25);
+  padding:6px 18px;border-radius:2px;
+  cursor:pointer;transition:all 0.2s;
+}
+.filter-btn:hover,.filter-btn.active{
+  background:rgba(200,168,75,0.12);
+  color:rgba(200,168,75,1);
+  border-color:rgba(200,168,75,0.6);
+}
+
+/* ── status bar ── */
+#status{
+  text-align:center;
+  font-size:11px;letter-spacing:0.15em;
+  color:rgba(200,168,75,0.45);
+  padding-bottom:24px;
+  min-height:24px;
+}
+
+/* ── feed ── */
+#feed{
+  max-width:760px;
+  margin:0 auto;
+  padding:0 20px 80px;
+  display:flex;flex-direction:column;gap:0;
+}
+
+/* ── card ── */
+.card{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:0;
+  border-bottom:1px solid rgba(200,168,75,0.1);
+  padding:24px 0;
+  text-decoration:none;
+  color:inherit;
+  transition:background 0.2s;
+  cursor:pointer;
+  position:relative;
+}
+.card:first-child{border-top:1px solid rgba(200,168,75,0.1);}
+.card:hover{background:rgba(200,168,75,0.04);}
+.card:hover .card-title{color:rgba(255,200,100,1);}
+
+/* thumbnail */
+.card-thumb{
+  width:88px;height:66px;
+  object-fit:cover;
+  border:1px solid rgba(200,168,75,0.2);
+  margin-right:20px;
+  flex-shrink:0;
+  background:#111;
+  display:block;
+}
+.card-thumb-wrap{
+  position:relative;
+  width:88px;height:66px;
+  margin-right:20px;
+  flex-shrink:0;
+}
+.card-thumb-wrap img{
+  width:100%;height:100%;
+  object-fit:cover;
+  border:1px solid rgba(200,168,75,0.2);
+  display:block;
+}
+
+/* type badge */
+.type-badge{
+  position:absolute;top:4px;left:4px;
+  font-size:9px;letter-spacing:0.12em;
+  padding:2px 6px;border-radius:1px;
+  text-transform:uppercase;font-weight:600;
+}
+.type-article  { background:rgba(200,168,75,0.25); color:rgba(200,168,75,1); }
+.type-movie    { background:rgba(80,160,255,0.25); color:rgba(120,190,255,1); }
+.type-illustration{ background:rgba(200,80,200,0.25); color:rgba(220,140,220,1); }
+
+/* body */
+.card-body{
+  display:flex;flex-direction:column;justify-content:center;gap:6px;
+  min-width:0;
+}
+.card-meta{
+  display:flex;align-items:center;gap:10px;
+}
+.card-date{
+  font-size:11px;
+  color:rgba(200,168,75,0.5);
+  letter-spacing:0.1em;
+  white-space:nowrap;
+}
+.card-title{
+  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size:16px;letter-spacing:0.06em;
+  color:#f0e8d8;
+  line-height:1.4;
+  transition:color 0.2s;
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+}
+.card-desc{
+  font-size:13px;line-height:1.6;
+  color:rgba(232,224,208,0.55);
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+}
+
+/* ── skeleton ── */
+.skeleton{
+  background:rgba(200,168,75,0.06);
+  border-radius:2px;
+  animation:pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:0.5;}
+  50%{opacity:1;}
+}
+
+/* ── empty / error ── */
+#empty{
+  text-align:center;padding:60px 20px;
+  color:rgba(200,168,75,0.4);
+  font-size:13px;letter-spacing:0.15em;
+  display:none;
+}
+
+/* ── dawn line at bottom ── */
+body::after{
+  content:'';
+  position:fixed;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(200,168,75,0.3),rgba(255,120,20,0.4),rgba(200,168,75,0.3),transparent);
+  pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<header id="header">
+  <a href="index.html" id="header-logo">
+    <img src="assets/images/文字のみ.png" alt="黎明戦" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+    <span style="display:none;font-family:'Hiragino Mincho ProN',serif;font-size:18px;color:#fff;letter-spacing:0.2em;">黎明戦</span>
+    <span>OFFICIAL</span>
+  </a>
+  <a href="index.html" id="header-back">← トップへ</a>
+</header>
+
+<section id="page-hero">
+  <div id="page-title">コンテンツ</div>
+  <div id="page-subtitle">Contents &nbsp;·&nbsp; News &amp; Media</div>
+</section>
+
+<div id="filter-bar">
+  <button class="filter-btn active" data-type="all">すべて</button>
+  <button class="filter-btn" data-type="article">記事</button>
+  <button class="filter-btn" data-type="movie">動画</button>
+  <button class="filter-btn" data-type="illustration">イラスト</button>
+</div>
+
+<div id="status">読み込み中...</div>
+
+<main id="feed"></main>
+<div id="empty">コンテンツがありません</div>
+
+<script>
+/* ============================================================
+   設定: GASをデプロイしたらURLをここに書く
+   疎通確認前はUSE_MOCK=trueでモックデータを使用
+   ============================================================ */
+const GAS_URL  = 'ここにGASのデプロイURLを貼る';
+const USE_MOCK = true;   /* ← GAS準備できたらfalseに変える */
+
+/* ── モックデータ（疎通確認用） ── */
+const MOCK = [
+  {
+    id:1, date:'2026-04-20',
+    title:'黎明戦 公式サイトオープンのお知らせ',
+    type:'article',
+    description:'黎明戦オフィシャルサイトがオープンしました。今後はこちらで試合情報・成績・関連コンテンツを発信していきます。',
+    url:'#', image_id:null,
+    image_url:'assets/images/文字のみ.png'
+  },
+  {
+    id:2, date:'2026-04-15',
+    title:'花ステージ第3節 ハイライト動画',
+    type:'movie',
+    description:'先日行われた花ステージ第3節の名シーンをまとめたハイライト動画を公開しました。',
+    url:'#', image_id:null,
+    image_url:'assets/images/文字のみ.png'
+  },
+  {
+    id:3, date:'2026-04-10',
+    title:'チームロゴ イラストギャラリー',
+    type:'illustration',
+    description:'各チームの公式ロゴイラストをまとめて公開しています。',
+    url:'#', image_id:null,
+    image_url:'assets/images/文字のみ.png'
+  },
+];
+
+/* ── 状態 ── */
+let allItems   = [];
+let activeType = 'all';
+
+/* ── フェッチ or モック ── */
+async function loadData() {
+  setStatus('読み込み中...');
+  try {
+    if (USE_MOCK) {
+      await new Promise(r => setTimeout(r, 600)); /* 疑似遅延 */
+      allItems = MOCK;
+      setStatus('モックデータを表示中 — GAS_URL設定後にUSE_MOCK=falseへ変更してください');
+    } else {
+      const res  = await fetch(`${GAS_URL}?sheet=contents`);
+      const json = await res.json();
+      /* fetchAllの場合はjson.contents、単体の場合はjsonそのまま */
+      allItems = Array.isArray(json) ? json : (json.contents || []);
+      setStatus(`${allItems.length}件`);
+    }
+  } catch(e) {
+    setStatus('読み込みエラー: ' + e.message);
+    allItems = [];
+  }
+  render();
+}
+
+/* ── レンダリング ── */
+function render() {
+  const feed = document.getElementById('feed');
+  const empty = document.getElementById('empty');
+  const filtered = activeType === 'all'
+    ? allItems
+    : allItems.filter(d => d.type === activeType);
+
+  if (!filtered.length) {
+    feed.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  feed.innerHTML = filtered.map(item => {
+    const typeLabel = {article:'記事', movie:'動画', illustration:'絵'}[item.type] || item.type;
+    const date = item.date ? item.date.slice(0,10).replace(/-/g,'.') : '';
+    const imgSrc = item.image_url || 'assets/images/文字のみ.png';
+
+    return `
+    <a class="card" href="${item.url || '#'}" target="${item.url && item.url!=='#' ? '_blank' : '_self'}" rel="noopener">
+      <div class="card-thumb-wrap">
+        <img src="${imgSrc}" alt="" loading="lazy" onerror="this.src='assets/images/文字のみ.png'">
+        <span class="type-badge type-${item.type}">${typeLabel}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-date">${date}</span>
+        </div>
+        <div class="card-title">${item.title || ''}</div>
+        <div class="card-desc">${item.description || ''}</div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+/* ── フィルター ── */
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeType = btn.dataset.type;
+    render();
+  });
+});
+
+function setStatus(msg) {
+  document.getElementById('status').textContent = msg;
+}
+
+loadData();
+</script>
+</body>
+</html>
