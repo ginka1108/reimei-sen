@@ -12,7 +12,7 @@ canvas{display:block;}
 #ui{position:fixed;inset:0;pointer-events:none;z-index:10;}
 
 #logo{
-  position:absolute;top:38px;left:50%;transform:translateX(-50%);
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
   text-align:center;
   opacity:0;animation:fadeUp 1.8s 0.5s cubic-bezier(.16,1,.3,1) forwards;
 }
@@ -520,16 +520,20 @@ document.addEventListener('click',e=>{
   const hits=rc.intersectObjects(planets.map(p=>p.mesh));
   if(hits.length){
     const ud=hits[0].object.userData;
-    /* ページ名を表示 */
     selBanner.textContent=ud.name;
     selBanner.classList.add('show');
-    /* フェードアウトして遷移 */
     setTimeout(()=>{
       document.body.style.transition='opacity 0.5s';
       document.body.style.opacity='0';
       setTimeout(()=>{ location.href=ud.url; },500);
     },600);
   }
+});
+
+/* ブラウザバックで戻ったとき opacity:0 のままになるのを防ぐ */
+window.addEventListener('pageshow', ()=>{
+  document.body.style.transition='opacity 0.4s';
+  document.body.style.opacity='1';
 });
 
 /* ── animation loop ───────────────────────────── */
