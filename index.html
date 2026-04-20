@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>黎明戦 — Official</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;}
+canvas{display:block;}
+
+#ui{position:fixed;inset:0;pointer-events:none;z-index:10;}
+
+#logo{
+  position:absolute;top:38px;left:50%;transform:translateX(-50%);
+  text-align:center;
+  opacity:0;animation:fadeUp 1.8s 0.5s cubic-bezier(.16,1,.3,1) forwards;
+}
+#logo-text{
+  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size:52px;font-weight:900;
+  color:#fff;
+  letter-spacing:0.12em;
+  text-shadow:
+    0 0 20px rgba(255,180,80,0.5),
+    0 0 60px rgba(200,100,20,0.3),
+    0 2px 4px rgba(0,0,0,0.8);
+  line-height:1;
+}
+#logo-sub{
+  margin-top:8px;
+  font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+  font-size:11px;letter-spacing:0.35em;
+  color:rgba(255,200,100,0.6);
+  text-transform:uppercase;
+}
+#logo-line{
+  width:180px;height:1px;margin:10px auto 0;
+  background:linear-gradient(90deg,transparent,rgba(200,168,75,0.7),transparent);
+}
+
+#nav-hint{
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  font-family:'Hiragino Kaku Gothic ProN',sans-serif;
+  font-size:11px;letter-spacing:0.22em;
+  color:rgba(255,200,120,0.4);
+  white-space:nowrap;
+  opacity:0;animation:fadeUp 1.8s 2s forwards;
+}
+
+#tooltip{
+  position:absolute;pointer-events:none;
+  font-family:'Hiragino Mincho ProN',serif;
+  font-size:14px;letter-spacing:0.18em;
+  color:#fff;
+  padding:7px 20px 8px;
+  border:1px solid rgba(200,168,75,0.6);
+  background:rgba(0,0,8,0.75);
+  backdrop-filter:blur(8px);
+  border-radius:2px;
+  opacity:0;transition:opacity 0.15s;
+  white-space:nowrap;
+}
+#tooltip-sub{
+  font-size:10px;letter-spacing:0.2em;
+  color:rgba(200,168,75,0.7);
+  margin-top:2px;
+}
+
+#selected{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(0.9);
+  font-family:'Hiragino Mincho ProN',serif;
+  font-size:28px;letter-spacing:0.3em;
+  color:#fff;
+  text-shadow:0 0 40px rgba(255,180,80,0.9);
+  opacity:0;transition:opacity 0.3s,transform 0.3s;
+  pointer-events:none;
+}
+#selected.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateX(-50%) translateY(10px);}
+  to{opacity:1;transform:translateX(-50%) translateY(0);}
+}
+@keyframes fadeUpC{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+#dawn-horizon{
+  position:absolute;bottom:0;left:0;right:0;
+  height:160px;pointer-events:none;
+  background:linear-gradient(0deg,
+    rgba(80,20,0,0.35) 0%,
+    rgba(40,10,20,0.15) 50%,
+    transparent 100%
+  );
+}
+</style>
+</head>
+<body>
+<div id="ui">
+  <div id="logo">
+    <div id="logo-text">黎明戦</div>
+    <div id="logo-sub">Reimei-Sen &nbsp;·&nbsp; Official Site</div>
+    <div id="logo-line"></div>
+  </div>
+  <div id="nav-hint">ドラッグで視点操作 &nbsp;·&nbsp; スクロールでズーム &nbsp;·&nbsp; クリックで各節へ</div>
+  <div id="tooltip"><div id="tt-main"></div><div id="tooltip-sub" id="tt-sub"></div></div>
+  <div id="selected"></div>
+  <div id="dawn-horizon"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+
+/* ── renderer ─────────────────────────────────── */
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled = false;
+renderer.setClearColor(0x000000, 0);
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+
+/* dawn-sky background gradient via CSS, fog for depth */
+scene.fog = new THREE.FogExp2(0x00000a, 0.009);
+
+const camera = new THREE.PerspectiveCamera(52, innerWidth/innerHeight, 0.1, 1500);
+camera.position.set(0, 10, 30);
+camera.lookAt(0,0,0);
+
+/* ── lighting ─────────────────────────────────── */
+scene.add(new THREE.AmbientLight(0x0a0520, 3.5));
+
+const dawnLight = new THREE.DirectionalLight(0xff6622, 0.6);
+dawnLight.position.set(0, -8, -20);
+scene.add(dawnLight);
+
+const topLight = new THREE.DirectionalLight(0x4433aa, 0.4);
+topLight.position.set(0, 20, 0);
+scene.add(topLight);
+
+const coreLight = new THREE.PointLight(0xffa040, 1.2, 80);
+coreLight.position.set(0,0,0);
+scene.add(coreLight);
+
+/* ── screen-space scene: bg + rays (never rotates) ────────── */
+const raysScene = new THREE.Scene();
+const raysCam   = new THREE.OrthographicCamera(-1,1,1,-1,0,1);
+const bgUniforms = {uTime:{value:0}};
+const raysUniforms = {uTime:{value:0}, uAspect:{value:innerWidth/innerHeight}};
+
+/* ── horizon y position (screen UV, 0=bottom 1=top) ── */
+/* ロゴ直下・画面上部28%あたりを地平線とする */
+const HY = 0.72;
+
+/* background quad — opaque, drawn first */
+(function(){
+  const geo = new THREE.PlaneGeometry(2,2);
+  const mat = new THREE.ShaderMaterial({
+    uniforms: Object.assign(bgUniforms, {uHY:{value:HY}}),
+    depthTest: false, depthWrite: false,
+    vertexShader:`
+      varying vec2 vUv;
+      void main(){ vUv=uv; gl_Position=vec4(position.xy,1.,1.); }
+    `,
+    fragmentShader:`
+      varying vec2 vUv;
+      uniform float uTime;
+      uniform float uHY;
+      void main(){
+        float y = vUv.y;
+        float h = uHY;
+
+        /* sky above horizon: deep space purple→black */
+        vec3 skyTop = vec3(0.00, 0.00, 0.03);
+        vec3 skyHor = vec3(0.06, 0.01, 0.14);
+        vec3 sky    = mix(skyHor, skyTop, smoothstep(h, 1.0, y));
+
+        /* ground below horizon: dark warm */
+        vec3 gndHor = vec3(0.10, 0.02, 0.01);
+        vec3 gndBot = vec3(0.02, 0.00, 0.00);
+        vec3 gnd    = mix(gndBot, gndHor, smoothstep(0.0, h, y));
+
+        vec3 col = y > h ? sky : gnd;
+
+        /* horizon glow line */
+        float hd = abs(y - h);
+        col += vec3(1.0, 0.52, 0.06) * exp(-hd*hd*3500.0) * 0.65;
+        col += vec3(0.85,0.22, 0.03) * exp(-hd*hd*180.0)  * 0.20;
+        /* purple atmospheric scatter just above horizon */
+        col += vec3(0.12,0.03, 0.20) * smoothstep(h, h+0.08, y) * smoothstep(h+0.18, h+0.06, y) * 0.5;
+
+        gl_FragColor = vec4(col, 1.0);
+      }
+    `,
+  });
+  raysScene.add(new THREE.Mesh(geo, mat));
+})();
+
+/* rays + sun glow quad — additive */
+(function(){
+  const geo = new THREE.PlaneGeometry(2,2);
+  const mat = new THREE.ShaderMaterial({
+    uniforms: Object.assign(raysUniforms, {uHY:{value:HY}}),
+    transparent: true,
+    depthTest: false, depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    vertexShader:`
+      varying vec2 vUv;
+      void main(){ vUv=uv; gl_Position=vec4(position.xy,0.,1.); }
+    `,
+    fragmentShader:`
+      varying vec2 vUv;
+      uniform float uTime;
+      uniform float uAspect;
+      uniform float uHY;
+
+      /* 光芒の発生源 = 地平線上・水平中央 */
+      #define OX 0.5
+
+      float ray(vec2 uv, float oy, float angle, float width, float str){
+        vec2 d   = vec2((uv.x - OX) * uAspect, uv.y - oy);
+        vec2 dir = vec2(cos(angle), sin(angle));
+        float proj = dot(d, dir);
+        if(proj < 0.0) return 0.0;
+        float perp   = abs(d.x*(-dir.y) + d.y*dir.x);
+        float spread = proj * width + 0.002;
+        float r      = smoothstep(spread, spread*0.18, perp);
+        float fall   = exp(-proj*proj*0.12) * smoothstep(0.0, 0.03, proj);
+        return r * fall * str;
+      }
+
+      void main(){
+        vec2  uv = vUv;
+        float t  = uTime * 0.07;
+        float oy = uHY; /* 地平線y = 光芒原点y */
+
+        float v = 0.0;
+
+        /* 光芒9本: 中央1本 + 左右4ペア、最大±75°(1.309rad) */
+        float DN = -1.5708;
+        /* 中央 */
+        v += ray(uv, oy, DN,         0.028, 0.68);
+        /* ±20° */
+        v += ray(uv, oy, DN+0.349,   0.022, 0.54+sin(t+1.0)*0.07);
+        v += ray(uv, oy, DN-0.349,   0.022, 0.54+sin(t+2.0)*0.07);
+        /* ±40° */
+        v += ray(uv, oy, DN+0.698,   0.016, 0.38+sin(t+0.5)*0.05);
+        v += ray(uv, oy, DN-0.698,   0.016, 0.38+sin(t+1.5)*0.05);
+        /* ±58° */
+        v += ray(uv, oy, DN+1.012,   0.011, 0.24+sin(t+3.0)*0.04);
+        v += ray(uv, oy, DN-1.012,   0.011, 0.24+sin(t+0.3)*0.04);
+        /* ±75° */
+        v += ray(uv, oy, DN+1.309,   0.008, 0.14+sin(t+2.5)*0.03);
+        v += ray(uv, oy, DN-1.309,   0.008, 0.14+sin(t+0.8)*0.03);
+
+        /* ray colour warm→cool by horizontal distance */
+        float hd  = abs(uv.x - OX);
+        vec3 warm = vec3(1.0,  0.60, 0.10);
+        vec3 cool = vec3(0.70, 0.32, 0.50);
+        vec3 col  = mix(warm, cool, smoothstep(0.0, 0.35, hd));
+
+        /* ── 太陽グロウ: 地平線上に半円状にはみ出した太陽 ── */
+        /* 太陽中心 = 地平線上・水平中央、地平線の少し下に隠れている */
+        float sunY  = oy - 0.012;          /* ほんの少し地平線の下に沈んでいる */
+        vec2  sd    = vec2((uv.x - OX) * uAspect, uv.y - sunY);
+        float slen  = length(sd);
+
+        /* 太陽本体: 地平線より上の部分のみ半円 */
+        float sunDisc = smoothstep(0.045, 0.025, slen);
+        float aboveH  = smoothstep(oy - 0.005, oy + 0.005, uv.y);
+        float sunBody = sunDisc * aboveH;
+
+        /* コロナ: 多層ソフトグロウ */
+        float corona1 = exp(-slen*slen*18.0)  * 0.70;
+        float corona2 = exp(-slen*slen*4.5)   * 0.28;
+        float corona3 = exp(-slen*slen*0.9)   * 0.10;
+        float pulse   = 1.0 + sin(t * 2.2) * 0.06;
+
+        vec3  sunCol  = vec3(1.0, 0.92, 0.72);
+        vec3  glowCol = vec3(1.0, 0.55, 0.08);
+
+        /* 太陽本体 (白→薄黄) */
+        col  = mix(col, sunCol, sunBody * 0.9);
+        v   += sunBody * 1.2;
+
+        /* コロナ層 */
+        float coronaAll = (corona1 + corona2 + corona3) * pulse * aboveH;
+        col += glowCol * coronaAll * 0.5;
+        v   += coronaAll * 0.4;
+
+        /* 水平グレア: 地平線に沿った横伸びグロウ */
+        float glareY = abs(uv.y - oy);
+        float glareX = abs(uv.x - OX) * uAspect;
+        float glare  = exp(-glareY*glareY*800.0) * exp(-glareX*glareX*0.6) * 0.35;
+        col += vec3(1.0, 0.65, 0.15) * glare;
+        v   += glare * 0.25;
+
+        float alpha = clamp(v * 0.38, 0.0, 1.0);
+        gl_FragColor = vec4(col * alpha, alpha);
+      }
+    `,
+  });
+  raysScene.add(new THREE.Mesh(geo, mat));
+})();
+
+/* ── round sprite texture (shared) ───────────── */
+function makeRoundTex(size, blur){
+  const cv=document.createElement('canvas'); cv.width=cv.height=size;
+  const ctx=cv.getContext('2d');
+  const g=ctx.createRadialGradient(size/2,size/2,0,size/2,size/2,size/2);
+  g.addColorStop(0,'rgba(255,255,255,1)');
+  g.addColorStop(blur,'rgba(255,255,255,0.6)');
+  g.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,size,size);
+  return new THREE.CanvasTexture(cv);
+}
+const starTex  = makeRoundTex(32, 0.4);
+const dustTex  = makeRoundTex(64, 0.3);
+
+/* ── stars ────────────────────────────────────── */
+(function(){
+  const n=2800, pos=new Float32Array(n*3), col=new Float32Array(n*3);
+  const palette=[[1,.95,.85],[.85,.9,1],[1,.85,.7],[.9,.85,1],[1,1,1]];
+  for(let i=0;i<n;i++){
+    const r=300+Math.random()*700;
+    const th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1);
+    pos[i*3]  =r*Math.sin(ph)*Math.cos(th);
+    pos[i*3+1]=r*Math.sin(ph)*Math.sin(th);
+    pos[i*3+2]=r*Math.cos(ph);
+    const c=palette[i%palette.length];
+    col[i*3]=c[0];col[i*3+1]=c[1];col[i*3+2]=c[2];
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  scene.add(new THREE.Points(geo,new THREE.PointsMaterial({
+    size:1.4, map:starTex, vertexColors:true,
+    transparent:true, opacity:0.9,
+    alphaTest:0.01, depthWrite:false,
+    sizeAttenuation:true,
+  })));
+})();
+
+/* ── nebula dust ──────────────────────────────── */
+(function(){
+  const n=400, pos=new Float32Array(n*3), col=new Float32Array(n*3);
+  const palette=[[.15,.05,.35],[.25,.05,.15],[.05,.05,.3],[.2,.08,.02]];
+  for(let i=0;i<n;i++){
+    const r=60+Math.random()*140;
+    const th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1);
+    pos[i*3]  =r*Math.sin(ph)*Math.cos(th);
+    pos[i*3+1]=r*Math.sin(ph)*Math.sin(th)*0.3;
+    pos[i*3+2]=r*Math.cos(ph);
+    const c=palette[i%palette.length];
+    col[i*3]=c[0];col[i*3+1]=c[1];col[i*3+2]=c[2];
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+  scene.add(new THREE.Points(geo,new THREE.PointsMaterial({
+    size:2.2, map:dustTex, vertexColors:true,
+    transparent:true, opacity:0.18,
+    alphaTest:0.01, depthWrite:false,
+    sizeAttenuation:true,
+  })));
+})();
+
+/* ── orbit ring ───────────────────────────────── */
+const ORBIT_R = 13;
+(function(){
+  const pts=[];
+  for(let i=0;i<=192;i++){
+    const a=(i/192)*Math.PI*2;
+    pts.push(new THREE.Vector3(Math.cos(a)*ORBIT_R,0,Math.sin(a)*ORBIT_R));
+  }
+  const geo=new THREE.BufferGeometry().setFromPoints(pts);
+  scene.add(new THREE.Line(geo,new THREE.LineBasicMaterial({color:0xc8a84b,transparent:true,opacity:0.2})));
+  /* inner glow ring */
+  const pts2=pts.map(p=>new THREE.Vector3(p.x*.98,p.y,p.z*.98));
+  const geo2=new THREE.BufferGeometry().setFromPoints(pts2);
+  scene.add(new THREE.Line(geo2,new THREE.LineBasicMaterial({color:0xffcc66,transparent:true,opacity:0.08})));
+})();
+
+/* ── planets (nav items) ──────────────────────── */
+const NAV = [
+  {name:'対戦表',    en:'MATCH',    color:0xffaa22, emissive:0x3a1a00, url:'#match'},
+  {name:'スケジュール', en:'SCHEDULE', color:0x44aaff, emissive:0x001a33, url:'#schedule'},
+  {name:'チーム',    en:'TEAMS',    color:0xcc44ff, emissive:0x220044, url:'#teams'},
+  {name:'成績',      en:'RESULTS',  color:0x44ffaa, emissive:0x003322, url:'#results'},
+  {name:'理念・規約', en:'ABOUT',    color:0xff4466, emissive:0x330010, url:'#about'},
+  {name:'コンテンツ', en:'CONTENT',  color:0xffee44, emissive:0x332800, url:'#content'},
+];
+
+function makeSurface(color){
+  const cv=document.createElement('canvas');
+  cv.width=cv.height=256;
+  const ctx=cv.getContext('2d');
+  const c=new THREE.Color(color);
+  const r=Math.round(c.r*255),g=Math.round(c.g*255),b=Math.round(c.b*255);
+  const gr=ctx.createRadialGradient(88,80,8,128,128,128);
+  gr.addColorStop(0,`rgb(${Math.min(255,r+90)},${Math.min(255,g+90)},${Math.min(255,b+90)})`);
+  gr.addColorStop(0.45,`rgb(${r},${g},${b})`);
+  gr.addColorStop(1,`rgb(${Math.max(0,r-70)},${Math.max(0,g-70)},${Math.max(0,b-70)})`);
+  ctx.fillStyle=gr; ctx.fillRect(0,0,256,256);
+  for(let k=0;k<280;k++){
+    const bx=Math.random()*256,by=Math.random()*256,br=Math.random()*16+3;
+    const ng=ctx.createRadialGradient(bx,by,0,bx,by,br);
+    const al=Math.random()*0.15+0.03;
+    ng.addColorStop(0,Math.random()>.5?`rgba(255,255,255,${al})`:`rgba(0,0,0,${al})`);
+    ng.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=ng; ctx.beginPath(); ctx.arc(bx,by,br,0,Math.PI*2); ctx.fill();
+  }
+  return new THREE.CanvasTexture(cv);
+}
+
+const planets=[];
+NAV.forEach((item,i)=>{
+  const angle=(i/NAV.length)*Math.PI*2;
+  const x=Math.cos(angle)*ORBIT_R, z=Math.sin(angle)*ORBIT_R;
+
+  const geo=new THREE.SphereGeometry(1.35,48,48);
+  const mat=new THREE.MeshPhongMaterial({
+    map:makeSurface(item.color),
+    emissive:new THREE.Color(item.emissive),
+    emissiveIntensity:0.5,
+    shininess:55,
+    specular:new THREE.Color(0x443322),
+  });
+  const mesh=new THREE.Mesh(geo,mat);
+  mesh.position.set(x,0,z);
+  mesh.userData={index:i,...item,_hp:0,baseAngle:angle};
+  scene.add(mesh);
+
+  /* atmosphere */
+  const atmMat=new THREE.MeshBasicMaterial({color:item.color,transparent:true,opacity:0,side:THREE.BackSide});
+  const atm=new THREE.Mesh(new THREE.SphereGeometry(1.62,32,32),atmMat);
+  atm.position.copy(mesh.position); scene.add(atm);
+
+  /* gold halo ring */
+  const haloMat=new THREE.MeshBasicMaterial({color:0xc8a84b,transparent:true,opacity:0,side:THREE.DoubleSide});
+  const halo=new THREE.Mesh(new THREE.RingGeometry(1.75,2.05,64),haloMat);
+  halo.position.copy(mesh.position); halo.rotation.x=Math.PI/2; scene.add(halo);
+
+  /* color glow ring */
+  const glowMat=new THREE.MeshBasicMaterial({color:item.color,transparent:true,opacity:0,side:THREE.DoubleSide});
+  const glow=new THREE.Mesh(new THREE.RingGeometry(1.55,1.75,64),glowMat);
+  glow.position.copy(mesh.position); glow.rotation.x=Math.PI/2; scene.add(glow);
+
+  planets.push({mesh,mat,atm,atmMat,halo,haloMat,glow,glowMat,...item});
+});
+
+
+
+/* ── camera control state ─────────────────────── */
+const cam={
+  theta:0, phi:0.42, radius:30,
+  tTheta:0, tPhi:0.42, tRadius:30,
+  autoSpeed:0.09, auto:true,
+  drag:false, lx:0, ly:0, _timer:null,
+};
+
+function resumeAuto(){ cam._timer=setTimeout(()=>{cam.auto=true;},3200); }
+
+document.addEventListener('mousedown',e=>{
+  cam.drag=true; cam.auto=false; clearTimeout(cam._timer);
+  cam.lx=e.clientX; cam.ly=e.clientY;
+});
+document.addEventListener('mouseup',()=>{ cam.drag=false; resumeAuto(); });
+document.addEventListener('mousemove',e=>{
+  if(!cam.drag) return;
+  cam.tTheta -= (e.clientX-cam.lx)*0.005;
+  cam.tPhi = Math.max(0.08,Math.min(1.35,cam.tPhi-(e.clientY-cam.ly)*0.004));
+  cam.lx=e.clientX; cam.ly=e.clientY;
+});
+document.addEventListener('wheel',e=>{
+  cam.tRadius=Math.max(10,Math.min(55,cam.tRadius+e.deltaY*0.04));
+  cam.auto=false; clearTimeout(cam._timer); resumeAuto();
+},{passive:true});
+
+let ltx=0,ltd=0;
+document.addEventListener('touchstart',e=>{
+  if(e.touches.length===1){cam.drag=true;cam.auto=false;clearTimeout(cam._timer);ltx=e.touches[0].clientX;}
+  if(e.touches.length===2) ltd=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+},{passive:true});
+document.addEventListener('touchend',()=>{cam.drag=false;resumeAuto();},{passive:true});
+document.addEventListener('touchmove',e=>{
+  if(e.touches.length===1&&cam.drag){
+    cam.tTheta-=(e.touches[0].clientX-ltx)*0.006; ltx=e.touches[0].clientX;
+  }
+  if(e.touches.length===2){
+    const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    cam.tRadius=Math.max(10,Math.min(55,cam.tRadius-(d-ltd)*0.07)); ltd=d;
+  }
+},{passive:true});
+
+/* ── raycaster ────────────────────────────────── */
+const rc=new THREE.Raycaster();
+const mNDC=new THREE.Vector2(-9,-9);
+let hovIdx=-1;
+const tooltip=document.getElementById('tooltip');
+const ttMain=document.getElementById('tt-main');
+const ttSub=document.getElementById('tooltip-sub');
+const selBanner=document.getElementById('selected');
+
+document.addEventListener('mousemove',e=>{
+  if(cam.drag) return;
+  mNDC.set((e.clientX/innerWidth)*2-1,-(e.clientY/innerHeight)*2+1);
+  tooltip.style.left=(e.clientX+18)+'px';
+  tooltip.style.top=(e.clientY-16)+'px';
+});
+document.addEventListener('click',e=>{
+  rc.setFromCamera(mNDC,camera);
+  const hits=rc.intersectObjects(planets.map(p=>p.mesh));
+  if(hits.length){
+    const ud=hits[0].object.userData;
+    selBanner.textContent=ud.name;
+    selBanner.classList.add('show');
+    setTimeout(()=>selBanner.classList.remove('show'),2200);
+  }
+});
+
+/* ── animation loop ───────────────────────────── */
+const clock=new THREE.Clock();
+function lerp(a,b,t){return a+(b-a)*t;}
+
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=Math.min(clock.getDelta(),0.05);
+
+  if(cam.auto) cam.tTheta+=dt*cam.autoSpeed;
+  cam.theta =lerp(cam.theta, cam.tTheta,  Math.min(1,dt*4));
+  cam.phi   =lerp(cam.phi,   cam.tPhi,    Math.min(1,dt*4));
+  cam.radius=lerp(cam.radius,cam.tRadius, Math.min(1,dt*3));
+
+  const r=cam.radius;
+  camera.position.set(
+    r*Math.cos(cam.phi)*Math.sin(cam.theta),
+    r*Math.sin(cam.phi),
+    r*Math.cos(cam.phi)*Math.cos(cam.theta)
+  );
+  camera.lookAt(0,0,0);
+
+  /* hover */
+  rc.setFromCamera(mNDC,camera);
+  const hits=rc.intersectObjects(planets.map(p=>p.mesh));
+  const newHov=hits.length?hits[0].object.userData.index:-1;
+  if(newHov!==hovIdx){
+    hovIdx=newHov;
+    if(hovIdx>=0){
+      ttMain.textContent=NAV[hovIdx].name;
+      ttSub.textContent=NAV[hovIdx].en;
+      tooltip.style.opacity='1';
+      document.body.style.cursor='pointer';
+    } else {
+      tooltip.style.opacity='0';
+      document.body.style.cursor='default';
+    }
+  }
+
+  /* planet update */
+  planets.forEach((p,i)=>{
+    p.mesh.rotation.y+=dt*0.22;
+    const target=i===hovIdx?1:0;
+    p.mesh.userData._hp=lerp(p.mesh.userData._hp,target,Math.min(1,dt*5));
+    const hp=p.mesh.userData._hp;
+    p.mat.emissiveIntensity=0.5+hp*2.2;
+    p.atmMat.opacity=hp*0.2;
+    p.haloMat.opacity=hp*0.65;
+    p.glowMat.opacity=hp*0.4;
+    p.halo.scale.setScalar(1+hp*0.1);
+  });
+
+  /* core pulse */
+  const elapsed=clock.getElapsedTime();
+  const pulse=0.9+Math.sin(elapsed*1.8)*0.1;
+  coreLight.intensity=1.2*pulse;
+
+  /* update shader uniforms */
+  bgUniforms.uTime.value=elapsed;
+  if(bgUniforms.uHY) bgUniforms.uHY.value=HY;
+  raysUniforms.uTime.value=elapsed;
+  raysUniforms.uAspect.value=innerWidth/innerHeight;
+  if(raysUniforms.uHY) raysUniforms.uHY.value=HY;
+
+  /* 1) bg+rays (screen-space, fixed) → 2) 3D scene → 3) rays overlay */
+  renderer.autoClear=true;
+  renderer.render(raysScene, raysCam);   /* bg gradient + rays, clears buffer */
+  renderer.autoClear=false;
+  renderer.render(scene, camera);        /* 3D planets/stars on top */
+  renderer.autoClear=true;
+}
+animate();
+
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  raysUniforms.uAspect.value=innerWidth/innerHeight;
+});
+
+})();
+</script>
+</body>
+</html>
