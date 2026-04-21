@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>スケジュール — 黎明戦</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:#06020e;
+  color:#e8e0d0;
+  font-family:'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+  min-height:100vh;
+}
+
+/* ── header ── */
+#header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:56px;
+  background:rgba(4,1,10,0.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(200,168,75,0.2);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+}
+#header-logo{
+  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size:20px;letter-spacing:0.18em;
+  color:#fff;text-decoration:none;
+  display:flex;align-items:center;gap:12px;
+}
+#header-logo img{
+  height:32px;
+  filter:drop-shadow(0 0 6px rgba(255,160,60,0.4));
+}
+#header-logo span{
+  font-size:10px;letter-spacing:0.3em;
+  color:rgba(200,168,75,0.6);font-family:sans-serif;
+}
+#header-back{
+  font-size:11px;letter-spacing:0.18em;
+  color:rgba(200,168,75,0.7);text-decoration:none;
+  border:1px solid rgba(200,168,75,0.3);
+  padding:5px 14px;border-radius:2px;transition:all 0.2s;
+}
+#header-back:hover{background:rgba(200,168,75,0.1);color:rgba(200,168,75,1);}
+
+/* ── page hero ── */
+#page-hero{
+  padding:96px 24px 32px;text-align:center;position:relative;
+}
+#page-hero::after{
+  content:'';display:block;width:120px;height:1px;
+  margin:20px auto 0;
+  background:linear-gradient(90deg,transparent,rgba(200,168,75,0.6),transparent);
+}
+#page-title{
+  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size:28px;letter-spacing:0.3em;color:#fff;
+}
+#page-subtitle{
+  margin-top:8px;font-size:11px;letter-spacing:0.28em;
+  color:rgba(200,168,75,0.55);text-transform:uppercase;
+}
+
+/* ── tab bar ── */
+#tab-bar{
+  display:flex;justify-content:center;gap:0;
+  padding:0 24px 0;max-width:600px;margin:32px auto 0;
+}
+.tab-btn{
+  flex:1;
+  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size:14px;letter-spacing:0.18em;
+  color:rgba(200,168,75,0.5);
+  background:transparent;
+  border:1px solid rgba(200,168,75,0.2);
+  padding:12px 0;cursor:pointer;transition:all 0.25s;
+  position:relative;
+}
+.tab-btn:first-child{border-radius:2px 0 0 2px;}
+.tab-btn:last-child {border-radius:0 2px 2px 0;border-left:none;}
+.tab-btn.active{
+  color:#fff;
+  background:rgba(200,168,75,0.12);
+  border-color:rgba(200,168,75,0.6);
+}
+.tab-btn.active::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(200,168,75,0.8),transparent);
+}
+
+/* ── status ── */
+#status{
+  text-align:center;font-size:11px;letter-spacing:0.15em;
+  color:rgba(200,168,75,0.4);padding:20px 0 0;min-height:20px;
+}
+
+/* ── panels ── */
+.panel{display:none;max-width:760px;margin:0 auto;padding:32px 20px 80px;}
+.panel.active{display:block;}
+
+/* ══ 開幕前パネル ══ */
+.before-item{
+  display:grid;grid-template-columns:100px 1fr;gap:0;
+  border-bottom:1px solid rgba(200,168,75,0.1);
+  padding:20px 0;
+}
+.before-item:first-child{border-top:1px solid rgba(200,168,75,0.1);}
+.before-date{
+  font-size:12px;letter-spacing:0.12em;
+  color:rgba(200,168,75,0.6);
+  padding-top:2px;white-space:nowrap;
+}
+.before-text{
+  font-size:15px;line-height:1.7;letter-spacing:0.04em;
+  color:#e8e0d0;
+}
+
+/* ══ シーズン予定パネル ══ */
+.section-block{margin-bottom:48px;}
+.section-header{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:20px;
+}
+.section-label{
+  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size:18px;letter-spacing:0.18em;color:#fff;
+  white-space:nowrap;
+}
+.section-date{
+  font-size:12px;letter-spacing:0.12em;
+  color:rgba(200,168,75,0.5);
+}
+.section-line{
+  flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(200,168,75,0.3),transparent);
+}
+
+/* 卓カード */
+.match-cards{display:flex;flex-direction:column;gap:12px;}
+
+.match-card{
+  border:1px solid rgba(200,168,75,0.2);
+  border-radius:4px;
+  background:rgba(200,168,75,0.03);
+  overflow:hidden;
+}
+.match-card-header{
+  padding:6px 14px;
+  border-bottom:1px solid rgba(200,168,75,0.15);
+  font-size:11px;letter-spacing:0.2em;
+  color:rgba(200,168,75,0.6);
+  background:rgba(200,168,75,0.05);
+}
+
+/* 対戦グリッド: 2×2 */
+.match-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:1px;
+  background:rgba(200,168,75,0.1);
+}
+.match-cell{
+  background:#06020e;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;padding:16px 12px;
+  min-height:90px;
+}
+.match-cell-logo{
+  width:52px;height:52px;object-fit:contain;
+  filter:drop-shadow(0 0 6px rgba(200,168,75,0.2));
+}
+.match-cell-logo-placeholder{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(200,168,75,0.1);
+  border:1px solid rgba(200,168,75,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:rgba(200,168,75,0.3);
+}
+.match-cell-name{
+  font-size:12px;letter-spacing:0.08em;
+  color:rgba(232,224,208,0.8);text-align:center;
+  line-height:1.3;
+}
+
+/* divider between 天卓/元卓 */
+.table-divider{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;
+  font-size:10px;letter-spacing:0.2em;
+  color:rgba(200,168,75,0.35);
+}
+.table-divider::before,.table-divider::after{
+  content:'';flex:1;height:1px;
+  background:rgba(200,168,75,0.1);
+}
+
+/* ── empty ── */
+.empty{
+  text-align:center;padding:60px 20px;
+  color:rgba(200,168,75,0.35);font-size:13px;letter-spacing:0.15em;
+}
+
+body::after{
+  content:'';position:fixed;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(200,168,75,0.3),rgba(255,120,20,0.4),rgba(200,168,75,0.3),transparent);
+  pointer-events:none;
+}
+</style>
+</head>
+<body>
+
+<header id="header">
+  <a href="index.html" id="header-logo">
+    <img src="assets/images/文字のみ.png" alt="黎明戦"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+    <span style="display:none;font-family:'Hiragino Mincho ProN',serif;font-size:18px;color:#fff;letter-spacing:0.2em;">黎明戦</span>
+    <span>OFFICIAL</span>
+  </a>
+  <a href="index.html" id="header-back">← トップへ</a>
+</header>
+
+<section id="page-hero">
+  <div id="page-title">スケジュール</div>
+  <div id="page-subtitle">Schedule</div>
+</section>
+
+<div id="tab-bar">
+  <button class="tab-btn active" data-tab="before">開幕前</button>
+  <button class="tab-btn"        data-tab="season">シーズン予定</button>
+</div>
+
+<div id="status">読み込み中...</div>
+
+<div id="panel-before" class="panel active"></div>
+<div id="panel-season" class="panel"></div>
+
+<script>
+const GAS_URL = 'ここにGASのデプロイURLを貼る';
+
+/* ── タブ切り替え ── */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ── データ取得 ── */
+async function fetchSheet(sheet) {
+  const res = await fetch(`${GAS_URL}?sheet=${sheet}`, {redirect:'follow'});
+  const json = await res.json();
+  if (json.error) throw new Error(json.error);
+  return Array.isArray(json) ? json : [];
+}
+
+async function loadAll() {
+  setStatus('読み込み中...');
+  try {
+    const [beforeData, scheduleData] = await Promise.all([
+      fetchSheet('before_dawn'),
+      fetchSheet('schedule'),
+    ]);
+    renderBefore(beforeData);
+    renderSeason(scheduleData);
+    setStatus('');
+  } catch(e) {
+    setStatus('読み込みエラー: ' + e.message);
+  }
+}
+
+/* ── 開幕前レンダリング ── */
+function renderBefore(data) {
+  const panel = document.getElementById('panel-before');
+  if (!data.length) {
+    panel.innerHTML = '<div class="empty">予定はありません</div>';
+    return;
+  }
+  panel.innerHTML = data.map(item => {
+    const date = item.date ? item.date.slice(0,10).replace(/-/g,'.') : '';
+    return `
+    <div class="before-item">
+      <div class="before-date">${date}</div>
+      <div class="before-text">${item.text || ''}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ── シーズン予定レンダリング ── */
+function renderSeason(data) {
+  const panel = document.getElementById('panel-season');
+  if (!data.length) {
+    panel.innerHTML = '<div class="empty">スケジュールはありません</div>';
+    return;
+  }
+
+  /* section単位でグループ化 */
+  const sections = [];
+  const seen = {};
+  data.forEach(row => {
+    if (!seen[row.section]) {
+      seen[row.section] = true;
+      sections.push(row.section);
+    }
+  });
+
+  panel.innerHTML = sections.map(section => {
+    const rows = data.filter(r => r.section === section);
+    const date = rows[0].date ? rows[0].date.slice(0,10).replace(/-/g,'.') : '';
+
+    /* 1卓目と2卓目を分離 */
+    const table1 = {
+      upleft:      rows[0].upleft1,
+      upright:     rows[0].upright1,
+      bottomleft:  rows[0].bottomleft1,
+      bottomright: rows[0].bottomright1,
+      upleft_img:      rows[0].upleft1_image,
+      upright_img:     rows[0].upright1_image,
+      bottomleft_img:  rows[0].bottomleft1_image,
+      bottomright_img: rows[0].bottomright1_image,
+    };
+    const table2 = {
+      upleft:      rows[0].upleft2,
+      upright:     rows[0].upright2,
+      bottomleft:  rows[0].bottomleft2,
+      bottomright: rows[0].bottomright2,
+      upleft_img:      rows[0].upleft2_image,
+      upright_img:     rows[0].upright2_image,
+      bottomleft_img:  rows[0].bottomleft2_image,
+      bottomright_img: rows[0].bottomright2_image,
+    };
+
+    return `
+    <div class="section-block">
+      <div class="section-header">
+        <div class="section-label">${section}</div>
+        <div class="section-date">${date}</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="match-cards">
+        <div class="match-card">
+          <div class="match-card-header">天卓</div>
+          ${renderMatchGrid(table1)}
+        </div>
+        <div class="table-divider">元卓</div>
+        <div class="match-card">
+          <div class="match-card-header">元卓</div>
+          ${renderMatchGrid(table2)}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderMatchGrid(t) {
+  return `
+  <div class="match-grid">
+    ${renderCell(t.upleft,      t.upleft_img)}
+    ${renderCell(t.upright,     t.upright_img)}
+    ${renderCell(t.bottomleft,  t.bottomleft_img)}
+    ${renderCell(t.bottomright, t.bottomright_img)}
+  </div>`;
+}
+
+function renderCell(name, imgUrl) {
+  if (!name) {
+    return `<div class="match-cell">
+      <div class="match-cell-logo-placeholder">？</div>
+    </div>`;
+  }
+  const logo = imgUrl
+    ? `<img class="match-cell-logo" src="${imgUrl}" alt="${name}" loading="lazy">`
+    : `<div class="match-cell-logo-placeholder">${name.slice(0,1)}</div>`;
+  return `<div class="match-cell">
+    ${logo}
+    <div class="match-cell-name">${name}</div>
+  </div>`;
+}
+
+function setStatus(msg) {
+  document.getElementById('status').textContent = msg;
+}
+
+window.addEventListener('pageshow', () => {
+  document.body.style.transition = 'opacity 0.4s';
+  document.body.style.opacity = '1';
+});
+
+loadAll();
+</script>
+</body>
+</html>
