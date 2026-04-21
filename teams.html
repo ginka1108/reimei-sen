@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>準備中 — 黎明戦</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:#06020e;overflow:hidden;}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;}
+
+canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;}
+
+#content{
+  position:relative;z-index:10;
+  text-align:center;
+  animation:fadeUp 1.5s 0.3s cubic-bezier(.16,1,.3,1) both;
+}
+#logo-wrap{margin-bottom:32px;}
+#logo-wrap img{
+  height:60px;
+  filter:drop-shadow(0 0 12px rgba(255,160,60,0.5));
+}
+#label{
+  font-family:'Hiragino Kaku Gothic ProN',sans-serif;
+  font-size:11px;letter-spacing:0.35em;
+  color:rgba(200,168,75,0.5);
+  text-transform:uppercase;
+  margin-bottom:24px;
+}
+#title{
+  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size:32px;letter-spacing:0.25em;
+  color:#fff;
+  text-shadow:0 0 30px rgba(255,180,80,0.3);
+  margin-bottom:12px;
+}
+#sub{
+  font-size:13px;letter-spacing:0.15em;
+  color:rgba(232,224,208,0.45);
+  margin-bottom:40px;
+  line-height:1.8;
+}
+#line{
+  width:80px;height:1px;margin:0 auto 40px;
+  background:linear-gradient(90deg,transparent,rgba(200,168,75,0.5),transparent);
+}
+#back-btn{
+  display:inline-block;
+  font-family:'Hiragino Kaku Gothic ProN',sans-serif;
+  font-size:11px;letter-spacing:0.25em;
+  color:rgba(200,168,75,0.8);
+  border:1px solid rgba(200,168,75,0.35);
+  padding:10px 28px;border-radius:2px;
+  text-decoration:none;
+  transition:all 0.25s;
+}
+#back-btn:hover{
+  background:rgba(200,168,75,0.1);
+  color:rgba(200,168,75,1);
+  border-color:rgba(200,168,75,0.7);
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="content">
+  <div id="logo-wrap">
+    <img src="assets/images/文字のみ.png" alt="黎明戦"
+         onerror="this.style.display='none'">
+  </div>
+  <div id="label">Coming Soon</div>
+  <div id="title">現在準備中です</div>
+  <div id="sub">このコンテンツは近日公開予定です。<br>開幕をお待ちください。</div>
+  <div id="line"></div>
+  <a href="index.html" id="back-btn">← トップへ戻る</a>
+</div>
+
+<script>
+/* 星空背景 */
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+let W, H, stars = [];
+
+function init() {
+  W = cv.width  = innerWidth;
+  H = cv.height = innerHeight;
+  stars = Array.from({length:120}, () => ({
+    x: Math.random()*W, y: Math.random()*H,
+    r: Math.random()*1.2+0.2,
+    a: Math.random()*0.7+0.2,
+    sp: Math.random()*0.003+0.001,
+    ph: Math.random()*Math.PI*2,
+  }));
+}
+
+function draw(t) {
+  requestAnimationFrame(draw);
+  ctx.clearRect(0,0,W,H);
+  /* 背景グラデーション */
+  const grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'#000008');
+  grad.addColorStop(0.6,'#050012');
+  grad.addColorStop(1,'#0d0203');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,W,H);
+  /* 星 */
+  stars.forEach(s => {
+    const a = s.a * (0.6 + Math.sin(t*0.001*s.sp*1000 + s.ph)*0.4);
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,240,220,${a})`;
+    ctx.fill();
+  });
+  /* 地平線グロウ */
+  const gy = H * 0.72;
+  const hg = ctx.createLinearGradient(0, gy-30, 0, gy+30);
+  hg.addColorStop(0,'transparent');
+  hg.addColorStop(0.5,'rgba(200,80,10,0.15)');
+  hg.addColorStop(1,'transparent');
+  ctx.fillStyle = hg;
+  ctx.fillRect(0, gy-30, W, 60);
+}
+
+init();
+requestAnimationFrame(draw);
+window.addEventListener('resize', init);
+window.addEventListener('pageshow', () => {
+  document.body.style.transition = 'opacity 0.4s';
+  document.body.style.opacity = '1';
+});
+</script>
+</body>
+</html>
