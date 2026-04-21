@@ -39,13 +39,16 @@ canvas{display:block;}
   background:linear-gradient(90deg,transparent,rgba(200,168,75,0.7),transparent);
 }
 
-#nav-hint{
-  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
-  font-family:'Hiragino Kaku Gothic ProN',sans-serif;
-  font-size:11px;letter-spacing:0.22em;
-  color:rgba(255,200,120,0.4);
+.planet-label{
+  position:absolute;
+  pointer-events:none;
+  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
+  font-size:12px;letter-spacing:0.18em;
+  color:rgba(255,220,160,0.85);
+  text-shadow:0 0 8px rgba(0,0,0,0.9),0 1px 3px rgba(0,0,0,1);
   white-space:nowrap;
-  opacity:0;animation:fadeUp 1.8s 2s forwards;
+  transform:translate(-50%,-100%);
+  top:0;left:0;
 }
 
 #tooltip{
@@ -106,7 +109,7 @@ canvas{display:block;}
     <div id="logo-sub">Reimei-Sen &nbsp;·&nbsp; Official Site</div>
     <div id="logo-line"></div>
   </div>
-  <div id="nav-hint">ドラッグで視点操作 &nbsp;·&nbsp; スクロールでズーム &nbsp;·&nbsp; クリックで各節へ</div>
+  <div id="planet-labels"></div>
   <div id="tooltip"><div id="tt-main"></div><div id="tooltip-sub" id="tt-sub"></div></div>
   <div id="selected"></div>
   <div id="dawn-horizon"></div>
@@ -393,7 +396,7 @@ const NAV = [
   {name:'スケジュール',en:'SCHEDULE',  color:0x44aaff, emissive:0x001a33, url:'schedule.html'},
   {name:'チーム',     en:'TEAMS',     color:0xcc44ff, emissive:0x220044, url:'teams.html'},
   {name:'成績',       en:'RESULTS',   color:0x44ffaa, emissive:0x003322, url:'results.html'},
-  {name:'理念・規約', en:'ABOUT',     color:0xff4466, emissive:0x330010, url:'about.html'},
+  {name:'運営について',en:'ABOUT',    color:0xff4466, emissive:0x330010, url:'about.html'},
   {name:'コンテンツ', en:'CONTENT',   color:0xffee44, emissive:0x332800, url:'contents.html'},
 ];
 
@@ -456,6 +459,16 @@ NAV.forEach((item,i)=>{
 });
 
 
+
+/* ── planet labels (2D overlay) ───────────────── */
+const labelContainer = document.getElementById('planet-labels');
+const labelEls = NAV.map((item, i) => {
+  const el = document.createElement('div');
+  el.className = 'planet-label';
+  el.textContent = item.name;
+  labelContainer.appendChild(el);
+  return el;
+});
 
 /* ── camera control state ─────────────────────── */
 const cam={
@@ -585,6 +598,18 @@ function animate(){
     p.haloMat.opacity=hp*0.65;
     p.glowMat.opacity=hp*0.4;
     p.halo.scale.setScalar(1+hp*0.1);
+
+    /* ラベルを惑星の真上に2D投影 */
+    const pos = p.mesh.position.clone();
+    pos.y += 1.9; /* 惑星の上端より少し上 */
+    pos.project(camera);
+    const sx = ( pos.x * 0.5 + 0.5) * innerWidth;
+    const sy = (-pos.y * 0.5 + 0.5) * innerHeight;
+    /* カメラ裏側（z>1）は非表示 */
+    const visible = pos.z < 1;
+    labelEls[i].style.opacity = visible ? (0.5 + hp * 0.5).toString() : '0';
+    labelEls[i].style.left = sx + 'px';
+    labelEls[i].style.top  = sy + 'px';
   });
 
   /* core pulse */
