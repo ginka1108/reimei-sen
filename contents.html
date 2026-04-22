@@ -306,10 +306,9 @@ async function loadData() {
       allItems = MOCK;
       setStatus('モックデータを表示中 — GAS_URL設定後にUSE_MOCK=falseへ変更してください');
     } else {
-const res  = await fetch(`${GAS_URL}?sheet=contents`, {redirect:'follow'});
-      const json = await res.json();
-      /* fetchAllの場合はjson.contents、単体の場合はjsonそのまま */
-      allItems = Array.isArray(json) ? json : (json.contents || []);
+const res = await fetch('data/contents.json');
+const json = await res.json();
+allItems = Array.isArray(json) ? json : [];
       setStatus(`${allItems.length}件`);
     }
   } catch(e) {
