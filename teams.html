@@ -1,139 +1,508 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>準備中 — 黎明戦</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;background:#06020e;overflow:hidden;}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>チーム一覧 | 黎明戦</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #06020e;
+      --gold:     rgba(200,168,75,1);
+      --gold-dim: rgba(200,168,75,0.35);
+      --gold-glow:rgba(200,168,75,0.12);
+      --dawn:     #e8832a;
+      --dawn-dim: rgba(232,131,42,0.18);
+      --text:     #e8e0d0;
+      --text-dim: #a09880;
+      --panel:    rgba(255,255,255,0.03);
+      --panel-hover: rgba(200,168,75,0.07);
+    }
 
-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-#content{
-  position:relative;z-index:10;
-  text-align:center;
-  animation:fadeUp 1.5s 0.3s cubic-bezier(.16,1,.3,1) both;
-}
-#logo-wrap{margin-bottom:32px;}
-#logo-wrap img{
-  height:60px;
-  filter:drop-shadow(0 0 12px rgba(255,160,60,0.5));
-}
-#label{
-  font-family:'Hiragino Kaku Gothic ProN',sans-serif;
-  font-size:11px;letter-spacing:0.35em;
-  color:rgba(200,168,75,0.5);
-  text-transform:uppercase;
-  margin-bottom:24px;
-}
-#title{
-  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
-  font-size:32px;letter-spacing:0.25em;
-  color:#fff;
-  text-shadow:0 0 30px rgba(255,180,80,0.3);
-  margin-bottom:12px;
-}
-#sub{
-  font-size:13px;letter-spacing:0.15em;
-  color:rgba(232,224,208,0.45);
-  margin-bottom:40px;
-  line-height:1.8;
-}
-#line{
-  width:80px;height:1px;margin:0 auto 40px;
-  background:linear-gradient(90deg,transparent,rgba(200,168,75,0.5),transparent);
-}
-#back-btn{
-  display:inline-block;
-  font-family:'Hiragino Kaku Gothic ProN',sans-serif;
-  font-size:11px;letter-spacing:0.25em;
-  color:rgba(200,168,75,0.8);
-  border:1px solid rgba(200,168,75,0.35);
-  padding:10px 28px;border-radius:2px;
-  text-decoration:none;
-  transition:all 0.25s;
-}
-#back-btn:hover{
-  background:rgba(200,168,75,0.1);
-  color:rgba(200,168,75,1);
-  border-color:rgba(200,168,75,0.7);
-}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Serif JP', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px);}
-  to{opacity:1;transform:translateY(0);}
-}
-</style>
+    /* ── 星背景 ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 40% at 50% 100%, rgba(232,131,42,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 120% 60% at 50% 110%, rgba(200,168,75,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ── 共通ヘッダ ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 56px;
+      display: flex; align-items: center; gap: 16px;
+      padding: 0 24px;
+      background: rgba(6,2,14,0.88);
+      border-bottom: 1px solid var(--gold-dim);
+      backdrop-filter: blur(12px);
+    }
+    .back-btn {
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      padding: 6px 14px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 2px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .back-btn:hover { background: var(--gold-glow); border-color: var(--gold); }
+    header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      opacity: 0.9;
+    }
+
+    /* ── メインラッパー ── */
+    main {
+      position: relative; z-index: 1;
+      padding: 80px 0 80px;
+      min-height: 100vh;
+    }
+
+    /* ── ビュー共通 ── */
+    .view {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+      pointer-events: none;
+      position: absolute; top: 0; left: 0; right: 0;
+    }
+    .view.active {
+      opacity: 1; transform: none;
+      pointer-events: auto;
+      position: relative;
+    }
+
+    /* ── セクションタイトル ── */
+    .section-title {
+      text-align: center;
+      margin-bottom: 48px;
+      padding-top: 16px;
+    }
+    .section-title .en {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(22px, 4vw, 36px);
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+    }
+    .section-title .ja {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+      margin-top: 6px;
+    }
+    .title-line {
+      width: 80px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 14px auto 0;
+    }
+
+    /* ── チームグリッド ── */
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 24px;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .team-card {
+      background: var(--panel);
+      border: 1px solid var(--gold-dim);
+      border-radius: 4px;
+      padding: 32px 20px 28px;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .team-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 120%, rgba(200,168,75,0.1), transparent 70%);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .team-card:hover {
+      background: var(--panel-hover);
+      border-color: var(--gold);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(200,168,75,0.12), 0 0 0 1px rgba(200,168,75,0.18);
+    }
+    .team-card:hover::before { opacity: 1; }
+
+    .team-logo-wrap {
+      width: 96px; height: 96px;
+      margin: 0 auto 20px;
+      position: relative;
+    }
+    .team-logo-wrap::after {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-dim);
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .team-card:hover .team-logo-wrap::after {
+      border-color: var(--gold);
+      box-shadow: 0 0 12px rgba(200,168,75,0.3);
+    }
+    .team-logo {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+    .team-logo-placeholder {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: rgba(200,168,75,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      color: var(--gold);
+      letter-spacing: 0;
+    }
+    .team-name {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .team-member-count {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+    }
+    .team-arrow {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      transform: translateY(4px);
+    }
+    .team-card:hover .team-arrow { opacity: 1; transform: none; }
+
+    /* ── メンバービュー ── */
+    .members-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .back-to-teams {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--gold);
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      margin-bottom: 36px;
+      padding: 8px 0;
+      border: none; background: none;
+      transition: opacity 0.2s;
+    }
+    .back-to-teams:hover { opacity: 0.7; }
+    .back-to-teams::before { content: '←'; font-family: sans-serif; }
+
+    .team-detail-header {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-bottom: 40px;
+      padding: 28px 32px;
+      background: var(--panel);
+      border: 1px solid var(--gold-dim);
+      border-radius: 4px;
+    }
+    .team-detail-logo-wrap {
+      flex-shrink: 0;
+      width: 88px; height: 88px;
+      position: relative;
+    }
+    .team-detail-logo-wrap::after {
+      content: '';
+      position: absolute; inset: -3px;
+      border-radius: 50%;
+      border: 1px solid var(--gold);
+      box-shadow: 0 0 16px rgba(200,168,75,0.2);
+    }
+    .team-detail-logo {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .team-detail-info .team-detail-name {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .team-detail-info .team-detail-count {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+    }
+
+    /* メンバーリスト */
+    .members-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .member-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 18px 24px;
+      background: var(--panel);
+      border: 1px solid transparent;
+      border-radius: 3px;
+      transition: background 0.2s, border-color 0.2s;
+      opacity: 0;
+      transform: translateX(-12px);
+      animation: slideIn 0.4s ease forwards;
+    }
+    .member-row:hover {
+      background: var(--panel-hover);
+      border-color: var(--gold-dim);
+    }
+    @keyframes slideIn {
+      to { opacity: 1; transform: none; }
+    }
+    .member-number {
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      color: var(--gold);
+      opacity: 0.6;
+      width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .member-divider {
+      width: 1px; height: 24px;
+      background: var(--gold-dim);
+      flex-shrink: 0;
+    }
+    .member-name {
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+
+    /* ── ローディング ── */
+    .loading {
+      text-align: center;
+      padding: 80px 0;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+      font-family: 'Cinzel', serif;
+    }
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      margin-left: 12px;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* ── フッター装飾ライン ── */
+    body::after {
+      content: '';
+      position: fixed; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg,
+        transparent 0%, var(--dawn) 20%, var(--gold) 50%, var(--dawn) 80%, transparent 100%);
+      opacity: 0.6; z-index: 50; pointer-events: none;
+    }
+
+    /* ── レスポンシブ ── */
+    @media (max-width: 600px) {
+      .teams-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 0 16px; }
+      .team-detail-header { gap: 16px; padding: 20px; }
+      .member-row { padding: 14px 16px; }
+      .members-container { padding: 0 16px; }
+    }
+  </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div id="content">
-  <div id="logo-wrap">
-    <img src="assets/images/文字のみ.png" alt="黎明戦"
-         onerror="this.style.display='none'">
+
+<header>
+  <a href="index.html" class="back-btn">← TOP</a>
+  <h1>REIMEI-SEN</h1>
+</header>
+
+<main>
+  <!-- チーム一覧ビュー -->
+  <div id="view-teams" class="view active">
+    <div class="section-title">
+      <span class="en">TEAMS</span>
+      <span class="ja">チーム一覧</span>
+      <div class="title-line"></div>
+    </div>
+    <div id="teams-grid" class="teams-grid">
+      <div class="loading">LOADING</div>
+    </div>
   </div>
-  <div id="label">Coming Soon</div>
-  <div id="title">現在準備中です</div>
-  <div id="sub">このコンテンツは近日公開予定です。<br>開幕をお待ちください。</div>
-  <div id="line"></div>
-  <a href="index.html" id="back-btn">← トップへ戻る</a>
-</div>
+
+  <!-- メンバービュー -->
+  <div id="view-members" class="view">
+    <div class="members-container">
+      <button class="back-to-teams" id="back-btn"> チーム一覧に戻る</button>
+      <div id="team-detail-header" class="team-detail-header"></div>
+      <div id="members-list" class="members-list"></div>
+    </div>
+  </div>
+</main>
 
 <script>
-/* 星空背景 */
-const cv = document.getElementById('c');
-const ctx = cv.getContext('2d');
-let W, H, stars = [];
+  // ── データ読み込み ──
+  let teamsData = [];
+  let playersData = [];
 
-function init() {
-  W = cv.width  = innerWidth;
-  H = cv.height = innerHeight;
-  stars = Array.from({length:120}, () => ({
-    x: Math.random()*W, y: Math.random()*H,
-    r: Math.random()*1.2+0.2,
-    a: Math.random()*0.7+0.2,
-    sp: Math.random()*0.003+0.001,
-    ph: Math.random()*Math.PI*2,
-  }));
-}
+  async function loadData() {
+    const [teamRes, playerRes] = await Promise.all([
+      fetch('data/team.json'),
+      fetch('data/players.json')
+    ]);
+    teamsData  = await teamRes.json();
+    playersData = await playerRes.json();
+    renderTeams();
+  }
 
-function draw(t) {
-  requestAnimationFrame(draw);
-  ctx.clearRect(0,0,W,H);
-  /* 背景グラデーション */
-  const grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,'#000008');
-  grad.addColorStop(0.6,'#050012');
-  grad.addColorStop(1,'#0d0203');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,W,H);
-  /* 星 */
-  stars.forEach(s => {
-    const a = s.a * (0.6 + Math.sin(t*0.001*s.sp*1000 + s.ph)*0.4);
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(255,240,220,${a})`;
-    ctx.fill();
+  // ── チーム一覧描画 ──
+  function renderTeams() {
+    const grid = document.getElementById('teams-grid');
+    grid.innerHTML = '';
+
+    teamsData.forEach((team, i) => {
+      const members = playersData.filter(p => String(p.team) === String(team.id));
+      const card = document.createElement('div');
+      card.className = 'team-card';
+      card.style.animationDelay = `${i * 0.07}s`;
+      card.style.opacity = '0';
+      card.style.animation = `slideInCard 0.5s ease ${i * 0.07}s forwards`;
+
+      const logoHtml = team.image_url
+        ? `<img class="team-logo" src="${team.image_url}" alt="${team.name}" onerror="this.outerHTML='<div class=team-logo-placeholder>${team.name.charAt(0)}</div>'">`
+        : `<div class="team-logo-placeholder">${team.name.charAt(0)}</div>`;
+
+      card.innerHTML = `
+        <div class="team-logo-wrap">${logoHtml}</div>
+        <div class="team-name">${team.name}</div>
+        <div class="team-member-count">${members.length} MEMBERS</div>
+        <span class="team-arrow">DETAIL →</span>
+      `;
+      card.addEventListener('click', () => showMembers(team));
+      grid.appendChild(card);
+    });
+
+    // カードのスライインアニメ用keyframes（動的追加）
+    if (!document.getElementById('card-anim-style')) {
+      const s = document.createElement('style');
+      s.id = 'card-anim-style';
+      s.textContent = `@keyframes slideInCard { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }`;
+      document.head.appendChild(s);
+    }
+  }
+
+  // ── メンバー一覧描画 ──
+  function showMembers(team) {
+    const members = playersData.filter(p => String(p.team) === String(team.id));
+
+    // ヘッダ
+    const logoHtml = team.image_url
+      ? `<img class="team-detail-logo" src="${team.image_url}" alt="${team.name}" onerror="this.outerHTML='<div class=team-logo-placeholder style=width:88px;height:88px;font-size:24px>${team.name.charAt(0)}</div>'">`
+      : `<div class="team-logo-placeholder" style="width:88px;height:88px;font-size:24px;">${team.name.charAt(0)}</div>`;
+
+    document.getElementById('team-detail-header').innerHTML = `
+      <div class="team-detail-logo-wrap">${logoHtml}</div>
+      <div class="team-detail-info">
+        <div class="team-detail-name">${team.name}</div>
+        <div class="team-detail-count">${members.length} MEMBERS</div>
+      </div>
+    `;
+
+    // メンバーリスト
+    const list = document.getElementById('members-list');
+    list.innerHTML = '';
+    members.forEach((player, i) => {
+      const row = document.createElement('div');
+      row.className = 'member-row';
+      row.style.animationDelay = `${i * 0.06}s`;
+      row.innerHTML = `
+        <span class="member-number">${String(i + 1).padStart(2, '0')}</span>
+        <div class="member-divider"></div>
+        <span class="member-name">${player.player}</span>
+      `;
+      list.appendChild(row);
+    });
+
+    switchView('members');
+  }
+
+  // ── ビュー切り替え ──
+  function switchView(to) {
+    const from = to === 'members' ? 'view-teams' : 'view-members';
+    const toEl = to === 'members' ? 'view-members' : 'view-teams';
+
+    document.getElementById(from).classList.remove('active');
+    setTimeout(() => {
+      document.getElementById(toEl).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 50);
+  }
+
+  // ── 戻るボタン ──
+  document.getElementById('back-btn').addEventListener('click', () => {
+    switchView('teams');
   });
-  /* 地平線グロウ */
-  const gy = H * 0.72;
-  const hg = ctx.createLinearGradient(0, gy-30, 0, gy+30);
-  hg.addColorStop(0,'transparent');
-  hg.addColorStop(0.5,'rgba(200,80,10,0.15)');
-  hg.addColorStop(1,'transparent');
-  ctx.fillStyle = hg;
-  ctx.fillRect(0, gy-30, W, 60);
-}
 
-init();
-requestAnimationFrame(draw);
-window.addEventListener('resize', init);
-window.addEventListener('pageshow', () => {
-  document.body.style.transition = 'opacity 0.4s';
-  document.body.style.opacity = '1';
-});
+  // ── フェードイン（ブラウザバック対応） ──
+  window.addEventListener('pageshow', () => {
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.4s ease';
+    requestAnimationFrame(() => { document.body.style.opacity = '1'; });
+  });
+
+  // 初期化
+  loadData();
 </script>
 </body>
 </html>
