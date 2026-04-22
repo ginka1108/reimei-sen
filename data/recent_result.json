@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "position": "upleft1",
+    "team": "すべてを超えていけ",
+    "player": "比嘉秀仁",
+    "cardname": "天卓",
+    "rank": 1,
+    "score": 55
+  },
+  {
+    "id": 2,
+    "position": "upright1",
+    "team": "デジタルクルーズ",
+    "player": "リツミさん",
+    "cardname": "天卓",
+    "rank": 2,
+    "score": 10.5
+  },
+  {
+    "id": 3,
+    "position": "bottomleft1",
+    "team": "総捲り",
+    "player": "細谷拓真",
+    "cardname": "天卓",
+    "rank": 3,
+    "score": -13
+  },
+  {
+    "id": 4,
+    "position": "bottomright1",
+    "team": "旭光一閃",
+    "player": "せどなりあん",
+    "cardname": "天卓",
+    "rank": 4,
+    "score": -52.5
+  },
+  {
+    "id": 5,
+    "position": "upleft2",
+    "team": "水天一碧",
+    "player": "めあともえ",
+    "cardname": "元卓",
+    "rank": 1,
+    "score": 61.2
+  },
+  {
+    "id": 6,
+    "position": "upright2",
+    "team": "すべてを超えていけ",
+    "player": "メカZ",
+    "cardname": "元卓",
+    "rank": 2,
+    "score": 3.3
+  },
+  {
+    "id": 7,
+    "position": "bottomleft2",
+    "team": "旭光一閃",
+    "player": "銀貨先生",
+    "cardname": "元卓",
+    "rank": 3,
+    "score": -14.7
+  },
+  {
+    "id": 8,
+    "position": "bottomright2",
+    "team": "総捲り",
+    "player": "泥目楽堕",
+    "cardname": "元卓",
+    "rank": 4,
+    "score": -49.8
+  }
+]
