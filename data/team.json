@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "デジタルクルーズ",
+    "image_id": 3,
+    "image_url": "https://drive.google.com/thumbnail?id=1l9zUJMXuAW9Td7Bos3P7AoeHMDY9vq9r&sz=w200"
+  },
+  {
+    "id": 2,
+    "name": "Akatsuki",
+    "image_id": 6,
+    "image_url": "https://drive.google.com/thumbnail?id=1D5hZeGdRxczVWPLMxQ8RRoruvWDrB25r&sz=w200"
+  },
+  {
+    "id": 3,
+    "name": "抜天ステージ",
+    "image_id": 5,
+    "image_url": "https://drive.google.com/thumbnail?id=12_-A7jX9zQgs_VRk_Qg9bTxqxBQ_e6Yz&sz=w200"
+  },
+  {
+    "id": 4,
+    "name": "すべてを超えていけ",
+    "image_id": 2,
+    "image_url": "https://drive.google.com/thumbnail?id=1j3eVVzExjXLfdnIsE7NKBi6uYPkk0ZjK&sz=w200"
+  },
+  {
+    "id": 5,
+    "name": "旭光一閃",
+    "image_id": 4,
+    "image_url": "https://drive.google.com/thumbnail?id=1doxCKpNpiOhjsGE6RHy1SroftbhBcFVg&sz=w200"
+  }
+]
