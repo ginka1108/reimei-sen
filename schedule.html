@@ -239,7 +239,6 @@ body::after{
 <div id="panel-season" class="panel"></div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyHkGKzOklGxu3YVmojYO1WvylC0YxWH0iAldeGGkfN7iLW_FYSHkhFSWx306tyNvZY/exec';
 
 /* ── タブ切り替え ── */
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -253,12 +252,11 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
 /* ── データ取得 ── */
 async function fetchSheet(sheet) {
-  const res = await fetch(`${GAS_URL}?sheet=${sheet}`, {redirect:'follow'});
+  const res  = await fetch(`data/${sheet}.json`);
   const json = await res.json();
   if (json.error) throw new Error(json.error);
   return Array.isArray(json) ? json : [];
 }
-
 async function loadAll() {
   setStatus('読み込み中...');
   try {
