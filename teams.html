@@ -313,12 +313,63 @@
       background: var(--gold-dim);
       flex-shrink: 0;
     }
+
+    /* アイコン */
+    .member-avatar {
+      flex-shrink: 0;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid var(--gold-dim);
+      transition: border-color 0.2s;
+    }
+    .member-row:hover .member-avatar { border-color: var(--gold); }
+    .member-avatar-placeholder {
+      flex-shrink: 0;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(200,168,75,0.08);
+      border: 1px solid var(--gold-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      color: var(--text-dim);
+    }
+
+    /* 名前＋段位のブロック */
+    .member-info {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
     .member-name {
       font-size: 15px;
       font-weight: 400;
       letter-spacing: 0.08em;
       color: var(--text);
+      white-space: nowrap;
     }
+
+    /* 段位バッジ */
+    .grade-badge {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      padding: 2px 8px;
+      border-radius: 2px;
+      border: 1px solid currentColor;
+      white-space: nowrap;
+      opacity: 0.85;
+    }
+    .grade-tenhou-low  { color: #888; border-color: #555; background: rgba(136,136,136,0.08); }
+    .grade-tenhou-high { color: #ddd; border-color: #aaa; background: rgba(220,220,220,0.08); }
+    .grade-tenhou-top  { color: var(--gold); border-color: var(--gold); background: rgba(200,168,75,0.1); }
+    .grade-janketsu    { color: #d4b840; border-color: #a08820; background: rgba(212,184,64,0.1); }
+    .grade-jango       { color: #e8832a; border-color: #c06018; background: rgba(232,131,42,0.1); }
+    .grade-jansei      { color: #e05050; border-color: #b02828; background: rgba(224,80,80,0.1); }
+    .grade-konten      { color: #60aaff; border-color: #2060cc; background: rgba(96,170,255,0.1); }
 
     /* ── ローディング ── */
     .loading {
@@ -442,6 +493,29 @@
     }
   }
 
+  // ── 段位バッジ判定 ──
+  function gradeBadgeHtml(grade) {
+    if (!grade) return '';
+    const g = grade.trim();
+    let cls = '';
+    if (g === '天鳳位') {
+      cls = 'grade-tenhou-top';
+    } else if (/^魂天/.test(g)) {
+      cls = 'grade-konten';
+    } else if (/^雀聖/.test(g)) {
+      cls = 'grade-jansei';
+    } else if (/^雀豪/.test(g)) {
+      cls = 'grade-jango';
+    } else if (/^雀傑/.test(g)) {
+      cls = 'grade-janketsu';
+    } else if (/^[七八九十]段$/.test(g)) {
+      cls = 'grade-tenhou-high';
+    } else {
+      cls = 'grade-tenhou-low';
+    }
+    return `<span class="grade-badge ${cls}">${g}</span>`;
+  }
+
   // ── メンバー一覧描画 ──
   function showMembers(team) {
     const members = playersData.filter(p => String(p.team) === String(team.id));
@@ -466,10 +540,18 @@
       const row = document.createElement('div');
       row.className = 'member-row';
       row.style.animationDelay = `${i * 0.06}s`;
+      const avatarHtml = player.image_url
+        ? `<img class="member-avatar" src="${player.image_url}" alt="${player.player}" onerror="this.outerHTML='<div class=member-avatar-placeholder>👤</div>'">`
+        : `<div class="member-avatar-placeholder">👤</div>`;
+
       row.innerHTML = `
         <span class="member-number">${String(i + 1).padStart(2, '0')}</span>
         <div class="member-divider"></div>
-        <span class="member-name">${player.player}</span>
+        ${avatarHtml}
+        <div class="member-info">
+          <span class="member-name">${player.player}</span>
+          ${gradeBadgeHtml(player.grade)}
+        </div>
       `;
       list.appendChild(row);
     });
