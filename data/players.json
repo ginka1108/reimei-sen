@@ -3,7 +3,7 @@
     "id": 1,
     "team": 4,
     "player": "比嘉秀仁",
-    "grade": "天鳳：九段",
+    "grade": "九段",
     "image_id": null,
     "image_url": null
   },
@@ -11,7 +11,7 @@
     "id": 2,
     "team": 1,
     "player": "リツミさん",
-    "grade": "天鳳：十段",
+    "grade": "十段",
     "image_id": null,
     "image_url": null
   },
@@ -19,7 +19,7 @@
     "id": 3,
     "team": 5,
     "player": "せどなりあん",
-    "grade": "雀魂：雀魂1",
+    "grade": "雀聖1",
     "image_id": null,
     "image_url": null
   },
@@ -27,7 +27,7 @@
     "id": 4,
     "team": 2,
     "player": "えぞひぐま",
-    "grade": "雀魂：魂天",
+    "grade": "魂天",
     "image_id": null,
     "image_url": null
   },
@@ -35,7 +35,7 @@
     "id": 5,
     "team": 3,
     "player": "民芸",
-    "grade": "雀魂：魂天",
+    "grade": "魂天",
     "image_id": null,
     "image_url": null
   }
