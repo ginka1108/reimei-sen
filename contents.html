@@ -299,16 +299,10 @@ let activeType = 'all';
 async function loadData() {
   setStatus('読み込み中...');
   try {
-    if (USE_MOCK) {
-      await new Promise(r => setTimeout(r, 600)); /* 疑似遅延 */
-      allItems = MOCK;
-      setStatus('モックデータを表示中 — GAS_URL設定後にUSE_MOCK=falseへ変更してください');
-    } else {
-const res = await fetch('data/contents.json');
+    const res  = await fetch('data/contents.json');
 const json = await res.json();
 allItems = Array.isArray(json) ? json : [];
-      setStatus(`${allItems.length}件`);
-    }
+setStatus(`${allItems.length}件`);
   } catch(e) {
     setStatus('読み込みエラー: ' + e.message);
     allItems = [];
