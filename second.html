@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>第二期募集 | 黎明戦</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #06020e;
+      --gold:      rgba(200,168,75,1);
+      --gold-dim:  rgba(200,168,75,0.35);
+      --gold-glow: rgba(200,168,75,0.12);
+      --dawn:      #e8832a;
+      --text:      #e8e0d0;
+      --text-dim:  #a09880;
+      --panel:     rgba(255,255,255,0.03);
+      --panel-hover: rgba(200,168,75,0.07);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Serif JP', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* 星背景グロウ */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 40% at 50% 100%, rgba(232,131,42,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 120% 60% at 50% 110%, rgba(200,168,75,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* フッター装飾ライン */
+    body::after {
+      content: '';
+      position: fixed; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg,
+        transparent 0%, var(--dawn) 20%, var(--gold) 50%, var(--dawn) 80%, transparent 100%);
+      opacity: 0.6; z-index: 50; pointer-events: none;
+    }
+
+    main {
+      position: relative; z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+
+    /* ── ページタイトル ── */
+    .page-title {
+      text-align: center;
+      padding: 40px 0 40px;
+    }
+    .page-title .en {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(20px, 4vw, 32px);
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+    }
+    .page-title .ja {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+      margin-top: 8px;
+    }
+    .title-line {
+      width: 80px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 16px auto 0;
+    }
+
+    /* ── タブ ── */
+    .tab-nav {
+      display: flex;
+      border-bottom: 1px solid var(--gold-dim);
+      margin-bottom: 36px;
+      gap: 0;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 14px 8px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-dim);
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      margin-bottom: -1px;
+      text-align: center;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* ── タブコンテンツ ── */
+    .tab-content { display: none; }
+    .tab-content.active {
+      display: block;
+      animation: fadeUp 0.35s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ── ローディング ── */
+    .loading {
+      text-align: center;
+      padding: 60px 0;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: var(--text-dim);
+      font-family: 'Cinzel', serif;
+    }
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      margin-left: 10px;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50%       { opacity: 1;   transform: scale(1.2); }
+    }
+
+    /* ── お知らせリスト ── */
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .news-item {
+      background: var(--panel);
+      border: 1px solid transparent;
+      border-radius: 3px;
+      padding: 22px 24px;
+      transition: background 0.2s, border-color 0.2s;
+      opacity: 0;
+      animation: fadeUp 0.4s ease forwards;
+    }
+    .news-item:hover {
+      background: var(--panel-hover);
+      border-color: var(--gold-dim);
+    }
+
+    .news-topic {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .news-topic a {
+      color: var(--gold);
+      text-decoration: none;
+      transition: opacity 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .news-topic a::after {
+      content: '↗';
+      font-size: 11px;
+      opacity: 0.7;
+    }
+    .news-topic a:hover { opacity: 0.75; }
+
+    .news-body {
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-dim);
+      white-space: pre-wrap;
+    }
+
+    /* bodyがnullの場合は非表示 */
+    .news-body:empty { display: none; }
+
+    /* ── 応募者一覧 ── */
+    .entry-header {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: var(--text-dim);
+      font-family: 'Cinzel', serif;
+      margin-bottom: 20px;
+    }
+    .entry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 2px;
+    }
+    .entry-item {
+      padding: 12px 18px;
+      background: var(--panel);
+      border-radius: 2px;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeUp 0.4s ease forwards;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .entry-item::before {
+      content: '';
+      display: inline-block;
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.5;
+      flex-shrink: 0;
+    }
+
+    /* 空状態 */
+    .empty-state {
+      text-align: center;
+      padding: 60px 0;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 600px) {
+      main { padding: 40px 16px 80px; }
+      .tab-btn { font-size: 12px; padding: 12px 4px; }
+      .news-item { padding: 18px 16px; }
+      .entry-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<main>
+  <div class="page-title">
+    <span class="en">2ND SEASON</span>
+    <span class="ja">第二期募集</span>
+    <div class="title-line"></div>
+  </div>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="news">二期開催に関するお知らせ</button>
+    <button class="tab-btn"        data-tab="entry">応募者一覧</button>
+  </nav>
+
+  <!-- お知らせ -->
+  <div id="tab-news" class="tab-content active">
+    <div class="loading">LOADING</div>
+  </div>
+
+  <!-- 応募者一覧 -->
+  <div id="tab-entry" class="tab-content">
+    <div class="loading">LOADING</div>
+  </div>
+</main>
+
+<script>
+  // ── タブ切り替え ──
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ── お知らせ描画 ──
+  function renderNews(data) {
+    const el = document.getElementById('tab-news');
+    if (!data || data.length === 0) {
+      el.innerHTML = '<div class="empty-state">現在お知らせはありません</div>';
+      return;
+    }
+    el.innerHTML = '<div class="news-list"></div>';
+    const list = el.querySelector('.news-list');
+    data.forEach((item, i) => {
+      const div = document.createElement('div');
+      div.className = 'news-item';
+      div.style.animationDelay = `${i * 0.07}s`;
+
+      const topicHtml = item.url
+        ? `<div class="news-topic"><a href="${item.url}" target="_blank" rel="noopener">${item.topic}</a></div>`
+        : `<div class="news-topic">${item.topic}</div>`;
+
+      div.innerHTML = `
+        ${topicHtml}
+        <div class="news-body">${item.body || ''}</div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  // ── 応募者一覧描画 ──
+  function renderEntry(data) {
+    const el = document.getElementById('tab-entry');
+    if (!data || data.length === 0) {
+      el.innerHTML = '<div class="empty-state">現在応募者はいません</div>';
+      return;
+    }
+    el.innerHTML = `
+      <div class="entry-header">${data.length} ENTRIES</div>
+      <div class="entry-grid"></div>
+    `;
+    const grid = el.querySelector('.entry-grid');
+    data.forEach((item, i) => {
+      const div = document.createElement('div');
+      div.className = 'entry-item';
+      div.style.animationDelay = `${i * 0.04}s`;
+      div.textContent = item.name;
+      grid.appendChild(div);
+    });
+  }
+
+  // ── データ読み込み ──
+  async function loadData() {
+    const [newsRes, entryRes] = await Promise.all([
+      fetch('data/about2ndseason.json'),
+      fetch('data/entrylist.json'),
+    ]);
+    renderNews(await newsRes.json());
+    renderEntry(await entryRes.json());
+  }
+
+  // ── フェードイン ──
+  window.addEventListener('pageshow', () => {
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.4s ease';
+    requestAnimationFrame(() => { document.body.style.opacity = '1'; });
+  });
+
+  loadData();
+</script>
+</body>
+</html>
