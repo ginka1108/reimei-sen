@@ -10,5 +10,47 @@
     "name": "めあともえ",
     "image_id": 8,
     "image_url": "https://drive.google.com/thumbnail?id=1ZttSBGmsj1Hn0zEcaImdOqQ6eS5Luk66&sz=w200"
+  },
+  {
+    "id": 3,
+    "name": "銀貨先生",
+    "image_id": null,
+    "image_url": null
+  },
+  {
+    "id": 4,
+    "name": "東雲ハヤテ",
+    "image_id": null,
+    "image_url": null
+  },
+  {
+    "id": 5,
+    "name": "どろめらくだ",
+    "image_id": null,
+    "image_url": null
+  },
+  {
+    "id": 6,
+    "name": "希水",
+    "image_id": null,
+    "image_url": null
+  },
+  {
+    "id": 7,
+    "name": "はじけない源内",
+    "image_id": null,
+    "image_url": null
+  },
+  {
+    "id": 8,
+    "name": "リコ",
+    "image_id": null,
+    "image_url": null
+  },
+  {
+    "id": 9,
+    "name": "りな",
+    "image_id": null,
+    "image_url": null
   }
 ]
