@@ -366,11 +366,13 @@ function renderCell(name, imgUrl) {
       <div class="match-cell-logo-placeholder">？</div>
     </div>`;
   }
-  const logo = imgUrl
-    ? `<img class="match-cell-logo" src="${imgUrl}" alt="${name}" loading="lazy">`
-    : `<div class="match-cell-logo-placeholder">${name.slice(0,1)}</div>`;
+  if (imgUrl) {
+    return `<div class="match-cell">
+      <img class="match-cell-logo" src="${imgUrl}" alt="${name}" loading="lazy">
+    </div>`;
+  }
   return `<div class="match-cell">
-    ${logo}
+    <div class="match-cell-logo-placeholder">${name.slice(0,1)}</div>
     <div class="match-cell-name">${name}</div>
   </div>`;
 }
