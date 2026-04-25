@@ -229,7 +229,7 @@ body::after{
 </section>
 
 <div id="tab-bar">
-  <button class="tab-btn active" data-tab="before">開幕前</button>
+  <button class="tab-btn active" data-tab="before">全体スケジュール</button>
   <button class="tab-btn"        data-tab="season">シーズン予定</button>
 </div>
 
@@ -342,13 +342,8 @@ function renderSeason(data) {
       </div>
       <div class="match-cards">
         <div class="match-card">
-          <div class="match-card-header">天卓</div>
+          <div class="match-card-header">天卓／元卓</div>
           ${renderMatchGrid(table1)}
-        </div>
-        <div class="table-divider">元卓</div>
-        <div class="match-card">
-          <div class="match-card-header">元卓</div>
-          ${renderMatchGrid(table2)}
         </div>
       </div>
     </div>`;
