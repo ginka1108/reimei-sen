@@ -4,71 +4,71 @@
     "team": 4,
     "player": "比嘉秀仁",
     "grade": "九段",
-    "image_id": null,
-    "image_url": null
+    "image_id": 10,
+    "image_url": "https://drive.google.com/thumbnail?id=1MnpHk4XGSd1EVMXjQ-xhU5D1rb6dY2NM&sz=w200"
   },
   {
     "id": 2,
     "team": 1,
     "player": "リツミさん",
     "grade": "十段",
-    "image_id": null,
-    "image_url": null
+    "image_id": 11,
+    "image_url": "https://drive.google.com/thumbnail?id=1r264MPoqYRl4k4sFGCwgAAJLFx4EdI-G&sz=w200"
   },
   {
     "id": 3,
     "team": 5,
     "player": "せどなりあん",
     "grade": "十段",
-    "image_id": null,
-    "image_url": null
+    "image_id": 9,
+    "image_url": "https://drive.google.com/thumbnail?id=1xIBf2osr7pnCgkOXjt36L0_utgpbBQOG&sz=w200"
   },
   {
     "id": 4,
     "team": 2,
     "player": "えぞひぐま",
     "grade": "魂天",
-    "image_id": null,
-    "image_url": null
+    "image_id": 12,
+    "image_url": "https://drive.google.com/thumbnail?id=15qKYaow_jNPJt5eTrmEVRNLBLy-V9QV9&sz=w200"
   },
   {
     "id": 5,
     "team": 3,
     "player": "民芸",
     "grade": "魂天",
-    "image_id": null,
-    "image_url": null
+    "image_id": 13,
+    "image_url": "https://drive.google.com/thumbnail?id=1aFkG-EJ_EFrXev8bZeuyqI0hISOdjqPy&sz=w200"
   },
   {
     "id": 6,
     "team": 5,
     "player": "ようへーX",
     "grade": "十段",
-    "image_id": null,
-    "image_url": null
+    "image_id": 14,
+    "image_url": "https://drive.google.com/thumbnail?id=1Vb7Lclvc_fSZkCFADB_quxL23sTOam5s&sz=w200"
   },
   {
     "id": 7,
     "team": 5,
     "player": "黒羽織",
     "grade": "十段",
-    "image_id": null,
-    "image_url": null
+    "image_id": 17,
+    "image_url": "https://drive.google.com/thumbnail?id=1q7lbiYUDcHFowpxkdxAnsDRDH4Imz3y0&sz=w200"
   },
   {
     "id": 8,
     "team": 5,
     "player": "あまあん",
     "grade": "天鳳位",
-    "image_id": null,
-    "image_url": null
+    "image_id": 16,
+    "image_url": "https://drive.google.com/thumbnail?id=1_IhnB0ZEekVMFzfqiYt3vjHpYnXnsi7x&sz=w200"
   },
   {
     "id": 9,
     "team": 5,
     "player": "げんぶ",
     "grade": "六段",
-    "image_id": null,
-    "image_url": null
+    "image_id": 15,
+    "image_url": "https://drive.google.com/thumbnail?id=1SElMCQsaPQcY6w0-ogGU5TsH8KEFnYVQ&sz=w200"
   }
 ]
