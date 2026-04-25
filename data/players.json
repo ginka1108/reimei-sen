@@ -19,7 +19,7 @@
     "id": 3,
     "team": 5,
     "player": "せどなりあん",
-    "grade": "雀聖1",
+    "grade": "十段",
     "image_id": null,
     "image_url": null
   },
@@ -36,6 +36,38 @@
     "team": 3,
     "player": "民芸",
     "grade": "魂天",
+    "image_id": null,
+    "image_url": null
+  },
+  {
+    "id": 6,
+    "team": 5,
+    "player": "ようへーX",
+    "grade": "十段",
+    "image_id": null,
+    "image_url": null
+  },
+  {
+    "id": 7,
+    "team": 5,
+    "player": "黒羽織",
+    "grade": "十段",
+    "image_id": null,
+    "image_url": null
+  },
+  {
+    "id": 8,
+    "team": 5,
+    "player": "あまあん",
+    "grade": "天鳳位",
+    "image_id": null,
+    "image_url": null
+  },
+  {
+    "id": 9,
+    "team": 5,
+    "player": "げんぶ",
+    "grade": "六段",
     "image_id": null,
     "image_url": null
   }
