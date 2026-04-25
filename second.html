@@ -241,6 +241,37 @@
       color: var(--text-dim);
     }
 
+    /* ── ヘッダー ── */
+    #site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 56px;
+      background: rgba(6,2,14,0.88);
+      border-bottom: 1px solid var(--gold-dim);
+      backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+    }
+    #site-header .site-title {
+      font-family: 'Cinzel', serif;
+      font-size: 14px; font-weight: 400;
+      letter-spacing: 0.25em;
+      color: var(--gold); opacity: 0.8;
+      text-decoration: none;
+    }
+    #site-header .back-btn {
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 11px; letter-spacing: 0.12em;
+      text-decoration: none;
+      padding: 5px 14px;
+      border: 1px solid var(--gold-dim); border-radius: 2px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    #site-header .back-btn:hover {
+      background: rgba(200,168,75,0.1);
+      border-color: var(--gold);
+    }
+
     @media (max-width: 600px) {
       main { padding: 40px 16px 80px; }
       .tab-btn { font-size: 12px; padding: 12px 4px; }
@@ -251,7 +282,12 @@
 </head>
 <body>
 
-<main>
+<header id="site-header">
+  <a href="index.html" class="site-title">REIMEI-SEN</a>
+  <a href="index.html" class="back-btn">← トップへ</a>
+</header>
+
+<main style="padding-top: 80px;">
   <div class="page-title">
     <span class="en">黎明戦 2ND SEASON</span>
     <span class="ja">第二期募集</span>
