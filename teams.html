@@ -158,6 +158,7 @@
       width: 96px; height: 96px;
       margin: 0 auto 20px;
       position: relative;
+      display: flex; align-items: center; justify-content: center;
     }
     .team-logo-wrap::after {
       content: '';
@@ -165,6 +166,7 @@
       border-radius: 50%;
       border: 1px solid var(--gold-dim);
       transition: border-color 0.25s, box-shadow 0.25s;
+      pointer-events: none;
     }
     .team-card:hover .team-logo-wrap::after {
       border-color: var(--gold);
@@ -172,8 +174,8 @@
     }
     .team-logo {
       width: 96px; height: 96px;
-      border-radius: 50%;
-      object-fit: cover;
+      border-radius: 0;
+      object-fit: contain;
       display: block;
     }
     .team-logo-placeholder {
@@ -246,6 +248,7 @@
       flex-shrink: 0;
       width: 88px; height: 88px;
       position: relative;
+      display: flex; align-items: center; justify-content: center;
     }
     .team-detail-logo-wrap::after {
       content: '';
@@ -253,11 +256,12 @@
       border-radius: 50%;
       border: 1px solid var(--gold);
       box-shadow: 0 0 16px rgba(200,168,75,0.2);
+      pointer-events: none;
     }
     .team-detail-logo {
       width: 88px; height: 88px;
-      border-radius: 50%;
-      object-fit: cover;
+      border-radius: 0;
+      object-fit: contain;
     }
     .team-detail-info .team-detail-name {
       font-family: 'Cinzel', serif;
@@ -494,23 +498,30 @@
   }
 
   // ── 段位バッジ判定 ──
+  // 形式: "天鳳：九段" / "雀魂：魂天" のようにプレフィックス付き
   function gradeBadgeHtml(grade) {
     if (!grade) return '';
     const g = grade.trim();
+    // コロン（全角・半角）以降の段位部分を抽出、なければ全体を使う
+    const rank = g.includes('：') ? g.split('：')[1].trim()
+               : g.includes(':')  ? g.split(':')[1].trim()
+               : g;
+
     let cls = '';
-    if (g === '天鳳位') {
+    if (rank === '天鳳位') {
       cls = 'grade-tenhou-top';
-    } else if (/^魂天/.test(g)) {
+    } else if (/^魂天/.test(rank)) {
       cls = 'grade-konten';
-    } else if (/^雀聖/.test(g)) {
+    } else if (/^雀聖/.test(rank)) {
       cls = 'grade-jansei';
-    } else if (/^雀豪/.test(g)) {
+    } else if (/^雀豪/.test(rank)) {
       cls = 'grade-jango';
-    } else if (/^雀傑/.test(g)) {
+    } else if (/^雀傑/.test(rank)) {
       cls = 'grade-janketsu';
-    } else if (/^[七八九十]段$/.test(g)) {
+    } else if (/^(七|八|九|十)段/.test(rank)) {
       cls = 'grade-tenhou-high';
     } else {
+      // 天鳳の一〜六段、雀魂の初心者帯など
       cls = 'grade-tenhou-low';
     }
     return `<span class="grade-badge ${cls}">${g}</span>`;
