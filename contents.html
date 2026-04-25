@@ -163,9 +163,9 @@ body{
   padding:2px 6px;border-radius:1px;
   text-transform:uppercase;font-weight:600;
 }
-.type-article  { background:rgba(200,168,75,0.25); color:rgba(200,168,75,1); }
-.type-movie    { background:rgba(80,160,255,0.25); color:rgba(120,190,255,1); }
-.type-illustration{ background:rgba(200,80,200,0.25); color:rgba(220,140,220,1); }
+.type-article { background:rgba(200,168,75,0.25); color:rgba(200,168,75,1); }
+.type-movie   { background:rgba(80,160,255,0.25); color:rgba(120,190,255,1); }
+.type-review  { background:rgba(80,200,140,0.25); color:rgba(100,220,160,1); }
 
 /* body */
 .card-body{
@@ -247,9 +247,9 @@ body::after{
 
 <div id="filter-bar">
   <button class="filter-btn active" data-type="all">すべて</button>
-  <button class="filter-btn" data-type="article">記事</button>
+  <button class="filter-btn" data-type="article">関連記事</button>
   <button class="filter-btn" data-type="movie">動画</button>
-  <button class="filter-btn" data-type="illustration">イラスト</button>
+  <button class="filter-btn" data-type="review">観戦記</button>
 </div>
 
 <div id="status">読み込み中...</div>
@@ -258,24 +258,18 @@ body::after{
 <div id="empty">コンテンツがありません</div>
 
 <script>
-/* ============================================================
-   設定: GASをデプロイしたらURLをここに書く
-   疎通確認前はUSE_MOCK=trueでモックデータを使用
-   ============================================================ */
-
-
 /* ── 状態 ── */
 let allItems   = [];
 let activeType = 'all';
 
-/* ── フェッチ or モック ── */
+/* ── データ取得 ── */
 async function loadData() {
   setStatus('読み込み中...');
   try {
     const res  = await fetch('data/contents.json');
-const json = await res.json();
-allItems = Array.isArray(json) ? json : [];
-setStatus(`${allItems.length}件`);
+    const json = await res.json();
+    allItems = Array.isArray(json) ? json : [];
+    setStatus('');
   } catch(e) {
     setStatus('読み込みエラー: ' + e.message);
     allItems = [];
@@ -299,7 +293,7 @@ function render() {
   empty.style.display = 'none';
 
   feed.innerHTML = filtered.map(item => {
-    const typeLabel = {article:'記事', movie:'動画', illustration:'絵'}[item.type] || item.type;
+    const typeLabel = {article:'関連記事', movie:'動画', review:'観戦記'}[item.type] || item.type;
     const date = item.date ? item.date.slice(0,10).replace(/-/g,'.') : '';
     const imgSrc = item.image_url || 'assets/images/文字のみ.png';
 
