@@ -368,8 +368,36 @@
       opacity: 0.85;
     }
     .grade-tenhou-low  { color: #888; border-color: #555; background: rgba(136,136,136,0.08); }
-    .grade-tenhou-high { color: #ddd; border-color: #aaa; background: rgba(220,220,220,0.08); }
-    .grade-tenhou-top  { color: var(--gold); border-color: var(--gold); background: rgba(200,168,75,0.1); }
+    /* 七・八段: 銀色 */
+    .grade-tenhou-silver {
+      color: #c8c8d8;
+      border-color: #8888aa;
+      background: rgba(180,180,200,0.1);
+    }
+    /* 九・十段: 金色 */
+    .grade-tenhou-gold {
+      color: #e8c84a;
+      border-color: #b89820;
+      background: rgba(232,200,74,0.1);
+    }
+    /* 天鳳位: 虹色アニメーション */
+    .grade-tenhou-top {
+      border-color: transparent;
+      background: rgba(255,255,255,0.05);
+      position: relative;
+      background-clip: padding-box;
+      animation: rainbow-text 3s linear infinite;
+    }
+    @keyframes rainbow-text {
+      0%   { color: #ff6b6b; border-color: #ff6b6b; }
+      14%  { color: #ffa94d; border-color: #ffa94d; }
+      28%  { color: #ffe066; border-color: #ffe066; }
+      42%  { color: #69db7c; border-color: #69db7c; }
+      57%  { color: #4dabf7; border-color: #4dabf7; }
+      71%  { color: #748ffc; border-color: #748ffc; }
+      85%  { color: #da77f2; border-color: #da77f2; }
+      100% { color: #ff6b6b; border-color: #ff6b6b; }
+    }
     .grade-janketsu    { color: #d4b840; border-color: #a08820; background: rgba(212,184,64,0.1); }
     .grade-jango       { color: #e8832a; border-color: #c06018; background: rgba(232,131,42,0.1); }
     .grade-jansei      { color: #e05050; border-color: #b02828; background: rgba(224,80,80,0.1); }
@@ -518,8 +546,10 @@
       cls = 'grade-jango';
     } else if (/^雀傑/.test(rank)) {
       cls = 'grade-janketsu';
-    } else if (/^(七|八|九|十)段/.test(rank)) {
-      cls = 'grade-tenhou-high';
+    } else if (/^(九|十)段/.test(rank)) {
+      cls = 'grade-tenhou-gold';
+    } else if (/^(七|八)段/.test(rank)) {
+      cls = 'grade-tenhou-silver';
     } else {
       // 天鳳の一〜六段、雀魂の初心者帯など
       cls = 'grade-tenhou-low';
