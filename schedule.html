@@ -167,10 +167,10 @@ body{
   background:#06020e;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:8px;padding:16px 12px;
-  min-height:130px;
+  min-height:90px;
 }
-.match-cell-logo {
-  width:100px; height:100px; object-fit:contain;
+.match-cell-logo{
+  width:52px;height:52px;object-fit:contain;
   filter:drop-shadow(0 0 6px rgba(200,168,75,0.2));
 }
 .match-cell-logo-placeholder{
@@ -361,19 +361,13 @@ function renderMatchGrid(t) {
 }
 
 function renderCell(name, imgUrl) {
-  if (!name) {
-    return `<div class="match-cell">
-      <div class="match-cell-logo-placeholder">？</div>
-    </div>`;
-  }
   if (imgUrl) {
     return `<div class="match-cell">
       <img class="match-cell-logo" src="${imgUrl}" alt="${name}" loading="lazy">
     </div>`;
   }
   return `<div class="match-cell">
-    <div class="match-cell-logo-placeholder">${name.slice(0,1)}</div>
-    <div class="match-cell-name">${name}</div>
+    <div class="match-cell-logo-placeholder">？</div>
   </div>`;
 }
 
