@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>チーム一覧 | 黎明戦</title>
-  <link rel="icon" href="https://drive.google.com/thumbnail?id=15FcaEh58Xun88Nl_1umAbvhDhzR7i_lZ&sz=w64" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -344,10 +343,15 @@
     .member-info {
       flex: 1;
       display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+    .member-info-top {
+      display: flex;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-      min-width: 0;
     }
     .member-name {
       font-size: 15px;
@@ -355,6 +359,25 @@
       letter-spacing: 0.08em;
       color: var(--text);
       white-space: nowrap;
+    }
+
+    /* 意気込み */
+    .member-comment-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .member-comment-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      opacity: 0.6;
+    }
+    .member-comment {
+      font-size: 12px;
+      line-height: 1.7;
+      letter-spacing: 0.04em;
+      color: var(--text-dim);
     }
 
     /* 段位バッジ */
@@ -369,36 +392,8 @@
       opacity: 0.85;
     }
     .grade-tenhou-low  { color: #888; border-color: #555; background: rgba(136,136,136,0.08); }
-    /* 七・八段: 銀色 */
-    .grade-tenhou-silver {
-      color: #c8c8d8;
-      border-color: #8888aa;
-      background: rgba(180,180,200,0.1);
-    }
-    /* 九・十段: 金色 */
-    .grade-tenhou-gold {
-      color: #e8c84a;
-      border-color: #b89820;
-      background: rgba(232,200,74,0.1);
-    }
-    /* 天鳳位: 虹色アニメーション */
-    .grade-tenhou-top {
-      border-color: transparent;
-      background: rgba(255,255,255,0.05);
-      position: relative;
-      background-clip: padding-box;
-      animation: rainbow-text 3s linear infinite;
-    }
-    @keyframes rainbow-text {
-      0%   { color: #ff6b6b; border-color: #ff6b6b; }
-      14%  { color: #ffa94d; border-color: #ffa94d; }
-      28%  { color: #ffe066; border-color: #ffe066; }
-      42%  { color: #69db7c; border-color: #69db7c; }
-      57%  { color: #4dabf7; border-color: #4dabf7; }
-      71%  { color: #748ffc; border-color: #748ffc; }
-      85%  { color: #da77f2; border-color: #da77f2; }
-      100% { color: #ff6b6b; border-color: #ff6b6b; }
-    }
+    .grade-tenhou-high { color: #ddd; border-color: #aaa; background: rgba(220,220,220,0.08); }
+    .grade-tenhou-top  { color: var(--gold); border-color: var(--gold); background: rgba(200,168,75,0.1); }
     .grade-janketsu    { color: #d4b840; border-color: #a08820; background: rgba(212,184,64,0.1); }
     .grade-jango       { color: #e8832a; border-color: #c06018; background: rgba(232,131,42,0.1); }
     .grade-jansei      { color: #e05050; border-color: #b02828; background: rgba(224,80,80,0.1); }
@@ -547,10 +542,8 @@
       cls = 'grade-jango';
     } else if (/^雀傑/.test(rank)) {
       cls = 'grade-janketsu';
-    } else if (/^(九|十)段/.test(rank)) {
-      cls = 'grade-tenhou-gold';
-    } else if (/^(七|八)段/.test(rank)) {
-      cls = 'grade-tenhou-silver';
+    } else if (/^(七|八|九|十)段/.test(rank)) {
+      cls = 'grade-tenhou-high';
     } else {
       // 天鳳の一〜六段、雀魂の初心者帯など
       cls = 'grade-tenhou-low';
@@ -591,8 +584,15 @@
         <div class="member-divider"></div>
         ${avatarHtml}
         <div class="member-info">
-          <span class="member-name">${player.player}</span>
-          ${gradeBadgeHtml(player.grade)}
+          <div class="member-info-top">
+            <span class="member-name">${player.player}</span>
+            ${gradeBadgeHtml(player.grade)}
+          </div>
+          ${player.comment ? `
+          <div class="member-comment-wrap">
+            <span class="member-comment-label">今期の意気込み</span>
+            <span class="member-comment">${player.comment}</span>
+          </div>` : ''}
         </div>
       `;
       list.appendChild(row);
