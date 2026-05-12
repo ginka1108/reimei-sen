@@ -79,5 +79,149 @@
     "image_id": 15,
     "comment": "前期は4人の戦いを後ろで見守っていましたが、今期はみんなと一緒に戦えるようになりました。こんなに恵まれた環境で戦える機会は滅多にないと思うので、この期間でもっと強くなって良い麻雀を打ちたいです。\n\n連覇するぞ！今期もよろしくお願いします！",
     "image_url": "https://drive.google.com/thumbnail?id=1SElMCQsaPQcY6w0-ogGU5TsH8KEFnYVQ&sz=w200"
+  },
+  {
+    "id": 10,
+    "team": 4,
+    "player": "神仙酵母",
+    "grade": "十段",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 11,
+    "team": 4,
+    "player": "ゆうれいいか",
+    "grade": "八段",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 12,
+    "team": 4,
+    "player": "饒舌",
+    "grade": "八段",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 13,
+    "team": 4,
+    "player": "結宮れちょ",
+    "grade": "雀聖1",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 14,
+    "team": 1,
+    "player": "まーぶりん",
+    "grade": "七段",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 15,
+    "team": 1,
+    "player": "なぽ",
+    "grade": "魂天",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 16,
+    "team": 1,
+    "player": "ゆきこ",
+    "grade": "七段",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 17,
+    "team": 1,
+    "player": "安住太一",
+    "grade": "魂天",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 18,
+    "team": 2,
+    "player": "ヨーテル",
+    "grade": "天鳳位",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 19,
+    "team": 2,
+    "player": "べるふぇごーる",
+    "grade": "魂天",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 20,
+    "team": 2,
+    "player": "ren",
+    "grade": "雀聖3",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 21,
+    "team": 2,
+    "player": "いのっち",
+    "grade": "魂天",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 22,
+    "team": 3,
+    "player": "日菜むい",
+    "grade": "雀聖3",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 23,
+    "team": 3,
+    "player": "ぶる",
+    "grade": "雀聖3",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 24,
+    "team": 3,
+    "player": "かなへび",
+    "grade": "九段",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
+  },
+  {
+    "id": 25,
+    "team": 3,
+    "player": "りくまる",
+    "grade": "八段",
+    "image_id": null,
+    "comment": null,
+    "image_url": null
   }
 ]
