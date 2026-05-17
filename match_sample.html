@@ -57,7 +57,7 @@
     main {
       position: relative; z-index: 1;
       padding: 68px 16px 56px;
-      max-width: 1200px; margin: 0 auto;
+      max-width: 1600px; margin: 0 auto;
       display: flex; flex-direction: column;
       gap: 14px;
     }
@@ -118,19 +118,32 @@
     }
 
     /* ════════════════════════════════════════
-       共通：2×2グリッド（16:9カード）
-       2枚横×2枚縦 = 全体が16:9になる
-       各カード = 16:9 の半分の高さ → 16:4.5 = 32:9
+       共通：卓ブロック（16:9の2×2）
+       ・1卓: court-block が1つ → そのまま16:9
+       ・2卓: court-block を横に並べる → 各卓は16:9を維持
+       逸脱しないよう .court-block 自体に aspect-ratio: 16/9 を固定
     ════════════════════════════════════════ */
     .match-grid {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 14px;
+      width: 100%;
+    }
+    .court-block {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 100%;
+      /* この比率は何があっても崩さない */
+      aspect-ratio: 16 / 9;
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
       gap: 3px;
-      /* 全体を16:9に */
-      aspect-ratio: 16 / 9;
+      /* 高さ上限を切ってビューポートに収める。
+         width は aspect-ratio で max-height から逆算される。 */
       max-height: calc(100vh - 210px);
-      width: 100%;
     }
 
     /* ════════════════════════════════════════
@@ -191,10 +204,10 @@
        ② 対戦カードタブ：選手名メイン
        レイヤー構造（下から）:
          1. 黒背景
-         2. チームロゴ（薄くoverlay）
-         3. 立ち絵（opacity 0.1）
-         4. チームカラーグラデ
-         5. テキスト
+         2. メインビジュアル (.pc-visual)
+            ─ 立ち絵 > チームロゴ > 表示なし のフォールバック
+         3. チームカラーグラデ
+         4. テキスト
     ════════════════════════════════════════ */
     .player-card {
       position: relative;
@@ -207,42 +220,40 @@
     }
     .player-card:hover { border-color: var(--gold); }
 
-    /* レイヤー1: チームロゴ（背景、薄く） */
-    .pc-logo-bg {
+    /* レイヤー1: メインビジュアル（立ち絵 or チームロゴ） */
+    .pc-visual {
       position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
       z-index: 1;
-    }
-    .pc-logo-bg img {
-      width: 75%; height: 75%;
-      object-fit: contain;
-      opacity: 0.07;
-      filter: blur(1px);
-    }
-
-    /* レイヤー2: 立ち絵（opacity 0.1、右寄せで人物が立つ感じ） */
-    .pc-tachie {
-      position: absolute; inset: 0;
-      z-index: 2;
       display: flex; align-items: flex-end; justify-content: center;
       overflow: hidden;
     }
-    .pc-tachie img {
+    /* 立ち絵: 下端揃え、人物が立つ */
+    .pc-visual.is-tachie img {
       height: 100%;
       width: auto;
       max-width: 100%;
       object-fit: contain;
       object-position: center bottom;
-      opacity: 0.1;
+      opacity: 0.55;
+    }
+    /* チームロゴフォールバック: 中央配置、薄く */
+    .pc-visual.is-logo {
+      align-items: center;
+    }
+    .pc-visual.is-logo img {
+      width: 70%; height: 70%;
+      object-fit: contain;
+      opacity: 0.18;
+      filter: blur(0.5px);
     }
 
-    /* レイヤー3: チームカラーのグラデオーバーレイ（下から） */
+    /* レイヤー2: チームカラーのグラデオーバーレイ（下から） */
     .pc-color-overlay {
       position: absolute; inset: 0; z-index: 3;
       /* JSでbackgroundを設定 */
     }
 
-    /* レイヤー4: 上辺カラーバー */
+    /* レイヤー3: 上辺カラーバー */
     .pc-colorbar {
       position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 5;
     }
@@ -339,12 +350,17 @@
     }
 
     /* ── レスポンシブ ── */
-    @media (max-width: 600px) {
+    @media (max-width: 720px) {
       .match-grid {
-        grid-template-columns: 1fr; grid-template-rows: auto;
-        aspect-ratio: auto; max-height: none; gap: 6px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
       }
-      .team-card, .player-card { aspect-ratio: 16 / 4.5; }
+      .court-block {
+        /* 縦積みでも各卓は16:9を維持 */
+        max-height: none;
+        width: 100%;
+      }
       .tab-btn { padding: 9px 18px; font-size: 11px; }
     }
   </style>
@@ -561,62 +577,30 @@
 
   // ────────────────────────────────────────────────
   // ① 対戦チームパネル
-  // 各エントリーを16:9カード（ロゴ全面）として2×2配置
+  // 各卓を「16:9の2×2」court-block として作り、横並びにする
   // ────────────────────────────────────────────────
   function renderTeamsPanel(courtData, teamMap) {
     const grid = document.getElementById('teams-grid');
     grid.innerHTML = '';
 
-    // 全エントリーをflat（ORDER済み）で取り出す
-    // 卓1のupleft→upright→bottomleft→bottomright、卓2の同順
-    // 2×2グリッドの並びは:
-    //   [卓1-upleft]    [卓1-upright]
-    //   [卓1-bottomleft][卓1-bottomright]
-    // 卓が2つある場合は横に並ぶのか、縦か？
-    // → サンプル画像準拠: 左ブロック=天卓、右ブロック=元卓
-    //   天卓の4枚を左2列、元卓の4枚を右2列にしたい
-    // → grid は2列なので、天卓を [0][2][1][3] 順でgrid-column指定するより
-    //   CSSのgrid-area で配置するのが確実
-    // 実装方針: 4×2（4行2列）で各卓の4枚を左右に割り当て
-
     const courts = Object.values(courtData);
-
     if (courts.length === 0) {
       grid.innerHTML = '<div class="error-msg">データがありません</div>';
       return;
     }
 
-    // 2卓の場合: 左右2分割（4行2列グリッドで実現）
-    // 1卓の場合: 2×2で表示
-    if (courts.length >= 2) {
-      // 4行2列に組み替え
-      grid.style.gridTemplateColumns = '1fr 1fr';
-      grid.style.gridTemplateRows    = '1fr 1fr 1fr 1fr';
+    courts.forEach(court => {
+      const block = document.createElement('div');
+      block.className = 'court-block';
+      block.style.animation = 'fadeUp 0.4s ease both';
 
-      const leftCourt  = courts[0]; // 卓1（天卓）
-      const rightCourt = courts[1]; // 卓2（元卓）
-
-      // 左2列・右2列を行方向に交互配置
-      // 行1: left[0], right[0]
-      // 行2: left[1], right[1]
-      // 行3: left[2], right[2]
-      // 行4: left[3], right[3]
-      const maxLen = Math.max(leftCourt.sorted.length, rightCourt.sorted.length);
-      for (let i = 0; i < maxLen; i++) {
-        [leftCourt, rightCourt].forEach((court, side) => {
-          const entry = court.sorted[i];
-          const card  = buildTeamCard(entry, teamMap, court.label);
-          grid.appendChild(card);
-        });
+      // 常に4セル（足りなければ空セルで埋める）
+      for (let i = 0; i < 4; i++) {
+        const entry = court.sorted[i] || null;
+        block.appendChild(buildTeamCard(entry, teamMap, court.label));
       }
-    } else {
-      // 1卓のみ: 通常の2×2
-      grid.style.gridTemplateColumns = '1fr 1fr';
-      grid.style.gridTemplateRows    = '1fr 1fr';
-      courts[0].sorted.forEach(entry => {
-        grid.appendChild(buildTeamCard(entry, teamMap, courts[0].label));
-      });
-    }
+      grid.appendChild(block);
+    });
   }
 
   function buildTeamCard(entry, teamMap, courtLabel) {
@@ -664,7 +648,7 @@
 
   // ────────────────────────────────────────────────
   // ② 対戦カードパネル
-  // 各エントリーを「ロゴ背景薄め + 立ち絵opacity0.1 + 選手名大きく」
+  // 各卓を「16:9の2×2」court-block として作り、横並びにする
   // ────────────────────────────────────────────────
   function renderCardsPanel(courtData, teamMap, playerMap) {
     const grid = document.getElementById('cards-grid');
@@ -676,25 +660,17 @@
       return;
     }
 
-    if (courts.length >= 2) {
-      grid.style.gridTemplateColumns = '1fr 1fr';
-      grid.style.gridTemplateRows    = '1fr 1fr 1fr 1fr';
-      const leftCourt  = courts[0];
-      const rightCourt = courts[1];
-      const maxLen = Math.max(leftCourt.sorted.length, rightCourt.sorted.length);
-      for (let i = 0; i < maxLen; i++) {
-        [leftCourt, rightCourt].forEach((court) => {
-          const entry = court.sorted[i];
-          grid.appendChild(buildPlayerCard(entry, teamMap, playerMap, court.label));
-        });
+    courts.forEach(court => {
+      const block = document.createElement('div');
+      block.className = 'court-block';
+      block.style.animation = 'fadeUp 0.4s ease both';
+
+      for (let i = 0; i < 4; i++) {
+        const entry = court.sorted[i] || null;
+        block.appendChild(buildPlayerCard(entry, teamMap, playerMap, court.label));
       }
-    } else {
-      grid.style.gridTemplateColumns = '1fr 1fr';
-      grid.style.gridTemplateRows    = '1fr 1fr';
-      courts[0].sorted.forEach(entry => {
-        grid.appendChild(buildPlayerCard(entry, teamMap, playerMap, courts[0].label));
-      });
-    }
+      grid.appendChild(block);
+    });
   }
 
   function buildPlayerCard(entry, teamMap, playerMap, courtLabel) {
@@ -710,44 +686,59 @@
       return card;
     }
 
-    // ── レイヤー1: チームロゴ背景（薄く）
-    const logoBg = document.createElement('div');
-    logoBg.className = 'pc-logo-bg';
-    if (info.image_url) {
-      const img = document.createElement('img');
-      img.src = info.image_url; img.alt = entry.team; img.loading = 'lazy';
-      logoBg.appendChild(img);
-    }
-    card.appendChild(logoBg);
-
-    // ── レイヤー2: 立ち絵（players.json の image_url、opacity 0.1）
+    // ── レイヤー1: メインビジュアル（立ち絵 → チームロゴ → なし）
     const pName     = (entry.player || '').trim();
     const pInfo     = playerMap[pName] || {};
     const tachieUrl = pInfo.image_url || null;
 
     if (tachieUrl) {
-      const tachieWrap = document.createElement('div');
-      tachieWrap.className = 'pc-tachie';
-      const tachieImg = document.createElement('img');
-      tachieImg.src = tachieUrl; tachieImg.alt = pName; tachieImg.loading = 'lazy';
-      tachieWrap.appendChild(tachieImg);
-      card.appendChild(tachieWrap);
+      // 立ち絵あり
+      const wrap = document.createElement('div');
+      wrap.className = 'pc-visual is-tachie';
+      const img = document.createElement('img');
+      img.src = tachieUrl; img.alt = pName; img.loading = 'lazy';
+      // 立ち絵が読めなかった場合のフォールバック（チームロゴ→無）
+      img.onerror = () => {
+        wrap.classList.remove('is-tachie');
+        wrap.innerHTML = '';
+        if (info.image_url) {
+          wrap.classList.add('is-logo');
+          const fb = document.createElement('img');
+          fb.src = info.image_url; fb.alt = entry.team; fb.loading = 'lazy';
+          fb.onerror = () => { wrap.remove(); };
+          wrap.appendChild(fb);
+        } else {
+          wrap.remove();
+        }
+      };
+      wrap.appendChild(img);
+      card.appendChild(wrap);
+    } else if (info.image_url) {
+      // 立ち絵なし → チームロゴへフォールバック
+      const wrap = document.createElement('div');
+      wrap.className = 'pc-visual is-logo';
+      const img = document.createElement('img');
+      img.src = info.image_url; img.alt = entry.team; img.loading = 'lazy';
+      img.onerror = () => { wrap.remove(); };
+      wrap.appendChild(img);
+      card.appendChild(wrap);
     }
+    // どちらも無い場合は表示なし（黒背景のまま）
 
-    // ── レイヤー3: カラーオーバーレイ（下から上へグラデ）
+    // ── レイヤー2: カラーオーバーレイ（下から上へグラデ）
     const overlay = document.createElement('div');
     overlay.className = 'pc-color-overlay';
     overlay.style.background = `
       linear-gradient(
         to top,
-        rgba(${r},${g},${b},0.45) 0%,
-        rgba(${r},${g},${b},0.12) 40%,
-        rgba(0,0,0,0.1) 100%
+        rgba(${r},${g},${b},0.55) 0%,
+        rgba(${r},${g},${b},0.18) 45%,
+        rgba(0,0,0,0.15) 100%
       )
     `;
     card.appendChild(overlay);
 
-    // ── レイヤー4: カラーバー（上辺）
+    // ── レイヤー3: カラーバー（上辺）
     const bar = document.createElement('div');
     bar.className = 'pc-colorbar';
     bar.style.background = `linear-gradient(90deg, rgba(${r},${g},${b},0.95), rgba(${r},${g},${b},0.2))`;
