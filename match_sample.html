@@ -101,8 +101,7 @@
       gap: 12px; flex-wrap: wrap;
       margin-bottom: 2px;
     }
-    .meta-logo { height: 30px; opacity: 0.85; }
-    .meta-center { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .meta-center { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
     .meta-date {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(14px, 2vw, 19px); letter-spacing: 0.15em; color: var(--text);
@@ -118,10 +117,10 @@
     }
 
     /* ════════════════════════════════════════
-       共通：卓ブロック（16:9の2×2）
-       ・1卓: court-block が1つ → そのまま16:9
-       ・2卓: court-block を横に並べる → 各卓は16:9を維持
-       逸脱しないよう .court-block 自体に aspect-ratio: 16/9 を固定
+       共通：卓ブロック（16:9の2×2 + 上部見出し）
+       court-block  : ヘッダ+ボードのラッパー
+       court-header : 「天卓」「元卓」見出し
+       court-board  : 16:9 の 2×2 グリッド（崩さない）
     ════════════════════════════════════════ */
     .match-grid {
       display: flex;
@@ -135,15 +134,47 @@
       flex: 1 1 0;
       min-width: 0;
       max-width: 100%;
-      /* この比率は何があっても崩さない */
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      /* 高さ上限は board の aspect-ratio に任せる */
+    }
+    /* 卓見出しフレーム */
+    .court-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 2px;
+      background: rgba(200,168,75,0.06);
+      flex-shrink: 0;
+    }
+    .court-header::before,
+    .court-header::after {
+      content: '';
+      width: clamp(20px, 6vw, 60px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    }
+    .court-header-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(12px, 1.4vw, 15px);
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      padding-left: 0.4em;  /* letter-spacingで右に寄る分を相殺 */
+      white-space: nowrap;
+    }
+    /* 16:9 の 2×2 グリッド（ここは絶対崩さない） */
+    .court-board {
       aspect-ratio: 16 / 9;
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
       gap: 3px;
-      /* 高さ上限を切ってビューポートに収める。
-         width は aspect-ratio で max-height から逆算される。 */
-      max-height: calc(100vh - 210px);
+      width: 100%;
+      max-height: calc(100vh - 260px);  /* 見出し分を少し差し引く */
     }
 
     /* ════════════════════════════════════════
@@ -190,15 +221,6 @@
     }
     .team-card::before { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
     .team-card::after  { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
-
-    /* 卓ラベル（左上） */
-    .team-card-court-label {
-      position: absolute; top: 8px; left: 14px;
-      font-size: clamp(9px, 1.2vw, 11px); letter-spacing: 0.25em;
-      color: rgba(232,224,208,0.6);
-      z-index: 4;
-      text-shadow: 0 0 8px rgba(0,0,0,0.8);
-    }
 
     /* ════════════════════════════════════════
        ② 対戦カードタブ：選手名メイン
@@ -275,14 +297,6 @@
       display: flex; flex-direction: column; gap: 4px;
     }
 
-    /* 卓ラベル */
-    .pc-court-label {
-      position: absolute; top: 8px; left: 14px;
-      font-size: clamp(9px, 1.1vw, 11px); letter-spacing: 0.25em;
-      color: rgba(232,224,208,0.55); z-index: 5;
-      text-shadow: 0 0 8px rgba(0,0,0,0.9);
-    }
-
     /* チームロゴ（小さく左） */
     .pc-team-row {
       display: flex; align-items: center; gap: 8px; margin-bottom: 2px;
@@ -354,9 +368,9 @@
       .match-grid {
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
+        gap: 14px;
       }
-      .court-block {
+      .court-board {
         /* 縦積みでも各卓は16:9を維持 */
         max-height: none;
         width: 100%;
@@ -381,7 +395,6 @@
     <!-- ① 対戦チームパネル -->
     <div id="panel-teams" class="panel active">
       <div class="meta-bar">
-        <img class="meta-logo" src="assets/images/文字のみ.png" alt="黎明戦" onerror="this.style.display='none'">
         <div class="meta-center">
           <div class="meta-date" id="meta-date-teams">―</div>
         </div>
@@ -398,7 +411,6 @@
     <!-- ② 対戦カードパネル -->
     <div id="panel-cards" class="panel">
       <div class="meta-bar">
-        <img class="meta-logo" src="assets/images/文字のみ.png" alt="黎明戦" onerror="this.style.display='none'">
         <div class="meta-center">
           <div class="meta-date" id="meta-date-cards">―</div>
         </div>
@@ -577,7 +589,7 @@
 
   // ────────────────────────────────────────────────
   // ① 対戦チームパネル
-  // 各卓を「16:9の2×2」court-block として作り、横並びにする
+  // 各卓に「16:9の2×2」court-board + 上部見出し court-header を作って横並び
   // ────────────────────────────────────────────────
   function renderTeamsPanel(courtData, teamMap) {
     const grid = document.getElementById('teams-grid');
@@ -594,16 +606,35 @@
       block.className = 'court-block';
       block.style.animation = 'fadeUp 0.4s ease both';
 
+      // 卓見出し
+      block.appendChild(buildCourtHeader(court.label));
+
+      // 16:9 の 2×2 ボード
+      const board = document.createElement('div');
+      board.className = 'court-board';
       // 常に4セル（足りなければ空セルで埋める）
       for (let i = 0; i < 4; i++) {
         const entry = court.sorted[i] || null;
-        block.appendChild(buildTeamCard(entry, teamMap, court.label));
+        board.appendChild(buildTeamCard(entry, teamMap));
       }
+      block.appendChild(board);
+
       grid.appendChild(block);
     });
   }
 
-  function buildTeamCard(entry, teamMap, courtLabel) {
+  // 卓見出しフレーム
+  function buildCourtHeader(label) {
+    const header = document.createElement('div');
+    header.className = 'court-header';
+    const text = document.createElement('div');
+    text.className = 'court-header-text';
+    text.textContent = label || '';
+    header.appendChild(text);
+    return header;
+  }
+
+  function buildTeamCard(entry, teamMap) {
     const info  = entry ? (teamMap[entry.team] || {}) : {};
     const color = info.color || '#444444';
     const {r,g,b} = hexToRgb(color);
@@ -637,12 +668,6 @@
     }
     card.appendChild(logoWrap);
 
-    // 卓ラベル
-    const label = document.createElement('div');
-    label.className = 'team-card-court-label';
-    label.textContent = courtLabel;
-    card.appendChild(label);
-
     return card;
   }
 
@@ -665,15 +690,23 @@
       block.className = 'court-block';
       block.style.animation = 'fadeUp 0.4s ease both';
 
+      // 卓見出し
+      block.appendChild(buildCourtHeader(court.label));
+
+      // 16:9 の 2×2 ボード
+      const board = document.createElement('div');
+      board.className = 'court-board';
       for (let i = 0; i < 4; i++) {
         const entry = court.sorted[i] || null;
-        block.appendChild(buildPlayerCard(entry, teamMap, playerMap, court.label));
+        board.appendChild(buildPlayerCard(entry, teamMap, playerMap));
       }
+      block.appendChild(board);
+
       grid.appendChild(block);
     });
   }
 
-  function buildPlayerCard(entry, teamMap, playerMap, courtLabel) {
+  function buildPlayerCard(entry, teamMap, playerMap) {
     const info  = entry ? (teamMap[entry.team] || {}) : {};
     const color = info.color || '#444444';
     const {r,g,b} = hexToRgb(color);
@@ -743,12 +776,6 @@
     bar.className = 'pc-colorbar';
     bar.style.background = `linear-gradient(90deg, rgba(${r},${g},${b},0.95), rgba(${r},${g},${b},0.2))`;
     card.appendChild(bar);
-
-    // ── 卓ラベル
-    const courtLabelEl = document.createElement('div');
-    courtLabelEl.className = 'pc-court-label';
-    courtLabelEl.textContent = courtLabel;
-    card.appendChild(courtLabelEl);
 
     // ── テキストエリア
     const textArea = document.createElement('div');
