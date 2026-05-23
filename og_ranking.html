@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OG RANKING - 黎明戦 チーム順位表</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Serif+JP:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06020e;
+      --gold: rgba(200,168,75,1);
+      --gold-dim: rgba(200,168,75,0.35);
+      --text: #e8e0d0;
+      --text-dim: rgba(232,224,208,0.5);
+      --dawn: #e8713a;
+      --dawn-dim: rgba(232,113,58,0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: #000; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Noto Serif JP', serif;
+    }
+
+    /* キャプチャ対象：1600×900 固定 */
+    #capture {
+      position: relative; width: 1600px; height: 900px;
+      flex-shrink: 0; background: var(--bg); color: var(--text); overflow: hidden;
+    }
+    #capture::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 45% at 50% 105%, rgba(232,113,58,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 85% 55% at 50% 115%, rgba(200,168,75,0.05) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    #capture.preview { transform-origin: center center; }
+
+    /* 上部ヘッダ */
+    .og-header {
+      position: relative; z-index: 2;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding: 40px 56px 22px;
+    }
+    .og-title-block { display: flex; flex-direction: column; gap: 6px; }
+    .og-eyebrow {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; letter-spacing: 0.5em; color: rgba(200,168,75,0.7); text-transform: uppercase;
+    }
+    .og-title {
+      font-family: 'Noto Serif JP', serif; font-weight: 600;
+      font-size: 46px; letter-spacing: 0.12em; color: var(--text); line-height: 1;
+    }
+    .og-meta { text-align: right; display: flex; flex-direction: column; gap: 4px; }
+    .og-section {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px; font-weight: 400; letter-spacing: 0.1em; color: var(--gold); line-height: 1;
+    }
+    .og-section-sub { font-size: 15px; letter-spacing: 0.3em; color: var(--text-dim); }
+
+    .og-divider {
+      position: relative; z-index: 2; height: 1px; margin: 0 56px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim) 15%, var(--gold-dim) 85%, transparent);
+    }
+
+    /* ランキング本体（SVGをここに流し込む） */
+    .og-ranking {
+      position: relative; z-index: 2;
+      padding: 24px 56px 0;
+      display: flex; justify-content: center; align-items: flex-start;
+    }
+    #ranking-svg-container { width: 100%; }
+    #ranking-svg-container svg { display: block; width: 100%; height: auto; }
+
+    /* 下部フッタ */
+    .og-footer {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 56px 20px;
+    }
+    .og-footer-left {
+      font-family: 'Cormorant Garamond', serif; font-size: 16px;
+      letter-spacing: 0.3em; color: rgba(200,168,75,0.6);
+    }
+    .og-footer-right { font-size: 13px; letter-spacing: 0.2em; color: var(--text-dim); }
+    .og-bottom-line {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px; z-index: 3;
+      background: linear-gradient(90deg, transparent 0%, var(--dawn-dim) 20%, var(--dawn) 50%, var(--dawn-dim) 80%, transparent 100%);
+    }
+    .og-error {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--dawn); font-size: 22px; letter-spacing: 0.15em;
+    }
+  </style>
+</head>
+<body>
+  <div id="capture">
+    <div class="og-header">
+      <div class="og-title-block">
+        <div class="og-eyebrow">STANDINGS</div>
+        <div class="og-title">チーム順位表</div>
+      </div>
+      <div class="og-meta">
+        <div class="og-section" id="og-section">TEAM</div>
+        <div class="og-section-sub" id="og-date">RANKING</div>
+      </div>
+    </div>
+    <div class="og-divider"></div>
+    <div class="og-ranking"><div id="ranking-svg-container"></div></div>
+    <div class="og-footer">
+      <div class="og-footer-left">REIMEI-SEN</div>
+      <div class="og-footer-right">黎明戦</div>
+    </div>
+    <div class="og-bottom-line"></div>
+  </div>
+
+  <script>
+  const params = new URLSearchParams(location.search);
+  const BASE = params.get('base') || 'data';
+
+  function normalizeColor(c) {
+    if (!c) return '#888888';
+    c = String(c).trim();
+    return c.startsWith('#') ? c : '#' + c;
+  }
+  function hexToRgb(hex) {
+    const h = hex.replace('#','');
+    return { r: parseInt(h.slice(0,2),16), g: parseInt(h.slice(2,4),16), b: parseInt(h.slice(4,6),16) };
+  }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function fitPreview() {
+    const cap = document.getElementById('capture');
+    const margin = 24;
+    const scale = Math.min((window.innerWidth-margin)/1600, (window.innerHeight-margin)/900, 1);
+    if (scale < 1) { cap.classList.add('preview'); cap.style.transform = `scale(${scale})`; }
+    else { cap.classList.remove('preview'); cap.style.transform = 'none'; }
+  }
+  window.addEventListener('resize', fitPreview);
+
+  // ── 1チーム分の行SVGを生成 ──
+  // x0: 列の左端, colW: 列幅, y: 行上端, rowH: 行高
+  function rowSVG(item, idx, teamMap, x0, colW, y, rowH) {
+    const info = teamMap[item.team] || {};
+    const color = info.color || '#888888';
+    const {r,g,b} = hexToRgb(color);
+    const score = parseFloat(item.score) || 0;
+    const isPos = score >= 0;
+    const cy = y + rowH/2;
+
+    // 順位は item.rank があれば優先、無ければ通し番号
+    const rankNum = item.rank || (idx + 1);
+    const medalFill = rankNum===1 ? '#c8a84b' : rankNum===2 ? '#a0a0a8' : rankNum===3 ? '#b07840' : '#404050';
+    const medalStroke = rankNum===1 ? 'rgba(200,168,75,0.85)' : rankNum===2 ? 'rgba(160,160,168,0.6)' : rankNum===3 ? '#906030' : '#303040';
+
+    const logoCx = x0 + 96;
+    const logo = info.image_url
+      ? `<clipPath id="clip-${x0}-${idx}"><circle cx="${logoCx}" cy="${cy}" r="26"/></clipPath>
+         <image href="${esc(info.image_url)}" x="${logoCx-26}" y="${cy-26}" width="52" height="52"
+           clip-path="url(#clip-${x0}-${idx})" preserveAspectRatio="xMidYMid slice"/>
+         <circle cx="${logoCx}" cy="${cy}" r="26" fill="none" stroke="rgba(${r},${g},${b},0.7)" stroke-width="1.5"/>`
+      : `<circle cx="${logoCx}" cy="${cy}" r="26" fill="rgba(${r},${g},${b},0.12)" stroke="rgba(${r},${g},${b},0.5)" stroke-width="1.5"/>
+         <text x="${logoCx}" y="${cy+8}" font-family="Cormorant Garamond, serif" font-size="22"
+           fill="rgba(${r},${g},${b},0.85)" text-anchor="middle">${esc((item.team||'?').charAt(0))}</text>`;
+
+    return `
+      <rect x="${x0}" y="${y}" width="${colW}" height="${rowH}" fill="rgba(${r},${g},${b},0.05)"/>
+      <rect x="${x0}" y="${y}" width="5" height="${rowH}" fill="rgba(${r},${g},${b},0.75)"/>
+      <line x1="${x0}" y1="${y+rowH}" x2="${x0+colW}" y2="${y+rowH}" stroke="rgba(200,168,75,0.08)" stroke-width="1"/>
+
+      <circle cx="${x0+44}" cy="${cy}" r="19" fill="${medalFill}" fill-opacity="0.18" stroke="${medalStroke}" stroke-width="1.2"/>
+      <text x="${x0+44}" y="${cy+7}" font-family="Cormorant Garamond, serif" font-size="20" font-weight="600"
+        fill="${medalFill}" text-anchor="middle">${rankNum}</text>
+
+      ${logo}
+
+      <text x="${x0+136}" y="${cy+7}" font-family="Noto Serif JP, serif" font-size="22" fill="#e8e0d0">${esc(item.team||'')}</text>
+
+      <text x="${x0+colW-24}" y="${cy+9}" font-family="Cormorant Garamond, serif" font-size="30" font-weight="400"
+        fill="${isPos ? 'rgba(200,168,75,0.95)' : '#e06060'}" text-anchor="end">${(score>0?'+':'')+score.toLocaleString()}</text>
+    `;
+  }
+
+  function renderRanking(data, teamMap) {
+    const container = document.getElementById('ranking-svg-container');
+    const sorted = [...data].sort((a,b) => (a.rank||99) - (b.rank||99));
+    const n = sorted.length;
+
+    // 描画領域（capture内のranking領域の実効サイズ）
+    const W = 1488;            // 1600 - 左右56*2
+    const H = 660;             // ヘッダ/フッタを除いた縦の使用可能量
+    const twoCol = n > 8;      // 9チーム以上は2列
+    const cols = twoCol ? 2 : 1;
+    const colGap = 40;
+    const colW = (W - colGap*(cols-1)) / cols;
+    const perCol = Math.ceil(n / cols);
+    const rowH = Math.min(Math.floor(H / perCol), 84); // 行が間延びしすぎない上限
+    const usedH = rowH * perCol;
+
+    let body = '';
+    sorted.forEach((item, i) => {
+      const col = twoCol ? Math.floor(i / perCol) : 0;
+      const rowInCol = twoCol ? (i % perCol) : i;
+      const x0 = col * (colW + colGap);
+      const y = rowInCol * rowH;
+      body += rowSVG(item, i, teamMap, x0, colW, y, rowH);
+    });
+
+    const svg = `<svg viewBox="0 0 ${W} ${usedH}" xmlns="http://www.w3.org/2000/svg">
+      ${body}
+    </svg>`;
+    container.innerHTML = svg;
+  }
+
+  function waitForImages() {
+    const imgs = Array.from(document.querySelectorAll('#capture image, #capture img'));
+    return Promise.all(imgs.map(node => {
+      // SVG <image> は complete を持たないため、href有無で簡易判定 + 少し待つ
+      return new Promise(res => {
+        if (node.tagName === 'IMG') {
+          if (node.complete && node.naturalWidth > 0) return res();
+          node.addEventListener('load', res, { once:true });
+          node.addEventListener('error', res, { once:true });
+        } else {
+          // SVG image: load/error を listen（対応ブラウザのみ）。タイムアウトで確実に解決
+          let done=false; const fin=()=>{ if(!done){done=true;res();} };
+          node.addEventListener('load', fin, { once:true });
+          node.addEventListener('error', fin, { once:true });
+          setTimeout(fin, 1500);
+        }
+      });
+    }));
+  }
+
+  function markReady(){ window.__OG_READY__ = true; }
+  function markError(msg){
+    const cap = document.getElementById('capture');
+    const el = document.createElement('div'); el.className='og-error';
+    el.textContent = msg || 'データの読み込みに失敗しました';
+    cap.appendChild(el);
+    window.__OG_ERROR__ = msg || 'error';
+    window.__OG_READY__ = true;
+  }
+
+  (async function init(){
+    fitPreview();
+    try {
+      const [rankRes, teamRes] = await Promise.all([
+        fetch(`${BASE}/ranking.json`),
+        fetch(`${BASE}/team.json`)
+      ]);
+      if (!rankRes.ok) throw new Error('ranking.json fetch failed: ' + rankRes.status);
+      if (!teamRes.ok) throw new Error('team.json fetch failed: ' + teamRes.status);
+      const rankingData = await rankRes.json();
+      const teamData = await teamRes.json();
+
+      const teamMap = {};
+      teamData.forEach(t => { teamMap[t.name] = { image_url: t.image_url || null, color: normalizeColor(t.color) }; });
+
+      renderRanking(rankingData, teamMap);
+      fitPreview();
+
+      await (document.fonts ? document.fonts.ready : Promise.resolve());
+      await waitForImages();
+      requestAnimationFrame(() => requestAnimationFrame(markReady));
+    } catch(e) {
+      console.error(e);
+      markError(String(e.message || e));
+    }
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OG RESULT - 黎明戦 前回の結果</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Serif+JP:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06020e;
+      --gold: rgba(200,168,75,1);
+      --gold-dim: rgba(200,168,75,0.35);
+      --gold-faint: rgba(200,168,75,0.08);
+      --text: #e8e0d0;
+      --text-dim: rgba(232,224,208,0.5);
+      --dawn: #e8713a;
+      --dawn-dim: rgba(232,113,58,0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ページ自体は中央配置の暗い背景（プレビュー用） */
+    html, body {
+      background: #000;
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Noto Serif JP', serif;
+    }
+
+    /* ════════════════════════════════════════
+       キャプチャ対象：1600×900 固定
+       ・実寸は必ず 1600×900（Playwrightはこの実寸で撮る）
+       ・プレビュー時のみ画面に収まるよう scale で縮小
+    ════════════════════════════════════════ */
+    #capture {
+      position: relative;
+      width: 1600px;
+      height: 900px;
+      flex-shrink: 0;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+    /* 背景の夜明けグラデ */
+    #capture::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 45% at 50% 105%, rgba(232,113,58,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 85% 55% at 50% 115%, rgba(200,168,75,0.05) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* プレビュー時の縮小（実寸は維持）。
+       JSで画面幅に合わせて scale を再計算する。 */
+    #capture.preview {
+      transform-origin: center center;
+    }
+
+    /* ── 上部ヘッダ ── */
+    .og-header {
+      position: relative; z-index: 2;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding: 40px 56px 22px;
+    }
+    .og-title-block { display: flex; flex-direction: column; gap: 6px; }
+    .og-eyebrow {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; letter-spacing: 0.5em; color: rgba(200,168,75,0.7);
+      text-transform: uppercase;
+    }
+    .og-title {
+      font-family: 'Noto Serif JP', serif; font-weight: 600;
+      font-size: 46px; letter-spacing: 0.12em; color: var(--text);
+      line-height: 1;
+    }
+    .og-meta {
+      text-align: right; display: flex; flex-direction: column; gap: 4px;
+    }
+    .og-section {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px; font-weight: 400; letter-spacing: 0.1em; color: var(--gold);
+      line-height: 1;
+    }
+    .og-section-sub {
+      font-size: 15px; letter-spacing: 0.3em; color: var(--text-dim);
+    }
+
+    /* ヘッダ下の金ライン */
+    .og-divider {
+      position: relative; z-index: 2;
+      height: 1px; margin: 0 56px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim) 15%, var(--gold-dim) 85%, transparent);
+    }
+
+    /* ── 卓を横並びにする領域 ── */
+    .og-courts {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: row; gap: 28px;
+      padding: 26px 56px 0;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .court-block {
+      flex: 1 1 0; min-width: 0;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    /* 卓見出し */
+    .court-header {
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      padding: 8px 12px;
+      border: 1px solid var(--gold-dim); border-radius: 2px;
+      background: rgba(200,168,75,0.06);
+    }
+    .court-header::before, .court-header::after {
+      content: ''; width: 70px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    }
+    .court-header-text {
+      font-family: 'Noto Serif JP', serif; font-size: 22px;
+      letter-spacing: 0.4em; color: var(--gold); padding-left: 0.4em;
+      white-space: nowrap;
+    }
+    /* 16:9 の 2×2 ボード */
+    .court-board {
+      display: grid;
+      grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+      gap: 4px;
+      /* 卓ブロック内で 2 卓並ぶ前提の高さ。
+         900 - ヘッダ等 ≒ 560px をボードに割り当てる */
+      height: 560px;
+    }
+
+    /* ── プレイヤーカード（resultsから流用） ── */
+    .player-card {
+      position: relative; overflow: hidden;
+      border: 1px solid var(--gold-dim);
+      background: #060210;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .pc-visual {
+      position: absolute; inset: 0; z-index: 1;
+      display: flex; align-items: flex-end; justify-content: center;
+      overflow: hidden;
+    }
+    .pc-visual.is-tachie img {
+      height: 100%; width: auto; max-width: 100%;
+      object-fit: contain; object-position: center bottom;
+      opacity: 0.6;
+    }
+    .pc-visual.is-logo { align-items: center; }
+    .pc-visual.is-logo img {
+      width: 68%; height: 68%; object-fit: contain;
+      opacity: 0.18; filter: blur(0.5px);
+    }
+    .pc-color-overlay { position: absolute; inset: 0; z-index: 3; }
+    .pc-colorbar { position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 5; }
+
+    .player-card::before, .player-card::after {
+      content: ''; position: absolute; width: 12px; height: 12px;
+      border-color: var(--gold-dim); border-style: solid;
+      z-index: 6; pointer-events: none;
+    }
+    .player-card::before { top: 8px; left: 8px; border-width: 1px 0 0 1px; }
+    .player-card::after  { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+
+    /* 着順バッジ */
+    .pc-rank-badge {
+      position: absolute; top: 16px; left: 16px;
+      width: 46px; height: 46px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600;
+      z-index: 6; box-shadow: 0 2px 12px rgba(0,0,0,0.6);
+    }
+    .pc-rank-1 { background: rgba(200,168,75,0.25); border: 1.5px solid var(--gold); color: var(--gold); box-shadow: 0 0 18px rgba(200,168,75,0.5), 0 2px 12px rgba(0,0,0,0.6); }
+    .pc-rank-2 { background: rgba(180,180,180,0.18); border: 1.5px solid rgba(180,180,180,0.7); color: #d8d8d8; }
+    .pc-rank-3 { background: rgba(180,120,60,0.2); border: 1.5px solid rgba(180,120,60,0.7); color: #d09060; }
+    .pc-rank-4 { background: rgba(100,100,120,0.18); border: 1.5px solid rgba(100,100,120,0.5); color: var(--text-dim); }
+
+    /* テキストエリア */
+    .pc-text {
+      position: relative; z-index: 5;
+      padding: 16px 20px; display: flex; flex-direction: column; gap: 6px;
+    }
+    .pc-team-row { display: flex; align-items: center; gap: 10px; }
+    .pc-mini-logo {
+      width: 30px; height: 30px; border-radius: 50%; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.05);
+    }
+    .pc-mini-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .pc-mini-logo span { font-size: 12px; color: var(--gold-dim); }
+    .pc-team-name { font-size: 14px; letter-spacing: 0.08em; color: rgba(232,224,208,0.65); line-height: 1; }
+
+    .pc-name-score-row {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+    }
+    .pc-player-name {
+      font-family: 'Noto Serif JP', serif; font-size: 30px; font-weight: 400;
+      letter-spacing: 0.08em; color: var(--text); line-height: 1.15;
+      flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      text-shadow: 0 0 20px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.7);
+    }
+    .pc-score {
+      font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 400;
+      letter-spacing: 0.04em; flex-shrink: 0; white-space: nowrap;
+      text-shadow: 0 0 16px rgba(0,0,0,0.85), 0 2px 6px rgba(0,0,0,0.7);
+    }
+    .pc-score.positive { color: var(--gold); }
+    .pc-score.negative { color: #e06060; }
+    .pc-score.zero     { color: var(--text-dim); }
+
+    /* ── 下部フッタ（ブランド） ── */
+    .og-footer {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 56px 20px;
+    }
+    .og-footer-left {
+      font-family: 'Cormorant Garamond', serif; font-size: 16px;
+      letter-spacing: 0.3em; color: rgba(200,168,75,0.6);
+    }
+    .og-footer-right {
+      font-size: 13px; letter-spacing: 0.2em; color: var(--text-dim);
+    }
+    /* 下部の夜明けライン */
+    .og-bottom-line {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px; z-index: 3;
+      background: linear-gradient(90deg, transparent 0%, var(--dawn-dim) 20%, var(--dawn) 50%, var(--dawn-dim) 80%, transparent 100%);
+    }
+
+    /* エラー時の表示 */
+    .og-error {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--dawn); font-size: 22px; letter-spacing: 0.15em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ▼ キャプチャ対象。Playwright はこの #capture を screenshot する -->
+  <div id="capture">
+    <div class="og-header">
+      <div class="og-title-block">
+        <div class="og-eyebrow">RESULT</div>
+        <div class="og-title">前回の結果</div>
+      </div>
+      <div class="og-meta">
+        <div class="og-section" id="og-section">―</div>
+        <div class="og-section-sub" id="og-date">―</div>
+      </div>
+    </div>
+
+    <div class="og-divider"></div>
+
+    <div class="og-courts" id="og-courts"></div>
+
+    <div class="og-footer">
+      <div class="og-footer-left">REIMEI-SEN</div>
+      <div class="og-footer-right">黎明戦</div>
+    </div>
+    <div class="og-bottom-line"></div>
+  </div>
+
+  <script>
+  // ════════════════════════════════════════════════════
+  // 設定：データの場所
+  //   ?base=... で上書き可能（Pagesのサブパス対策）。
+  //   既定は同階層の data/ を見る。
+  // ════════════════════════════════════════════════════
+  const params = new URLSearchParams(location.search);
+  const BASE = params.get('base') || 'data';
+
+  // ── ユーティリティ（resultsから流用） ──
+  function normalizeColor(c) {
+    if (!c) return '#888888';
+    c = String(c).trim();
+    return c.startsWith('#') ? c : '#' + c;
+  }
+  function hexToRgb(hex) {
+    const h = hex.replace('#','');
+    return { r: parseInt(h.slice(0,2),16), g: parseInt(h.slice(2,4),16), b: parseInt(h.slice(4,6),16) };
+  }
+  function courtNum(pos) { return parseInt(String(pos).replace(/\D/g,'')) || 1; }
+  function posDir(pos) { return String(pos).replace(/\d/g,''); }
+
+  // ── プレビュー縮小：実寸1600×900を画面に収める ──
+  function fitPreview() {
+    const cap = document.getElementById('capture');
+    // キャプチャ環境（Playwright 1600x900）ではほぼ等倍。
+    // ブラウザ手動プレビュー時だけ縮小する。
+    const margin = 24;
+    const sx = (window.innerWidth  - margin) / 1600;
+    const sy = (window.innerHeight - margin) / 900;
+    const scale = Math.min(sx, sy, 1);
+    if (scale < 1) {
+      cap.classList.add('preview');
+      cap.style.transform = `scale(${scale})`;
+    } else {
+      cap.classList.remove('preview');
+      cap.style.transform = 'none';
+    }
+  }
+  window.addEventListener('resize', fitPreview);
+
+  // ── カード生成（resultsのbuildResultCard相当） ──
+  function buildResultCard(entry, teamMap, playerMap) {
+    const info  = entry ? (teamMap[entry.team] || {}) : {};
+    const color = info.color || '#444444';
+    const {r,g,b} = hexToRgb(color);
+
+    const card = document.createElement('div');
+    card.className = 'player-card';
+
+    if (!entry) {
+      card.innerHTML = '<div style="color:var(--text-dim);font-size:16px;letter-spacing:.2em;padding:16px">―</div>';
+      return card;
+    }
+
+    // メインビジュアル（立ち絵 → チームロゴ → なし）
+    const pName     = (entry.player || '').trim();
+    const pInfo     = playerMap[pName] || {};
+    const tachieUrl = pInfo.image_url || null;
+
+    if (tachieUrl) {
+      const wrap = document.createElement('div');
+      wrap.className = 'pc-visual is-tachie';
+      const img = document.createElement('img');
+      img.src = tachieUrl; img.alt = pName;
+      wrap.appendChild(img);
+      card.appendChild(wrap);
+    } else if (info.image_url) {
+      const wrap = document.createElement('div');
+      wrap.className = 'pc-visual is-logo';
+      const img = document.createElement('img');
+      img.src = info.image_url; img.alt = entry.team;
+      wrap.appendChild(img);
+      card.appendChild(wrap);
+    }
+
+    // カラーオーバーレイ
+    const overlay = document.createElement('div');
+    overlay.className = 'pc-color-overlay';
+    overlay.style.background =
+      `linear-gradient(to top, rgba(${r},${g},${b},0.55) 0%, rgba(${r},${g},${b},0.18) 45%, rgba(0,0,0,0.15) 100%)`;
+    card.appendChild(overlay);
+
+    // 上辺カラーバー
+    const bar = document.createElement('div');
+    bar.className = 'pc-colorbar';
+    bar.style.background = `linear-gradient(90deg, rgba(${r},${g},${b},0.95), rgba(${r},${g},${b},0.2))`;
+    card.appendChild(bar);
+
+    // 着順バッジ
+    const rank = parseInt(entry.rank) || 4;
+    const rankClass = (rank >= 1 && rank <= 4) ? rank : 4;
+    const badge = document.createElement('div');
+    badge.className = `pc-rank-badge pc-rank-${rankClass}`;
+    badge.textContent = entry.rank || '-';
+    card.appendChild(badge);
+
+    // テキストエリア
+    const textArea = document.createElement('div');
+    textArea.className = 'pc-text';
+
+    const teamRow = document.createElement('div');
+    teamRow.className = 'pc-team-row';
+    const miniLogo = document.createElement('div');
+    miniLogo.className = 'pc-mini-logo';
+    miniLogo.style.borderColor = `rgba(${r},${g},${b},0.6)`;
+    miniLogo.style.boxShadow   = `0 0 8px rgba(${r},${g},${b},0.4)`;
+    if (info.image_url) {
+      const mImg = document.createElement('img');
+      mImg.src = info.image_url; mImg.alt = entry.team;
+      miniLogo.appendChild(mImg);
+    } else {
+      const sp = document.createElement('span');
+      sp.textContent = (entry.team || '?').charAt(0);
+      miniLogo.appendChild(sp);
+    }
+    const teamNameEl = document.createElement('div');
+    teamNameEl.className = 'pc-team-name';
+    teamNameEl.textContent = entry.team || '';
+    teamRow.appendChild(miniLogo);
+    teamRow.appendChild(teamNameEl);
+    textArea.appendChild(teamRow);
+
+    const nameScoreRow = document.createElement('div');
+    nameScoreRow.className = 'pc-name-score-row';
+    const isUndecided = !pName || pName === '未定' || pName === '-';
+    const nameEl = document.createElement('div');
+    nameEl.className = 'pc-player-name';
+    nameEl.textContent = isUndecided ? '―' : pName;
+    if (!isUndecided) {
+      nameEl.style.textShadow = `0 0 20px rgba(0,0,0,0.9), 0 0 40px rgba(${r},${g},${b},0.3)`;
+    }
+    const score = parseFloat(entry.score) || 0;
+    const scoreEl = document.createElement('div');
+    scoreEl.className = 'pc-score ' + (score > 0 ? 'positive' : score < 0 ? 'negative' : 'zero');
+    scoreEl.textContent = (score > 0 ? '+' : '') + score.toLocaleString();
+    nameScoreRow.appendChild(nameEl);
+    nameScoreRow.appendChild(scoreEl);
+    textArea.appendChild(nameScoreRow);
+
+    card.appendChild(textArea);
+    return card;
+  }
+
+  function buildCourtHeader(label) {
+    const header = document.createElement('div');
+    header.className = 'court-header';
+    const text = document.createElement('div');
+    text.className = 'court-header-text';
+    text.textContent = label || '';
+    header.appendChild(text);
+    return header;
+  }
+
+  // ── 描画本体 ──
+  function render(recentData, teamMap, playerMap) {
+    const courts = document.getElementById('og-courts');
+    courts.innerHTML = '';
+
+    // 卓ごとにグループ化
+    const courtMap = {};
+    recentData.forEach(r => {
+      const n = courtNum(r.position || '1');
+      if (!courtMap[n]) courtMap[n] = { label: r.cardname || `${n}卓`, entries: [] };
+      courtMap[n].entries.push(r);
+    });
+
+    const ORDER = ['upleft','upright','bottomleft','bottomright'];
+
+    Object.values(courtMap).forEach(court => {
+      const sortedByPos = ORDER
+        .map(dir => court.entries.find(e => posDir(e.position || '') === dir))
+        .filter(Boolean);
+      court.entries.forEach(e => { if (!sortedByPos.includes(e)) sortedByPos.push(e); });
+
+      const block = document.createElement('div');
+      block.className = 'court-block';
+      block.appendChild(buildCourtHeader(court.label));
+
+      const board = document.createElement('div');
+      board.className = 'court-board';
+      for (let i = 0; i < 4; i++) {
+        board.appendChild(buildResultCard(sortedByPos[i] || null, teamMap, playerMap));
+      }
+      block.appendChild(board);
+      courts.appendChild(block);
+    });
+
+    // ヘッダのメタ情報（最初のレコードから推定。無ければ空）
+    const first = recentData[0] || {};
+    document.getElementById('og-section').textContent = first.section || first.cardname_section || '';
+    document.getElementById('og-date').textContent    = first.date || '';
+  }
+
+  // ── 全画像の読み込み完了を待つ ──
+  function waitForImages() {
+    const imgs = Array.from(document.querySelectorAll('#capture img'));
+    return Promise.all(imgs.map(img => {
+      if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+      return new Promise(res => {
+        // load でも error でも「待ち終了」とする（壊れた画像で固まらない）
+        img.addEventListener('load', res, { once: true });
+        img.addEventListener('error', res, { once: true });
+      });
+    }));
+  }
+
+  // ── 準備完了フラグ：Playwright はこれを待つ ──
+  function markReady() {
+    window.__OG_READY__ = true;
+  }
+  function markError(msg) {
+    const cap = document.getElementById('capture');
+    const el = document.createElement('div');
+    el.className = 'og-error';
+    el.textContent = msg || 'データの読み込みに失敗しました';
+    cap.appendChild(el);
+    window.__OG_ERROR__ = msg || 'error';
+    window.__OG_READY__ = true; // 失敗時もフラグは立てる（無限待ち防止）
+  }
+
+  // ── 起動 ──
+  (async function init() {
+    fitPreview();
+    try {
+      const [recentRes, teamRes] = await Promise.all([
+        fetch(`${BASE}/recent_result.json`),
+        fetch(`${BASE}/team.json`)
+      ]);
+      if (!recentRes.ok) throw new Error('recent_result.json fetch failed: ' + recentRes.status);
+      if (!teamRes.ok)   throw new Error('team.json fetch failed: ' + teamRes.status);
+
+      const recentData = await recentRes.json();
+      const teamData   = await teamRes.json();
+
+      // players.json は graceful fallback（立ち絵用）
+      let players = [];
+      try {
+        const pRes = await fetch(`${BASE}/players.json`);
+        if (pRes.ok) players = await pRes.json();
+      } catch(_) {}
+
+      const teamMap = {};
+      teamData.forEach(t => {
+        teamMap[t.name] = { image_url: t.image_url || null, color: normalizeColor(t.color) };
+      });
+      const playerMap = {};
+      players.forEach(p => { if (p.player) playerMap[p.player] = { image_url: p.image_url || null }; });
+
+      render(recentData, teamMap, playerMap);
+      fitPreview();
+
+      // フォント＋画像の両方の読み込み完了を待ってからフラグを立てる
+      await (document.fonts ? document.fonts.ready : Promise.resolve());
+      await waitForImages();
+      // 念のため次フレームまで待つ（レイアウト確定）
+      requestAnimationFrame(() => requestAnimationFrame(markReady));
+    } catch (e) {
+      console.error(e);
+      markError(String(e.message || e));
+    }
+  })();
+  </script>
+</body>
+</html>
