@@ -1,1 +1,70 @@
+# ════════════════════════════════════════════════════════════
+# og-capture.yml  ―  【Step2-A 最小構成】
+#   手動ボタンを押すと og_result.html を1枚だけPNG化して
+#   previews/result.png としてリポジトリに保存する。
+#
+#   ※まずこれが動くことを確認するのが目的。
+#     3枚対応・自動トリガーは動作確認後に足す。
+# ════════════════════════════════════════════════════════════
 
+# ワークフローの表示名（ActionsタブのUIに出る）
+name: OG画像キャプチャ（最小構成）
+
+# ── いつ動くか ──
+on:
+  # 手動実行ボタンを有効にする（ActionsタブにRun workflowボタンが出る）
+  workflow_dispatch:
+
+# ── 実行する作業のまとまり ──
+jobs:
+  capture:
+    # 使い捨てLinux（最新のUbuntu）を使う
+    runs-on: ubuntu-latest
+
+    # このジョブにリポジトリへ書き込む権限を与える（PNGをcommitするため）
+    permissions:
+      contents: write
+
+    steps:
+      # ① リポジトリのファイルを使い捨てLinuxに持ってくる
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      # ② Node.js を入れる
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # ③ 日本語フォントを入れる（これが無いと文字が□豆腐になる）
+      - name: 日本語フォントを導入
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk
+
+      # ④ Playwright と Chromium を入れる
+      #    --with-deps でChromeの動作に必要なライブラリも一緒に入る
+      - name: Playwright を導入
+        run: |
+          npm install playwright
+          npx playwright install --with-deps chromium
+
+      # ⑤ og_*.html を配信する簡易HTTPサーバをバックグラウンドで起動
+      #    fetch('data/...') を成立させるため file:// ではなく http:// で開く
+      #    末尾の & でバックグラウンド実行、sleepでサーバ起動を少し待つ
+      - name: 簡易サーバを起動
+        run: |
+          npx --yes http-server . -p 8080 -c-1 &
+          sleep 3
+
+      # ⑥ キャプチャ実行（まずは前回の結果1枚だけ）
+      - name: og_result をキャプチャ
+        run: node scripts/capture.mjs --url "http://localhost:8080/og_result.html" --out "previews/result.png"
+
+      # ⑦ できたPNGをリポジトリにcommit & push
+      #    変更が無いときにエラーで落ちないよう || true でガード
+      - name: PNGをコミット
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add previews/result.png
+          git commit -m "chore: og画像を更新（result）" || echo "変更なし"
+          git push
