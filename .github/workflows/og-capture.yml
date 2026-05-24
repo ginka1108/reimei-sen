@@ -1,11 +1,13 @@
 # ════════════════════════════════════════════════════════════
-# og-capture.yml  ―  【Step2-B 3枚対応】
-#   手動ボタンを押すと3種類のog画像をPNG化して previews/ に保存する。
+# og-capture.yml  ―  【Step3 自動トリガー対応】
+#   3種類のog画像をPNG化して previews/ に保存する。
 #     previews/result.png   … 前回の結果
 #     previews/ranking.png  … チーム順位表
 #     previews/match.png    … 次節の組み合わせ
 #
-#   ※自動トリガー（成績pushで起動）は動作確認後に足す。
+#   起動条件:
+#     - data/ 配下のJSONがpushされたとき（成績更新で自動）
+#     - 手動ボタン（テスト/リカバリ用に残す）
 # ════════════════════════════════════════════════════════════
 
 # ワークフローの表示名（ActionsタブのUIに出る）
@@ -13,8 +15,17 @@ name: OG画像キャプチャ（3枚）
 
 # ── いつ動くか ──
 on:
-  # 手動実行ボタンを有効にする（ActionsタブにRun workflowボタンが出る）
+  # 手動実行ボタン（ActionsタブのRun workflow。テストやリカバリ用に常設）
   workflow_dispatch:
+
+  # data/ 配下のJSONがpushされたら自動起動
+  push:
+    branches:
+      - main          # main ブランチへのpushのみ対象
+    paths:
+      - 'data/**'     # ← data配下の変更だけに反応。
+                      #    previews/ のPNGをActions自身がpushしても
+                      #    ここに含まれないので再発火しない（無限ループ防止）
 
 # ── 実行する作業のまとまり ──
 jobs:
