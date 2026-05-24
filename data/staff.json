@@ -3,60 +3,60 @@
     "id": 1,
     "name": "メカZ",
     "image_id": 7,
-    "image_url": "https://drive.google.com/thumbnail?id=1t8W5ldajZsy-bKz7XvJrljqOusNwcyjT&sz=w200"
+    "image_url": "assets/images/7.png"
   },
   {
     "id": 2,
     "name": "めあともえ",
     "image_id": 8,
-    "image_url": "https://drive.google.com/thumbnail?id=1ZttSBGmsj1Hn0zEcaImdOqQ6eS5Luk66&sz=w200"
+    "image_url": "assets/images/8.png"
   },
   {
     "id": 3,
     "name": "銀貨先生",
     "image_id": 19,
-    "image_url": "https://drive.google.com/thumbnail?id=1EvxP8BjBTOPfTlTVUzEM5U6nQqrWydIv&sz=w200"
+    "image_url": "assets/images/19.png"
   },
   {
     "id": 4,
     "name": "東雲ハヤテ",
     "image_id": 25,
-    "image_url": "https://drive.google.com/thumbnail?id=102xDMNKWyygCl5F3dQDrjfV1I0llELou&sz=w200"
+    "image_url": "assets/images/25.png"
   },
   {
     "id": 5,
     "name": "どろめらくだ",
     "image_id": 24,
-    "image_url": "https://drive.google.com/thumbnail?id=1jBew1CFjOUv3sRqbG_jf81ynfqTdslXP&sz=w200"
+    "image_url": "assets/images/24.png"
   },
   {
     "id": 6,
     "name": "希水",
     "image_id": 20,
-    "image_url": "https://drive.google.com/thumbnail?id=1dyX_6O9gcxV5atT0b4VjIN8XT24xiYOf&sz=w200"
+    "image_url": "assets/images/20.png"
   },
   {
     "id": 7,
     "name": "はじけない源内",
     "image_id": 23,
-    "image_url": "https://drive.google.com/thumbnail?id=1K9D7s2U4FBxaTGo8Y16Eaodhq4cAW7cF&sz=w200"
+    "image_url": "assets/images/23.png"
   },
   {
     "id": 8,
     "name": "リコ",
     "image_id": 21,
-    "image_url": "https://drive.google.com/thumbnail?id=1kXWuqDGoOrYS2u6jIGQ5uu5pnIJoFIVQ&sz=w200"
+    "image_url": "assets/images/21.png"
   },
   {
     "id": 9,
     "name": "りな",
     "image_id": 22,
-    "image_url": "https://drive.google.com/thumbnail?id=18DpsYfSOVrT4wMv5JBHxC11Lp-l43VI-&sz=w200"
+    "image_url": "assets/images/22.png"
   },
   {
     "id": 10,
     "name": "カモメ",
     "image_id": 26,
-    "image_url": "https://drive.google.com/thumbnail?id=1lX5V6lSC9QtYGy68CVSEJ9fZSsUpmfb5&sz=w200"
+    "image_url": "assets/images/26.png"
   }
 ]
