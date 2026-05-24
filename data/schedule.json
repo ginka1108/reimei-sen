@@ -2,7 +2,7 @@
   {
     "date": "2026-05-26",
     "section": "雪1節",
-    "upleft1": "Akatsuki",
+    "upleft1": "暁",
     "upright1": "抜天ステージ",
     "bottomleft1": "すべてを超えていけ",
     "bottomright1": "旭光一閃",
@@ -10,7 +10,7 @@
     "upright2": null,
     "bottomleft2": null,
     "bottomright2": null,
-    "upleft1_image": null,
+    "upleft1_image": "assets/images/6.png",
     "upright1_image": "assets/images/5.png",
     "bottomleft1_image": "assets/images/2.png",
     "bottomright1_image": "assets/images/4.png",
