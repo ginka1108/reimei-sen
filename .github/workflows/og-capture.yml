@@ -13,6 +13,16 @@
 # ワークフローの表示名（ActionsタブのUIに出る）
 name: OG画像キャプチャ（3枚）
 
+# ── 同時実行の制御（後勝ち） ──
+#   GASは複数JSONを連続pushするため、Actionsも連続起動する。
+#   同じグループ名の実行は1本に絞り、新しい実行が来たら
+#   実行中の古いものをキャンセルする（cancel-in-progress: true）。
+#   → 最後のpush時点（全データが揃った状態）で1回だけ撮れる。
+#   → 複数の git push がぶつかる競合も起きなくなる。
+concurrency:
+  group: og-capture          # このグループ内では同時に1本だけ
+  cancel-in-progress: true   # 新しいのが来たら実行中をキャンセル（後勝ち）
+
 # ── いつ動くか ──
 on:
   # 手動実行ボタン（ActionsタブのRun workflow。テストやリカバリ用に常設）
@@ -81,11 +91,36 @@ jobs:
 
       # ⑦ できたPNGをリポジトリにcommit & push
       #    previews/ 配下をまとめて対象にする。
-      #    変更が無いときにエラーで落ちないよう || で逃がす。
+      #    concurrency で競合はほぼ防げるが、保険として
+      #    push失敗時はリモート最新を取り込んで数回リトライする。
       - name: PNGをコミット
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
           git add previews/
-          git commit -m "chore: og画像を更新（result/ranking/match）" || echo "変更なし"
-          git push
+
+          # 変更が無ければここで終了（commitもpushもしない）
+          if git diff --cached --quiet; then
+            echo "変更なし: コミットをスキップ"
+            exit 0
+          fi
+
+          git commit -m "chore: og画像を更新（result/ranking/match）"
+
+          # push をリトライ付きで実行（最大5回）
+          # rejected が出たら remote の最新を rebase で取り込んでから再push
+          n=0
+          until [ $n -ge 5 ]; do
+            if git push; then
+              echo "push 成功"
+              exit 0
+            fi
+            n=$((n+1))
+            echo "push 失敗（$n 回目）。最新を取り込んで再試行します…"
+            git pull --rebase origin main
+            sleep 3
+          done
+
+          echo "push が5回失敗しました"
+          exit 1
