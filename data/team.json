@@ -4,34 +4,34 @@
     "name": "デジタルクルーズ",
     "image_id": 3,
     "color": "#7058a3",
-    "image_url": "https://drive.google.com/thumbnail?id=1l9zUJMXuAW9Td7Bos3P7AoeHMDY9vq9r&sz=w200"
+    "image_url": "assets/images/3.png"
   },
   {
     "id": 2,
     "name": "Akatsuki",
     "image_id": 6,
     "color": "#274f98",
-    "image_url": "https://drive.google.com/thumbnail?id=1D5hZeGdRxczVWPLMxQ8RRoruvWDrB25r&sz=w200"
+    "image_url": "assets/images/6.png"
   },
   {
     "id": 3,
     "name": "抜天ステージ",
     "image_id": 5,
     "color": "#ffa500",
-    "image_url": "https://drive.google.com/thumbnail?id=12_-A7jX9zQgs_VRk_Qg9bTxqxBQ_e6Yz&sz=w200"
+    "image_url": "assets/images/5.png"
   },
   {
     "id": 4,
     "name": "すべてを超えていけ",
     "image_id": 2,
     "color": "e2041b",
-    "image_url": "https://drive.google.com/thumbnail?id=1j3eVVzExjXLfdnIsE7NKBi6uYPkk0ZjK&sz=w200"
+    "image_url": "assets/images/2.png"
   },
   {
     "id": 5,
     "name": "旭光一閃",
     "image_id": 4,
     "color": "#ffff00",
-    "image_url": "https://drive.google.com/thumbnail?id=1doxCKpNpiOhjsGE6RHy1SroftbhBcFVg&sz=w200"
+    "image_url": "assets/images/4.png"
   }
 ]
