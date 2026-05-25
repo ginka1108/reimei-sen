@@ -2,57 +2,57 @@
   {
     "id": 1,
     "position": "upleft1",
-    "team": "すべてを超えていけ",
-    "player": "比嘉秀仁",
+    "team": "暁",
+    "player": "ren",
     "cardname": "天卓"
   },
   {
     "id": 2,
     "position": "upright1",
-    "team": "デジタルクルーズ",
-    "player": "リツミさん",
+    "team": "抜天ステージ",
+    "player": "日菜むい",
     "cardname": "天卓"
   },
   {
     "id": 3,
     "position": "bottomleft1",
-    "team": "Akatsuki",
-    "player": "べるふぇごーる",
+    "team": "すべてを超えていけ",
+    "player": "比嘉秀仁",
     "cardname": "天卓"
   },
   {
     "id": 4,
     "position": "bottomright1",
     "team": "旭光一閃",
-    "player": "せどなりあん",
+    "player": "ようへー",
     "cardname": "天卓"
   },
   {
     "id": 5,
     "position": "upleft2",
-    "team": "水天一碧",
-    "player": "めあともえ",
+    "team": "暁",
+    "player": "高良匡史",
     "cardname": "元卓"
   },
   {
     "id": 6,
     "position": "upright2",
-    "team": "すべてを超えていけ",
-    "player": "メカZ",
+    "team": "抜天ステージ",
+    "player": "民芸",
     "cardname": "元卓"
   },
   {
     "id": 7,
     "position": "bottomleft2",
-    "team": "デジタルクルーズ",
-    "player": "東雲ハヤテ",
+    "team": "すべてを超えていけ",
+    "player": "神仙酵母",
     "cardname": "元卓"
   },
   {
     "id": 8,
     "position": "bottomright2",
-    "team": "総捲り",
-    "player": "泥目楽堕",
+    "team": "旭光一閃",
+    "player": "げんぶ",
     "cardname": "元卓"
   }
 ]
