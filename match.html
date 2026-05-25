@@ -1,140 +1,831 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>準備中 — 黎明戦</title>
-<link rel="icon" href="https://drive.google.com/thumbnail?id=15FcaEh58Xun88Nl_1umAbvhDhzR7i_lZ&sz=w64" type="image/png">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;background:#06020e;overflow:hidden;}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MATCH - 黎明戦</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06020e;
+      --gold: rgba(200,168,75,1);
+      --gold-dim: rgba(200,168,75,0.35);
+      --gold-faint: rgba(200,168,75,0.08);
+      --text: #e8e0d0;
+      --text-dim: rgba(232,224,208,0.5);
+      --dawn: #e8713a;
+      --dawn-dim: rgba(232,113,58,0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Serif JP', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    body.visible { opacity: 1; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(232,113,58,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 50% at 50% 110%, rgba(200,168,75,0.04) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
 
-#content{
-  position:relative;z-index:10;
-  text-align:center;
-  animation:fadeUp 1.5s 0.3s cubic-bezier(.16,1,.3,1) both;
-}
-#logo-wrap{margin-bottom:32px;}
-#logo-wrap img{
-  height:60px;
-  filter:drop-shadow(0 0 12px rgba(255,160,60,0.5));
-}
-#label{
-  font-family:'Hiragino Kaku Gothic ProN',sans-serif;
-  font-size:11px;letter-spacing:0.35em;
-  color:rgba(200,168,75,0.5);
-  text-transform:uppercase;
-  margin-bottom:24px;
-}
-#title{
-  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
-  font-size:32px;letter-spacing:0.25em;
-  color:#fff;
-  text-shadow:0 0 30px rgba(255,180,80,0.3);
-  margin-bottom:12px;
-}
-#sub{
-  font-size:13px;letter-spacing:0.15em;
-  color:rgba(232,224,208,0.45);
-  margin-bottom:40px;
-  line-height:1.8;
-}
-#line{
-  width:80px;height:1px;margin:0 auto 40px;
-  background:linear-gradient(90deg,transparent,rgba(200,168,75,0.5),transparent);
-}
-#back-btn{
-  display:inline-block;
-  font-family:'Hiragino Kaku Gothic ProN',sans-serif;
-  font-size:11px;letter-spacing:0.25em;
-  color:rgba(200,168,75,0.8);
-  border:1px solid rgba(200,168,75,0.35);
-  padding:10px 28px;border-radius:2px;
-  text-decoration:none;
-  transition:all 0.25s;
-}
-#back-btn:hover{
-  background:rgba(200,168,75,0.1);
-  color:rgba(200,168,75,1);
-  border-color:rgba(200,168,75,0.7);
-}
+    /* ── ヘッダ ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px;
+      display: flex; align-items: center; padding: 0 24px;
+      background: rgba(6,2,14,0.88); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gold-dim); z-index: 100; gap: 16px;
+    }
+    .back-btn {
+      color: var(--gold); text-decoration: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px; letter-spacing: 0.1em; opacity: 0.8; transition: opacity 0.2s;
+    }
+    .back-btn:hover { opacity: 1; }
+    .back-btn::before { content: '← '; }
+    .header-logo { height: 28px; margin-left: auto; opacity: 0.9; }
 
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px);}
-  to{opacity:1;transform:translateY(0);}
-}
-</style>
+    /* ── メイン ── */
+    main {
+      position: relative; z-index: 1;
+      padding: 68px 16px 56px;
+      max-width: 1600px; margin: 0 auto;
+      display: flex; flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ── タブ ── */
+    .tabs {
+      display: flex; justify-content: center; gap: 0;
+      padding-top: 10px;
+    }
+    .tab-btn {
+      padding: 9px 32px; background: none;
+      border: 1px solid var(--gold-dim); color: var(--text-dim);
+      font-family: 'Noto Serif JP', serif; font-size: 12px;
+      letter-spacing: 0.18em; cursor: pointer; transition: all 0.25s;
+    }
+    .tab-btn:first-child { border-radius: 2px 0 0 2px; }
+    .tab-btn:last-child  { border-radius: 0 2px 2px 0; border-left: none; }
+    .tab-btn.active {
+      background: rgba(200,168,75,0.12); color: var(--gold);
+      border-color: var(--gold); box-shadow: 0 0 12px rgba(200,168,75,0.15);
+    }
+
+    /* ── パネル ── */
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeUp 0.35s ease; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ════════════════════════════════════════
+       メタ情報バー
+    ════════════════════════════════════════ */
+    .meta-bar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 3px;
+      background: rgba(200,168,75,0.04);
+      gap: 12px; flex-wrap: wrap;
+      margin-bottom: 2px;
+    }
+    .meta-center { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+    .meta-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(14px, 2vw, 19px); letter-spacing: 0.15em; color: var(--text);
+    }
+    .meta-right { text-align: right; }
+    .meta-section-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(15px, 2.2vw, 20px); letter-spacing: 0.15em; color: var(--gold);
+      white-space: nowrap;
+    }
+    .meta-section-sub {
+      font-size: 10px; letter-spacing: 0.2em; color: var(--text-dim); margin-top: 2px;
+    }
+
+    /* ════════════════════════════════════════
+       共通：卓ブロック（16:9の2×2 + 上部見出し）
+       court-block  : ヘッダ+ボードのラッパー
+       court-header : 「天卓」「元卓」見出し
+       court-board  : 16:9 の 2×2 グリッド（崩さない）
+    ════════════════════════════════════════ */
+    .match-grid {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 14px;
+      width: 100%;
+    }
+    .court-block {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      /* 高さ上限は board の aspect-ratio に任せる */
+    }
+    /* 卓見出しフレーム */
+    .court-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 2px;
+      background: rgba(200,168,75,0.06);
+      flex-shrink: 0;
+    }
+    .court-header::before,
+    .court-header::after {
+      content: '';
+      width: clamp(20px, 6vw, 60px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    }
+    .court-header-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(12px, 1.4vw, 15px);
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      padding-left: 0.4em;  /* letter-spacingで右に寄る分を相殺 */
+      white-space: nowrap;
+    }
+    /* 16:9 の 2×2 グリッド（ここは絶対崩さない） */
+    .court-board {
+      aspect-ratio: 16 / 9;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 3px;
+      width: 100%;
+      max-height: calc(100vh - 260px);  /* 見出し分を少し差し引く */
+    }
+
+    /* ════════════════════════════════════════
+       ① 対戦チームタブ：ロゴだけの16:9カード
+    ════════════════════════════════════════ */
+    .team-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--gold-dim);
+      background: #000;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.25s;
+    }
+    .team-card:hover { border-color: var(--gold); }
+
+    /* チームカラー帯（上辺） */
+    .team-card-colorbar {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 3;
+    }
+
+    /* ロゴ画像：カードいっぱいに */
+    .team-card-logo {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .team-card-logo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .team-card-logo .logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(14px, 2.5vw, 22px);
+      color: var(--gold-dim); text-align: center;
+      padding: 8px; letter-spacing: 0.05em; line-height: 1.4;
+    }
+
+    /* コーナーデコ */
+    .team-card::before, .team-card::after {
+      content: ''; position: absolute;
+      width: 10px; height: 10px;
+      border-color: var(--gold-dim); border-style: solid;
+      z-index: 4; pointer-events: none;
+    }
+    .team-card::before { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
+    .team-card::after  { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+
+    /* ════════════════════════════════════════
+       ② 対戦カードタブ：選手名メイン
+       レイヤー構造（下から）:
+         1. 黒背景
+         2. メインビジュアル (.pc-visual)
+            ─ 立ち絵 > チームロゴ > 表示なし のフォールバック
+         3. チームカラーグラデ
+         4. テキスト
+    ════════════════════════════════════════ */
+    .player-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--gold-dim);
+      background: #060210;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      transition: border-color 0.25s;
+    }
+    .player-card:hover { border-color: var(--gold); }
+
+    /* レイヤー1: メインビジュアル（立ち絵 or チームロゴ） */
+    .pc-visual {
+      position: absolute; inset: 0;
+      z-index: 1;
+      display: flex; align-items: flex-end; justify-content: center;
+      overflow: hidden;
+    }
+    /* 立ち絵: 下端揃え、人物が立つ */
+    .pc-visual.is-tachie img {
+      height: 100%;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+      object-position: center bottom;
+      opacity: 0.55;
+    }
+    /* チームロゴフォールバック: 中央配置、薄く */
+    .pc-visual.is-logo {
+      align-items: center;
+    }
+    .pc-visual.is-logo img {
+      width: 70%; height: 70%;
+      object-fit: contain;
+      opacity: 0.18;
+      filter: blur(0.5px);
+    }
+
+    /* レイヤー2: チームカラーのグラデオーバーレイ（下から） */
+    .pc-color-overlay {
+      position: absolute; inset: 0; z-index: 3;
+      /* JSでbackgroundを設定 */
+    }
+
+    /* レイヤー3: 上辺カラーバー */
+    .pc-colorbar {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 5;
+    }
+
+    /* コーナーデコ */
+    .player-card::before, .player-card::after {
+      content: ''; position: absolute;
+      width: 10px; height: 10px;
+      border-color: var(--gold-dim); border-style: solid;
+      z-index: 6; pointer-events: none;
+    }
+    .player-card::before { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
+    .player-card::after  { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+
+    /* テキストエリア（最前面） */
+    .pc-text {
+      position: relative; z-index: 5;
+      padding: clamp(8px, 1.5vw, 16px) clamp(10px, 2vw, 20px);
+      display: flex; flex-direction: column; gap: 4px;
+    }
+
+    /* チームロゴ（小さく左） */
+    .pc-team-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 2px;
+    }
+    .pc-mini-logo {
+      width: clamp(18px, 2.5vw, 28px);
+      height: clamp(18px, 2.5vw, 28px);
+      border-radius: 50%; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.05);
+    }
+    .pc-mini-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .pc-mini-logo span {
+      font-size: clamp(8px, 1.1vw, 11px); color: var(--gold-dim);
+    }
+    .pc-team-name {
+      font-size: clamp(9px, 1.1vw, 11px); letter-spacing: 0.08em;
+      color: rgba(232,224,208,0.65); line-height: 1;
+    }
+
+    /* 選手名（メイン、大きく） */
+    .pc-player-name {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(14px, 2.8vw, 26px);
+      font-weight: 400; letter-spacing: 0.08em;
+      color: var(--text);
+      text-shadow: 0 0 20px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.7);
+      line-height: 1.2;
+    }
+    .pc-player-name.undecided {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; font-size: clamp(12px, 2vw, 20px);
+      color: var(--text-dim); letter-spacing: 0.2em;
+    }
+
+    /* ── ローディング/エラー ── */
+    .loading {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 14px; padding: 80px 0;
+      color: var(--text-dim); font-size: 12px; letter-spacing: 0.2em;
+      grid-column: 1/-1;
+    }
+    .loading-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--gold-dim); border-top-color: var(--gold);
+      border-radius: 50%; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-msg {
+      text-align: center; padding: 60px 0;
+      color: var(--dawn); font-size: 12px; letter-spacing: 0.15em;
+      grid-column: 1/-1;
+    }
+
+    /* ── 下部装飾ライン ── */
+    .bottom-line {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg,
+        transparent 0%, var(--dawn-dim) 20%, var(--dawn) 50%,
+        var(--dawn-dim) 80%, transparent 100%);
+      z-index: 100;
+    }
+
+    /* ── レスポンシブ ── */
+    @media (max-width: 720px) {
+      .match-grid {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+      }
+      .court-board {
+        /* 縦積みでも各卓は16:9を維持 */
+        max-height: none;
+        width: 100%;
+      }
+      .tab-btn { padding: 9px 18px; font-size: 11px; }
+    }
+  </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div id="content">
-  <div id="logo-wrap">
-    <img src="assets/images/文字のみ.png" alt="黎明戦"
-         onerror="this.style.display='none'">
-  </div>
-  <div id="label">Coming Soon</div>
-  <div id="title">現在準備中です</div>
-  <div id="sub">このコンテンツは近日公開予定です。<br>開幕をお待ちください。</div>
-  <div id="line"></div>
-  <a href="index.html" id="back-btn">← トップへ戻る</a>
-</div>
 
-<script>
-/* 星空背景 */
-const cv = document.getElementById('c');
-const ctx = cv.getContext('2d');
-let W, H, stars = [];
+  <header>
+    <a class="back-btn" href="index.html">トップへ</a>
+    <img class="header-logo" src="assets/images/文字のみ.png" alt="黎明戦" onerror="this.style.display='none'">
+  </header>
 
-function init() {
-  W = cv.width  = innerWidth;
-  H = cv.height = innerHeight;
-  stars = Array.from({length:120}, () => ({
-    x: Math.random()*W, y: Math.random()*H,
-    r: Math.random()*1.2+0.2,
-    a: Math.random()*0.7+0.2,
-    sp: Math.random()*0.003+0.001,
-    ph: Math.random()*Math.PI*2,
-  }));
-}
+  <main>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="panel-teams">対戦チーム</button>
+      <button class="tab-btn"        data-tab="panel-cards">対戦カード</button>
+    </div>
 
-function draw(t) {
-  requestAnimationFrame(draw);
-  ctx.clearRect(0,0,W,H);
-  /* 背景グラデーション */
-  const grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,'#000008');
-  grad.addColorStop(0.6,'#050012');
-  grad.addColorStop(1,'#0d0203');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,W,H);
-  /* 星 */
-  stars.forEach(s => {
-    const a = s.a * (0.6 + Math.sin(t*0.001*s.sp*1000 + s.ph)*0.4);
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(255,240,220,${a})`;
-    ctx.fill();
+    <!-- ① 対戦チームパネル -->
+    <div id="panel-teams" class="panel active">
+      <div class="meta-bar">
+        <div class="meta-center">
+          <div class="meta-date" id="meta-date-teams">―</div>
+        </div>
+        <div class="meta-right">
+          <div class="meta-section-name" id="meta-section-teams">―</div>
+          <div class="meta-section-sub" id="meta-sub-teams">卓組表</div>
+        </div>
+      </div>
+      <div class="match-grid" id="teams-grid">
+        <div class="loading"><div class="loading-ring"></div><span>LOADING</span></div>
+      </div>
+    </div>
+
+    <!-- ② 対戦カードパネル -->
+    <div id="panel-cards" class="panel">
+      <div class="meta-bar">
+        <div class="meta-center">
+          <div class="meta-date" id="meta-date-cards">―</div>
+        </div>
+        <div class="meta-right">
+          <div class="meta-section-name" id="meta-section-cards">―</div>
+          <div class="meta-section-sub" id="meta-sub-cards">対戦カード</div>
+        </div>
+      </div>
+      <div class="match-grid" id="cards-grid">
+        <div class="loading"><div class="loading-ring"></div><span>LOADING</span></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="bottom-line"></div>
+
+  <script>
+  // ────────────────────────────────────────────────
+  // タブ切り替え
+  // ────────────────────────────────────────────────
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
   });
-  /* 地平線グロウ */
-  const gy = H * 0.72;
-  const hg = ctx.createLinearGradient(0, gy-30, 0, gy+30);
-  hg.addColorStop(0,'transparent');
-  hg.addColorStop(0.5,'rgba(200,80,10,0.15)');
-  hg.addColorStop(1,'transparent');
-  ctx.fillStyle = hg;
-  ctx.fillRect(0, gy-30, W, 60);
-}
 
-init();
-requestAnimationFrame(draw);
-window.addEventListener('resize', init);
-window.addEventListener('pageshow', () => {
-  document.body.style.transition = 'opacity 0.4s';
-  document.body.style.opacity = '1';
-});
-</script>
+  // ────────────────────────────────────────────────
+  // ユーティリティ
+  // ────────────────────────────────────────────────
+  function normalizeColor(c) {
+    if (!c) return '#888888';
+    c = String(c).trim();
+    return c.startsWith('#') ? c : '#' + c;
+  }
+  function hexToRgb(hex) {
+    const h = hex.replace('#','');
+    return {
+      r: parseInt(h.slice(0,2),16)||0,
+      g: parseInt(h.slice(2,4),16)||0,
+      b: parseInt(h.slice(4,6),16)||0
+    };
+  }
+  function neonGlow(hex, a=0.55) {
+    const {r,g,b} = hexToRgb(hex);
+    return `0 0 14px rgba(${r},${g},${b},${a}), 0 0 3px rgba(${r},${g},${b},0.9)`;
+  }
+
+  // schedule の日付パース（"YYYY-MM-DD" or "M/D" 両対応）
+  function parseScheduleDate(str) {
+    if (!str) return null;
+    str = String(str).trim();
+    // YYYY-MM-DD 形式（GAS出力）
+    if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+      return new Date(str + 'T00:00:00');
+    }
+    // M/D 形式（フォールバック）
+    const [m, d] = str.split('/').map(Number);
+    if (!m || !d) return null;
+    const now = new Date();
+    let year = now.getFullYear();
+    if (m < now.getMonth() + 1) year++;
+    return new Date(year, m - 1, d);
+  }
+
+  const WEEKDAYS = ['日','月','火','水','木','金','土'];
+  function formatDate(d) {
+    if (!d) return '―';
+    const m  = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    const w  = WEEKDAYS[d.getDay()];
+    return `${m}月${dd}日（${w}）`;
+  }
+
+  // position の方角部分（数字除去）
+  function posDir(pos) { return String(pos).replace(/\d/g,''); }
+  // position のサフィックス数字 → 卓番号
+  function courtNum(pos) { return parseInt(String(pos).replace(/\D/g,'')) || 1; }
+
+  // ────────────────────────────────────────────────
+  // schedule から次節取得
+  // ────────────────────────────────────────────────
+  function findNextSchedule(scheduleData) {
+    const today = new Date(); today.setHours(0,0,0,0);
+    const upcoming = scheduleData
+      .map(row => ({ ...row, _date: parseScheduleDate(row.date) }))
+      .filter(row => row._date && row._date >= today)
+      .sort((a,b) => a._date - b._date);
+    return upcoming[0] || null;
+  }
+
+  // ────────────────────────────────────────────────
+  // データ取得
+  // ────────────────────────────────────────────────
+  async function loadData() {
+    try {
+      // players.json は初回プッシュ前の可能性があるので個別にtry
+      const [cardRes, teamRes, schedRes] = await Promise.all([
+        fetch('data/next_card.json'),
+        fetch('data/team.json'),
+        fetch('data/schedule.json'),
+      ]);
+      const cards    = await cardRes.json();
+      const teams    = await teamRes.json();
+      const schedule = await schedRes.json();
+
+      // players.json は graceful fallback
+      let players = [];
+      try {
+        const pRes = await fetch('data/players.json');
+        if (pRes.ok) players = await pRes.json();
+      } catch(_) { /* players.json 未プッシュの場合は空配列で続行 */ }
+
+      // teamMap: name → {image_url, color}
+      const teamMap = {};
+      teams.forEach(t => {
+        teamMap[t.name] = {
+          image_url: t.image_url || null,
+          color: normalizeColor(t.color)
+        };
+      });
+
+      // playerMap: player名 → {image_url（立ち絵）}
+      // players.json の player カラムで照合
+      const playerMap = {};
+      players.forEach(p => {
+        if (p.player) playerMap[p.player] = { image_url: p.image_url || null };
+      });
+
+      // 次節メタ情報
+      const nextSched = findNextSchedule(schedule);
+      if (nextSched) {
+        const dateStr    = formatDate(nextSched._date);
+        const secName    = nextSched.section || '';
+        const totalSec   = schedule.length;
+        const currentIdx = schedule.findIndex(r => r.section === secName);
+        const secNum     = currentIdx >= 0 ? currentIdx + 1 : '?';
+        ['teams','cards'].forEach(s => {
+          document.getElementById(`meta-date-${s}`).textContent    = dateStr;
+          document.getElementById(`meta-section-${s}`).textContent = `${secName}　卓組表`;
+          document.getElementById(`meta-sub-${s}`).textContent     = `${secNum} / ${totalSec} 節`;
+        });
+      }
+
+      // 卓ごとに整理
+      // ORDER: upleft→upright→bottomleft→bottomright（2×2グリッド順）
+      const ORDER = ['upleft','upright','bottomleft','bottomright'];
+      const courtData = {};
+      cards.forEach(c => {
+        const n = courtNum(c.position);
+        if (!courtData[n]) courtData[n] = { label: c.cardname || `${n}卓`, entries: [] };
+        courtData[n].entries.push(c);
+      });
+      // 各卓を ORDER で並び替え
+      Object.values(courtData).forEach(court => {
+        court.sorted = ORDER
+          .map(dir => court.entries.find(e => posDir(e.position) === dir))
+          .filter(Boolean);
+        // 足りない場合は末尾補完
+        court.entries.forEach(e => { if (!court.sorted.includes(e)) court.sorted.push(e); });
+      });
+
+      renderTeamsPanel(courtData, teamMap);
+      renderCardsPanel(courtData, teamMap, playerMap);
+
+    } catch(e) {
+      console.error(e);
+      ['teams-grid','cards-grid'].forEach(id => {
+        document.getElementById(id).innerHTML =
+          '<div class="error-msg">データの読み込みに失敗しました</div>';
+      });
+    }
+  }
+
+  // ────────────────────────────────────────────────
+  // ① 対戦チームパネル
+  // 各卓に「16:9の2×2」court-board + 上部見出し court-header を作って横並び
+  // ────────────────────────────────────────────────
+  function renderTeamsPanel(courtData, teamMap) {
+    const grid = document.getElementById('teams-grid');
+    grid.innerHTML = '';
+
+    const courts = Object.values(courtData);
+    if (courts.length === 0) {
+      grid.innerHTML = '<div class="error-msg">データがありません</div>';
+      return;
+    }
+
+    courts.forEach(court => {
+      const block = document.createElement('div');
+      block.className = 'court-block';
+      block.style.animation = 'fadeUp 0.4s ease both';
+
+      // 卓見出し
+      block.appendChild(buildCourtHeader(court.label));
+
+      // 16:9 の 2×2 ボード
+      const board = document.createElement('div');
+      board.className = 'court-board';
+      // 常に4セル（足りなければ空セルで埋める）
+      for (let i = 0; i < 4; i++) {
+        const entry = court.sorted[i] || null;
+        board.appendChild(buildTeamCard(entry, teamMap));
+      }
+      block.appendChild(board);
+
+      grid.appendChild(block);
+    });
+  }
+
+  // 卓見出しフレーム
+  function buildCourtHeader(label) {
+    const header = document.createElement('div');
+    header.className = 'court-header';
+    const text = document.createElement('div');
+    text.className = 'court-header-text';
+    text.textContent = label || '';
+    header.appendChild(text);
+    return header;
+  }
+
+  function buildTeamCard(entry, teamMap) {
+    const info  = entry ? (teamMap[entry.team] || {}) : {};
+    const color = info.color || '#444444';
+    const {r,g,b} = hexToRgb(color);
+
+    const card = document.createElement('div');
+    card.className = 'team-card';
+    card.style.animation = 'fadeUp 0.4s ease both';
+
+    if (!entry) {
+      card.innerHTML = '<div style="color:var(--text-dim);font-size:11px;letter-spacing:.2em">―</div>';
+      return card;
+    }
+
+    // カラーバー（上辺）
+    const bar = document.createElement('div');
+    bar.className = 'team-card-colorbar';
+    bar.style.background = `linear-gradient(90deg, rgba(${r},${g},${b},0.95), rgba(${r},${g},${b},0.2))`;
+    card.appendChild(bar);
+
+    // ロゴ全面
+    const logoWrap = document.createElement('div');
+    logoWrap.className = 'team-card-logo';
+    if (info.image_url) {
+      const img = document.createElement('img');
+      img.src = info.image_url; img.alt = entry.team; img.loading = 'lazy';
+      logoWrap.appendChild(img);
+    } else {
+      const fb = document.createElement('div');
+      fb.className = 'logo-text'; fb.textContent = entry.team;
+      logoWrap.appendChild(fb);
+    }
+    card.appendChild(logoWrap);
+
+    return card;
+  }
+
+  // ────────────────────────────────────────────────
+  // ② 対戦カードパネル
+  // 各卓を「16:9の2×2」court-block として作り、横並びにする
+  // ────────────────────────────────────────────────
+  function renderCardsPanel(courtData, teamMap, playerMap) {
+    const grid = document.getElementById('cards-grid');
+    grid.innerHTML = '';
+
+    const courts = Object.values(courtData);
+    if (courts.length === 0) {
+      grid.innerHTML = '<div class="error-msg">データがありません</div>';
+      return;
+    }
+
+    courts.forEach(court => {
+      const block = document.createElement('div');
+      block.className = 'court-block';
+      block.style.animation = 'fadeUp 0.4s ease both';
+
+      // 卓見出し
+      block.appendChild(buildCourtHeader(court.label));
+
+      // 16:9 の 2×2 ボード
+      const board = document.createElement('div');
+      board.className = 'court-board';
+      for (let i = 0; i < 4; i++) {
+        const entry = court.sorted[i] || null;
+        board.appendChild(buildPlayerCard(entry, teamMap, playerMap));
+      }
+      block.appendChild(board);
+
+      grid.appendChild(block);
+    });
+  }
+
+  function buildPlayerCard(entry, teamMap, playerMap) {
+    const info  = entry ? (teamMap[entry.team] || {}) : {};
+    const color = info.color || '#444444';
+    const {r,g,b} = hexToRgb(color);
+
+    const card = document.createElement('div');
+    card.className = 'player-card';
+
+    if (!entry) {
+      card.innerHTML = '<div style="color:var(--text-dim);font-size:11px;letter-spacing:.2em;padding:12px">―</div>';
+      return card;
+    }
+
+    // ── レイヤー1: メインビジュアル（立ち絵 → チームロゴ → なし）
+    const pName     = (entry.player || '').trim();
+    const pInfo     = playerMap[pName] || {};
+    const tachieUrl = pInfo.image_url || null;
+
+    if (tachieUrl) {
+      // 立ち絵あり
+      const wrap = document.createElement('div');
+      wrap.className = 'pc-visual is-tachie';
+      const img = document.createElement('img');
+      img.src = tachieUrl; img.alt = pName; img.loading = 'lazy';
+      // 立ち絵が読めなかった場合のフォールバック（チームロゴ→無）
+      img.onerror = () => {
+        wrap.classList.remove('is-tachie');
+        wrap.innerHTML = '';
+        if (info.image_url) {
+          wrap.classList.add('is-logo');
+          const fb = document.createElement('img');
+          fb.src = info.image_url; fb.alt = entry.team; fb.loading = 'lazy';
+          fb.onerror = () => { wrap.remove(); };
+          wrap.appendChild(fb);
+        } else {
+          wrap.remove();
+        }
+      };
+      wrap.appendChild(img);
+      card.appendChild(wrap);
+    } else if (info.image_url) {
+      // 立ち絵なし → チームロゴへフォールバック
+      const wrap = document.createElement('div');
+      wrap.className = 'pc-visual is-logo';
+      const img = document.createElement('img');
+      img.src = info.image_url; img.alt = entry.team; img.loading = 'lazy';
+      img.onerror = () => { wrap.remove(); };
+      wrap.appendChild(img);
+      card.appendChild(wrap);
+    }
+    // どちらも無い場合は表示なし（黒背景のまま）
+
+    // ── レイヤー2: カラーオーバーレイ（下から上へグラデ）
+    const overlay = document.createElement('div');
+    overlay.className = 'pc-color-overlay';
+    overlay.style.background = `
+      linear-gradient(
+        to top,
+        rgba(${r},${g},${b},0.55) 0%,
+        rgba(${r},${g},${b},0.18) 45%,
+        rgba(0,0,0,0.15) 100%
+      )
+    `;
+    card.appendChild(overlay);
+
+    // ── レイヤー3: カラーバー（上辺）
+    const bar = document.createElement('div');
+    bar.className = 'pc-colorbar';
+    bar.style.background = `linear-gradient(90deg, rgba(${r},${g},${b},0.95), rgba(${r},${g},${b},0.2))`;
+    card.appendChild(bar);
+
+    // ── テキストエリア
+    const textArea = document.createElement('div');
+    textArea.className = 'pc-text';
+
+    // チームロゴ（小）＋チーム名
+    const teamRow = document.createElement('div');
+    teamRow.className = 'pc-team-row';
+
+    const miniLogo = document.createElement('div');
+    miniLogo.className = 'pc-mini-logo';
+    miniLogo.style.borderColor = `rgba(${r},${g},${b},0.6)`;
+    miniLogo.style.boxShadow   = `0 0 8px rgba(${r},${g},${b},0.4)`;
+    if (info.image_url) {
+      const mImg = document.createElement('img');
+      mImg.src = info.image_url; mImg.alt = entry.team;
+      miniLogo.appendChild(mImg);
+    } else {
+      const sp = document.createElement('span');
+      sp.textContent = (entry.team || '?').charAt(0);
+      miniLogo.appendChild(sp);
+    }
+
+    const teamNameEl = document.createElement('div');
+    teamNameEl.className = 'pc-team-name';
+    teamNameEl.textContent = entry.team || '';
+
+    teamRow.appendChild(miniLogo);
+    teamRow.appendChild(teamNameEl);
+    textArea.appendChild(teamRow);
+
+    // 選手名（メイン）
+    const isUndecided = !pName || pName === '未定' || pName === '-';
+    const nameEl = document.createElement('div');
+    nameEl.className = 'pc-player-name' + (isUndecided ? ' undecided' : '');
+    nameEl.textContent = isUndecided ? '未　定' : pName;
+    if (!isUndecided) {
+      nameEl.style.textShadow = `0 0 20px rgba(0,0,0,0.9), 0 0 40px rgba(${r},${g},${b},0.3)`;
+    }
+    textArea.appendChild(nameEl);
+
+    card.appendChild(textArea);
+    return card;
+  }
+
+  // ────────────────────────────────────────────────
+  // 初期化
+  // ────────────────────────────────────────────────
+  window.addEventListener('pageshow', () => document.body.classList.add('visible'));
+  loadData();
+  </script>
 </body>
 </html>
