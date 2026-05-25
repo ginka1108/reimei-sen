@@ -85,9 +85,9 @@
     "team": 4,
     "player": "神仙酵母",
     "grade": "十段",
-    "image_id": null,
+    "image_id": 29,
     "comment": null,
-    "image_url": null
+    "image_url": "assets/images/29.png"
   },
   {
     "id": 11,
@@ -175,9 +175,9 @@
     "team": 2,
     "player": "ren",
     "grade": "雀聖3",
-    "image_id": null,
+    "image_id": 28,
     "comment": "私にとって初めての私設リーグ挑戦になります。それが強者揃いの黎明戦という事で身が引き締まる思いです。\n戦いたくてもそれが叶わなかった方々がいた中で選んでいただいた意味と価値を感じながら、この舞台で暴れたいと思います。\nやるからには全員倒して優勝します！よろしくお願いいたします！",
-    "image_url": null
+    "image_url": "assets/images/28.png"
   },
   {
     "id": 21,
@@ -193,9 +193,9 @@
     "team": 3,
     "player": "日菜むい",
     "grade": "雀聖3",
-    "image_id": null,
+    "image_id": 27,
     "comment": null,
-    "image_url": null
+    "image_url": "assets/images/27.png"
   },
   {
     "id": 23,
