@@ -16,15 +16,15 @@
   {
     "id": 3,
     "position": "bottomleft1",
-    "team": "旭光一閃",
-    "player": "ようへー",
+    "team": "すべてを超えていけ",
+    "player": "比嘉秀仁",
     "cardname": "天卓"
   },
   {
     "id": 4,
     "position": "bottomright1",
-    "team": "すべてを超えていけ",
-    "player": "比嘉秀仁",
+    "team": "旭光一閃",
+    "player": "ようへー",
     "cardname": "天卓"
   },
   {
@@ -44,15 +44,15 @@
   {
     "id": 7,
     "position": "bottomleft2",
-    "team": "旭光一閃",
-    "player": "げんぶ",
+    "team": "すべてを超えていけ",
+    "player": "神仙酵母",
     "cardname": "元卓"
   },
   {
     "id": 8,
     "position": "bottomright2",
-    "team": "すべてを超えていけ",
-    "player": "神仙酵母",
+    "team": "旭光一閃",
+    "player": "げんぶ",
     "cardname": "元卓"
   }
 ]
