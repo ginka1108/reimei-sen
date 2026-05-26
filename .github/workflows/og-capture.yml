@@ -1,9 +1,10 @@
 # ════════════════════════════════════════════════════════════
 # og-capture.yml  ―  【Step3 自動トリガー対応】
 #   3種類のog画像をPNG化して previews/ に保存する。
-#     previews/result.png   … 前回の結果
-#     previews/ranking.png  … チーム順位表
-#     previews/match.png    … 次節の組み合わせ
+#     previews/result.png        … 前回の結果
+#     previews/ranking.png       … チーム順位表
+#     previews/match_teams.png   … 次節の対戦（チーム）
+#     previews/match_players.png … 次節の組み合わせ（選手）
 #
 #   起動条件:
 #     - data/ 配下のJSONがpushされたとき（成績更新で自動）
@@ -11,7 +12,7 @@
 # ════════════════════════════════════════════════════════════
 
 # ワークフローの表示名（ActionsタブのUIに出る）
-name: OG画像キャプチャ（3枚）
+name: OG画像キャプチャ（4枚）
 
 # ── 同時実行の制御（後勝ち） ──
 #   GASは複数JSONを連続pushするため、Actionsも連続起動する。
@@ -77,7 +78,7 @@ jobs:
           npx --yes http-server . -p 8080 -c-1 &
           sleep 3
 
-      # ⑥ キャプチャ実行（3種類を順に撮る）
+      # ⑥ キャプチャ実行（4種類を順に撮る）
       #    capture.mjs は --url と --out で対象を切り替えられる作り。
       #    1枚失敗しても他が撮れるよう、各ステップは独立させている。
       - name: og_result をキャプチャ（前回の結果）
@@ -86,8 +87,11 @@ jobs:
       - name: og_ranking をキャプチャ（チーム順位表）
         run: node scripts/capture.mjs --url "http://localhost:8080/og_ranking.html" --out "previews/ranking.png"
 
-      - name: og_match をキャプチャ（次節の組み合わせ）
-        run: node scripts/capture.mjs --url "http://localhost:8080/og_match.html" --out "previews/match.png"
+      - name: match_teams をキャプチャ（次節の対戦・チーム）
+        run: node scripts/capture.mjs --url "http://localhost:8080/match_teams.html" --out "previews/match_teams.png"
+
+      - name: match_players をキャプチャ（次節の組み合わせ・選手）
+        run: node scripts/capture.mjs --url "http://localhost:8080/match_players.html" --out "previews/match_players.png"
 
       # ⑦ できたPNGをリポジトリにcommit & push
       #    previews/ 配下をまとめて対象にする。
@@ -106,7 +110,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore: og画像を更新（result/ranking/match）"
+          git commit -m "chore: og画像を更新（result/ranking/match_teams/match_players）"
 
           # push をリトライ付きで実行（最大5回）
           # rejected が出たら remote の最新を rebase で取り込んでから再push
