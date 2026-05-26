@@ -189,30 +189,47 @@
   function courtNum(pos) { return parseInt(String(pos).replace(/\D/g,'')) || 1; }
   function posDir(pos) { return String(pos).replace(/\d/g,''); }
 
-  // ── schedule から次節を解決（matchから流用） ──
-  function parseScheduleDate(str) {
+  // ── schedule から次節を解決（JST基準） ──
+  // タイムゾーンの罠を避けるため、日付は「JSTでのYYYY-MM-DD文字列」で扱い、
+  // 文字列の辞書順比較で大小を判定する（YYYY-MM-DDなら日付順と一致）。
+
+  function todayJST() {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date());
+  }
+
+  function normalizeDateStr(str) {
     if (!str) return null;
     str = String(str).trim();
-    if (/^\d{4}-\d{2}-\d{2}/.test(str)) return new Date(str + 'T00:00:00');
-    const [m, d] = str.split('/').map(Number);
-    if (!m || !d) return null;
-    const now = new Date(); let year = now.getFullYear();
-    if (m < now.getMonth() + 1) year++;
-    return new Date(year, m - 1, d);
+    const iso = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+    const parts = str.split('/').map(Number);
+    if (parts.length >= 2 && parts[0] && parts[1]) {
+      const [m, d] = parts;
+      const t = todayJST();
+      let year = Number(t.slice(0, 4));
+      const curMonth = Number(t.slice(5, 7));
+      if (m < curMonth) year++;
+      return `${year}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    }
+    return null;
   }
+
   const WEEKDAYS = ['日','月','火','水','木','金','土'];
-  function formatDate(d) {
-    if (!d) return '―';
-    const m = String(d.getMonth()+1).padStart(2,'0');
-    const dd = String(d.getDate()).padStart(2,'0');
-    return `${m}月${dd}日（${WEEKDAYS[d.getDay()]}）`;
+  function formatDateStr(ymd) {
+    if (!ymd) return '―';
+    const [y, m, d] = ymd.split('-').map(Number);
+    const wd = new Date(Date.UTC(y, m - 1, d, 12)).getUTCDay();
+    return `${String(m).padStart(2,'0')}月${String(d).padStart(2,'0')}日（${WEEKDAYS[wd]}）`;
   }
+
   function findNextSchedule(scheduleData) {
-    const today = new Date(); today.setHours(0,0,0,0);
+    const today = todayJST();
     const upcoming = scheduleData
-      .map(row => ({ ...row, _date: parseScheduleDate(row.date) }))
-      .filter(row => row._date && row._date >= today)
-      .sort((a,b) => a._date - b._date);
+      .map(row => ({ ...row, _ymd: normalizeDateStr(row.date) }))
+      .filter(row => row._ymd && row._ymd >= today)
+      .sort((a, b) => (a._ymd < b._ymd ? -1 : a._ymd > b._ymd ? 1 : 0));
     return upcoming[0] || null;
   }
 
@@ -388,7 +405,7 @@
       const nextSched = findNextSchedule(schedule);
       if (nextSched) {
         document.getElementById('og-section').textContent = nextSched.section || '';
-        document.getElementById('og-date').textContent    = formatDate(nextSched._date);
+        document.getElementById('og-date').textContent    = formatDateStr(nextSched._ymd);
       } else {
         const first = cards[0] || {};
         document.getElementById('og-section').textContent = (first.cardname || '').replace(/\s.*$/, '');
