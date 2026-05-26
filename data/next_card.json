@@ -2,57 +2,57 @@
   {
     "id": 1,
     "position": "upleft1",
-    "team": "暁",
-    "player": "ren",
+    "team": null,
+    "player": null,
     "cardname": "天卓"
   },
   {
     "id": 2,
     "position": "upright1",
-    "team": "抜天ステージ",
-    "player": "日菜むい",
+    "team": null,
+    "player": null,
     "cardname": "天卓"
   },
   {
     "id": 3,
     "position": "bottomleft1",
-    "team": "すべてを超えていけ",
-    "player": "比嘉秀仁",
+    "team": null,
+    "player": null,
     "cardname": "天卓"
   },
   {
     "id": 4,
     "position": "bottomright1",
-    "team": "旭光一閃",
-    "player": "ようへー",
+    "team": null,
+    "player": null,
     "cardname": "天卓"
   },
   {
     "id": 5,
     "position": "upleft2",
-    "team": "暁",
-    "player": "高良匡史",
+    "team": null,
+    "player": null,
     "cardname": "元卓"
   },
   {
     "id": 6,
     "position": "upright2",
-    "team": "抜天ステージ",
-    "player": "民芸",
+    "team": null,
+    "player": null,
     "cardname": "元卓"
   },
   {
     "id": 7,
     "position": "bottomleft2",
-    "team": "すべてを超えていけ",
-    "player": "神仙酵母",
+    "team": null,
+    "player": null,
     "cardname": "元卓"
   },
   {
     "id": 8,
     "position": "bottomright2",
-    "team": "旭光一閃",
-    "player": "げんぶ",
+    "team": null,
+    "player": null,
     "cardname": "元卓"
   }
 ]
