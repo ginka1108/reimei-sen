@@ -2,57 +2,65 @@
   {
     "id": 1,
     "position": "upleft1",
-    "team": "デジタルクルーズ",
+    "team": "抜天ステージ",
     "player": null,
-    "cardname": "天卓"
+    "cardname": "天卓",
+    "": null
   },
   {
     "id": 2,
     "position": "upright1",
-    "team": "暁",
+    "team": "すべてを超えていけ",
     "player": null,
-    "cardname": "天卓"
+    "cardname": "天卓",
+    "": null
   },
   {
     "id": 3,
     "position": "bottomleft1",
-    "team": "抜天ステージ",
+    "team": "旭光一閃",
     "player": null,
-    "cardname": "天卓"
+    "cardname": "天卓",
+    "": null
   },
   {
     "id": 4,
     "position": "bottomright1",
-    "team": "すべてを超えていけ",
+    "team": "デジタルクルーズ",
     "player": null,
-    "cardname": "天卓"
+    "cardname": "天卓",
+    "": null
   },
   {
     "id": 5,
     "position": "upleft2",
-    "team": "デジタルクルーズ",
+    "team": "抜天ステージ",
     "player": null,
-    "cardname": "元卓"
+    "cardname": "元卓",
+    "": null
   },
   {
     "id": 6,
     "position": "upright2",
-    "team": "暁",
+    "team": "すべてを超えていけ",
     "player": null,
-    "cardname": "元卓"
+    "cardname": "元卓",
+    "": null
   },
   {
     "id": 7,
     "position": "bottomleft2",
-    "team": "抜天ステージ",
+    "team": "旭光一閃",
     "player": null,
-    "cardname": "元卓"
+    "cardname": "元卓",
+    "": null
   },
   {
     "id": 8,
     "position": "bottomright2",
-    "team": "すべてを超えていけ",
+    "team": "デジタルクルーズ",
     "player": null,
-    "cardname": "元卓"
+    "cardname": "元卓",
+    "": null
   }
 ]
