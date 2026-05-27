@@ -1,140 +1,920 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>準備中 — 黎明戦</title>
-<link rel="icon" href="https://drive.google.com/thumbnail?id=15FcaEh58Xun88Nl_1umAbvhDhzR7i_lZ&sz=w64" type="image/png">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;background:#06020e;overflow:hidden;}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RESULTS - 黎明戦</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Serif+JP:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06020e;
+      --gold: rgba(200,168,75,1);
+      --gold-dim: rgba(200,168,75,0.35);
+      --gold-faint: rgba(200,168,75,0.08);
+      --text: #e8e0d0;
+      --text-dim: rgba(232,224,208,0.5);
+      --dawn: #e8713a;
+      --dawn-dim: rgba(232,113,58,0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Serif JP', serif;
+      min-height: 100vh; overflow-x: hidden;
+      opacity: 0; transition: opacity 0.5s ease;
+    }
+    body.visible { opacity: 1; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 100%, rgba(232,113,58,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 80% 50% at 50% 110%, rgba(200,168,75,0.04) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
 
-#content{
-  position:relative;z-index:10;
-  text-align:center;
-  animation:fadeUp 1.5s 0.3s cubic-bezier(.16,1,.3,1) both;
-}
-#logo-wrap{margin-bottom:32px;}
-#logo-wrap img{
-  height:60px;
-  filter:drop-shadow(0 0 12px rgba(255,160,60,0.5));
-}
-#label{
-  font-family:'Hiragino Kaku Gothic ProN',sans-serif;
-  font-size:11px;letter-spacing:0.35em;
-  color:rgba(200,168,75,0.5);
-  text-transform:uppercase;
-  margin-bottom:24px;
-}
-#title{
-  font-family:'Hiragino Mincho ProN','Yu Mincho',serif;
-  font-size:32px;letter-spacing:0.25em;
-  color:#fff;
-  text-shadow:0 0 30px rgba(255,180,80,0.3);
-  margin-bottom:12px;
-}
-#sub{
-  font-size:13px;letter-spacing:0.15em;
-  color:rgba(232,224,208,0.45);
-  margin-bottom:40px;
-  line-height:1.8;
-}
-#line{
-  width:80px;height:1px;margin:0 auto 40px;
-  background:linear-gradient(90deg,transparent,rgba(200,168,75,0.5),transparent);
-}
-#back-btn{
-  display:inline-block;
-  font-family:'Hiragino Kaku Gothic ProN',sans-serif;
-  font-size:11px;letter-spacing:0.25em;
-  color:rgba(200,168,75,0.8);
-  border:1px solid rgba(200,168,75,0.35);
-  padding:10px 28px;border-radius:2px;
-  text-decoration:none;
-  transition:all 0.25s;
-}
-#back-btn:hover{
-  background:rgba(200,168,75,0.1);
-  color:rgba(200,168,75,1);
-  border-color:rgba(200,168,75,0.7);
-}
+    /* ── ヘッダ ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px;
+      display: flex; align-items: center; padding: 0 24px;
+      background: rgba(6,2,14,0.88); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gold-dim); z-index: 100; gap: 16px;
+    }
+    .back-btn {
+      color: var(--gold); text-decoration: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px; letter-spacing: 0.1em; opacity: 0.8; transition: opacity 0.2s;
+    }
+    .back-btn:hover { opacity: 1; }
+    .back-btn::before { content: '← '; }
+    .header-logo { height: 28px; margin-left: auto; opacity: 0.9; }
 
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(20px);}
-  to{opacity:1;transform:translateY(0);}
-}
-</style>
+    /* ── メイン ── */
+    main {
+      position: relative; z-index: 1;
+      padding: 72px 24px 80px;
+      max-width: 1600px; margin: 0 auto;
+    }
+
+    /* ── ページタイトル ── */
+    .page-title { text-align: center; padding: 16px 0 20px; }
+    .page-title h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(26px,4vw,44px); font-weight: 300;
+      letter-spacing: 0.3em; color: var(--gold);
+      text-shadow: 0 0 40px rgba(200,168,75,0.3);
+    }
+    .page-title .subtitle {
+      font-size: 10px; letter-spacing: 0.35em; color: var(--text-dim); margin-top: 6px;
+    }
+
+    /* ── タブ ── */
+    .tabs {
+      display: flex; justify-content: center; gap: 0; margin-bottom: 32px;
+    }
+    .tab-btn {
+      padding: 10px 28px; background: none;
+      border: 1px solid var(--gold-dim); color: var(--text-dim);
+      font-family: 'Noto Serif JP', serif; font-size: 12px;
+      letter-spacing: 0.15em; cursor: pointer; transition: all 0.25s;
+    }
+    .tab-btn:first-child { border-radius: 2px 0 0 2px; }
+    .tab-btn:last-child  { border-radius: 0 2px 2px 0; border-left: none; }
+    .tab-btn:not(:first-child):not(:last-child) { border-left: none; }
+    .tab-btn.active {
+      background: rgba(200,168,75,0.12); color: var(--gold);
+      border-color: var(--gold); box-shadow: 0 0 12px rgba(200,168,75,0.15);
+    }
+
+    /* ── パネル ── */
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeUp 0.35s ease; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ────────────────────────────────
+       共通：セクションタイトル
+    ──────────────────────────────── */
+    .section-title {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 24px;
+    }
+    .section-title h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 400; letter-spacing: 0.2em; color: var(--gold);
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, var(--gold-dim), transparent);
+    }
+
+    /* ────────────────────────────────
+       ① 前回の結果パネル
+       recent_result.json: id,position,team,player,cardname,rank,score
+       ※match の対戦カードデザインを流用 + スコア/着順表示
+    ──────────────────────────────── */
+    /* 卓を横に並べるflex */
+    #panel-recent .match-grid {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 14px;
+      width: 100%;
+    }
+    .court-block {
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    /* 卓見出しフレーム */
+    .court-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 2px;
+      background: rgba(200,168,75,0.06);
+      flex-shrink: 0;
+    }
+    .court-header::before,
+    .court-header::after {
+      content: '';
+      width: clamp(20px, 6vw, 60px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    }
+    .court-header-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(12px, 1.4vw, 15px);
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      padding-left: 0.4em;
+      white-space: nowrap;
+    }
+    /* 16:9 の 2×2 グリッド（崩さない） */
+    .court-board {
+      aspect-ratio: 16 / 9;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 3px;
+      width: 100%;
+      max-height: calc(100vh - 320px);  /* ヘッダ/タイトル/タブ分を差し引く */
+    }
+
+    /* ── プレイヤーカード（matchから流用） ── */
+    .player-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--gold-dim);
+      background: #060210;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      transition: border-color 0.25s;
+    }
+    .player-card:hover { border-color: var(--gold); }
+
+    /* メインビジュアル（立ち絵 or チームロゴ） */
+    .pc-visual {
+      position: absolute; inset: 0;
+      z-index: 1;
+      display: flex; align-items: flex-end; justify-content: center;
+      overflow: hidden;
+    }
+    .pc-visual.is-tachie img {
+      height: 100%;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+      object-position: center bottom;
+      opacity: 0.55;
+    }
+    .pc-visual.is-logo { align-items: center; }
+    .pc-visual.is-logo img {
+      width: 70%; height: 70%;
+      object-fit: contain;
+      opacity: 0.18;
+      filter: blur(0.5px);
+    }
+
+    /* カラーオーバーレイ */
+    .pc-color-overlay {
+      position: absolute; inset: 0; z-index: 3;
+    }
+    /* 上辺カラーバー */
+    .pc-colorbar {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px; z-index: 5;
+    }
+
+    /* コーナーデコ */
+    .player-card::before, .player-card::after {
+      content: ''; position: absolute;
+      width: 10px; height: 10px;
+      border-color: var(--gold-dim); border-style: solid;
+      z-index: 6; pointer-events: none;
+    }
+    .player-card::before { top: 6px; left: 6px; border-width: 1px 0 0 1px; }
+    .player-card::after  { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+
+    /* 着順バッジ（左上、絶対配置） */
+    .pc-rank-badge {
+      position: absolute;
+      top: clamp(10px, 1.4vw, 16px);
+      left: clamp(10px, 1.4vw, 16px);
+      width: clamp(28px, 3.5vw, 42px);
+      height: clamp(28px, 3.5vw, 42px);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(14px, 1.8vw, 20px);
+      font-weight: 600;
+      z-index: 6;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.6);
+    }
+    .pc-rank-1 {
+      background: rgba(200,168,75,0.25);
+      border: 1.5px solid var(--gold);
+      color: var(--gold);
+      box-shadow: 0 0 16px rgba(200,168,75,0.5), 0 2px 12px rgba(0,0,0,0.6);
+    }
+    .pc-rank-2 {
+      background: rgba(180,180,180,0.18);
+      border: 1.5px solid rgba(180,180,180,0.7);
+      color: #d8d8d8;
+    }
+    .pc-rank-3 {
+      background: rgba(180,120,60,0.2);
+      border: 1.5px solid rgba(180,120,60,0.7);
+      color: #d09060;
+    }
+    .pc-rank-4 {
+      background: rgba(100,100,120,0.18);
+      border: 1.5px solid rgba(100,100,120,0.5);
+      color: var(--text-dim);
+    }
+
+    /* テキストエリア */
+    .pc-text {
+      position: relative; z-index: 5;
+      padding: clamp(8px, 1.5vw, 16px) clamp(10px, 2vw, 20px);
+      display: flex; flex-direction: column; gap: 4px;
+    }
+
+    /* チームロゴ（小）＋チーム名 */
+    .pc-team-row {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 2px;
+    }
+    .pc-mini-logo {
+      width: clamp(18px, 2.5vw, 28px);
+      height: clamp(18px, 2.5vw, 28px);
+      border-radius: 50%; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.05);
+    }
+    .pc-mini-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .pc-mini-logo span {
+      font-size: clamp(8px, 1.1vw, 11px); color: var(--gold-dim);
+    }
+    .pc-team-name {
+      font-size: clamp(9px, 1.1vw, 11px); letter-spacing: 0.08em;
+      color: rgba(232,224,208,0.65); line-height: 1;
+    }
+
+    /* 選手名 + スコア の行 */
+    .pc-name-score-row {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 12px;
+    }
+    .pc-player-name {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(14px, 2.6vw, 24px);
+      font-weight: 400; letter-spacing: 0.08em;
+      color: var(--text);
+      text-shadow: 0 0 20px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.7);
+      line-height: 1.2;
+      flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .pc-score {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(15px, 2.4vw, 26px);
+      font-weight: 400; letter-spacing: 0.04em;
+      flex-shrink: 0;
+      text-shadow: 0 0 16px rgba(0,0,0,0.85), 0 2px 6px rgba(0,0,0,0.7);
+      white-space: nowrap;
+    }
+    .pc-score.positive { color: var(--gold); }
+    .pc-score.negative { color: #e06060; }
+    .pc-score.zero     { color: var(--text-dim); }
+
+    /* ────────────────────────────────
+       ② チーム順位表パネル（SVG）
+    ──────────────────────────────── */
+    #panel-ranking .ranking-wrap {
+      display: flex; justify-content: center;
+    }
+    #ranking-svg-container {
+      width: 100%; max-width: 800px;
+    }
+
+    /* ────────────────────────────────
+       ③ 個人ランキングパネル（SVG）
+    ──────────────────────────────── */
+    #panel-personal .personal-wrap {
+      display: flex; justify-content: center;
+    }
+    #personal-svg-container {
+      width: 100%; max-width: 720px;
+    }
+
+    /* ── ローディング/エラー ── */
+    .loading {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 14px; padding: 80px 0;
+      color: var(--text-dim); font-size: 12px; letter-spacing: 0.2em;
+    }
+    .loading-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--gold-dim); border-top-color: var(--gold);
+      border-radius: 50%; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-msg {
+      text-align: center; padding: 60px 0;
+      color: var(--dawn); font-size: 12px; letter-spacing: 0.15em;
+    }
+
+    /* ── 下部装飾ライン ── */
+    .bottom-line {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg,
+        transparent 0%, var(--dawn-dim) 20%, var(--dawn) 50%,
+        var(--dawn-dim) 80%, transparent 100%);
+      z-index: 100;
+    }
+
+    @media (max-width: 720px) {
+      #panel-recent .match-grid {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+      }
+      .court-board {
+        max-height: none;
+        width: 100%;
+      }
+      .tab-btn { padding: 10px 14px; font-size: 11px; }
+    }
+  </style>
 </head>
 <body>
-<canvas id="c"></canvas>
-<div id="content">
-  <div id="logo-wrap">
-    <img src="assets/images/文字のみ.png" alt="黎明戦"
-         onerror="this.style.display='none'">
-  </div>
-  <div id="label">Coming Soon</div>
-  <div id="title">現在準備中です</div>
-  <div id="sub">このコンテンツは近日公開予定です。<br>開幕をお待ちください。</div>
-  <div id="line"></div>
-  <a href="index.html" id="back-btn">← トップへ戻る</a>
-</div>
 
-<script>
-/* 星空背景 */
-const cv = document.getElementById('c');
-const ctx = cv.getContext('2d');
-let W, H, stars = [];
+  <header>
+    <a class="back-btn" href="index.html">トップへ</a>
+    <img class="header-logo" src="assets/images/文字のみ.png" alt="黎明戦" onerror="this.style.display='none'">
+  </header>
 
-function init() {
-  W = cv.width  = innerWidth;
-  H = cv.height = innerHeight;
-  stars = Array.from({length:120}, () => ({
-    x: Math.random()*W, y: Math.random()*H,
-    r: Math.random()*1.2+0.2,
-    a: Math.random()*0.7+0.2,
-    sp: Math.random()*0.003+0.001,
-    ph: Math.random()*Math.PI*2,
-  }));
-}
+  <main>
+    <div class="page-title">
+      <h1>RESULTS</h1>
+      <p class="subtitle">成績・順位表</p>
+    </div>
 
-function draw(t) {
-  requestAnimationFrame(draw);
-  ctx.clearRect(0,0,W,H);
-  /* 背景グラデーション */
-  const grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,'#000008');
-  grad.addColorStop(0.6,'#050012');
-  grad.addColorStop(1,'#0d0203');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,W,H);
-  /* 星 */
-  stars.forEach(s => {
-    const a = s.a * (0.6 + Math.sin(t*0.001*s.sp*1000 + s.ph)*0.4);
-    ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(255,240,220,${a})`;
-    ctx.fill();
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="panel-recent">前回の結果</button>
+      <button class="tab-btn"        data-tab="panel-ranking">チーム順位</button>
+      <button class="tab-btn"        data-tab="panel-personal">個人ランキング</button>
+    </div>
+
+    <!-- ① 前回の結果 -->
+    <div id="panel-recent" class="panel active">
+      <div class="section-title"><h2>前回の結果</h2></div>
+      <div class="match-grid" id="recent-container">
+        <div class="loading"><div class="loading-ring"></div><span>LOADING</span></div>
+      </div>
+    </div>
+
+    <!-- ② チーム順位 -->
+    <div id="panel-ranking" class="panel">
+      <div class="section-title"><h2>チーム順位表</h2></div>
+      <div class="ranking-wrap">
+        <div id="ranking-svg-container">
+          <div class="loading"><div class="loading-ring"></div><span>LOADING</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ③ 個人ランキング -->
+    <div id="panel-personal" class="panel">
+      <div class="section-title"><h2>個人ランキング</h2></div>
+      <div class="personal-wrap">
+        <div id="personal-svg-container">
+          <div class="loading"><div class="loading-ring"></div><span>LOADING</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="bottom-line"></div>
+
+  <script>
+  // ────────────────────────────────────────────────
+  // タブ
+  // ────────────────────────────────────────────────
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
   });
-  /* 地平線グロウ */
-  const gy = H * 0.72;
-  const hg = ctx.createLinearGradient(0, gy-30, 0, gy+30);
-  hg.addColorStop(0,'transparent');
-  hg.addColorStop(0.5,'rgba(200,80,10,0.15)');
-  hg.addColorStop(1,'transparent');
-  ctx.fillStyle = hg;
-  ctx.fillRect(0, gy-30, W, 60);
-}
 
-init();
-requestAnimationFrame(draw);
-window.addEventListener('resize', init);
-window.addEventListener('pageshow', () => {
-  document.body.style.transition = 'opacity 0.4s';
-  document.body.style.opacity = '1';
-});
-</script>
+  // ────────────────────────────────────────────────
+  // ユーティリティ
+  // ────────────────────────────────────────────────
+  function normalizeColor(c) {
+    if (!c) return '#888888';
+    c = String(c).trim();
+    return c.startsWith('#') ? c : '#' + c;
+  }
+  function hexToRgb(hex) {
+    const h = hex.replace('#','');
+    return { r: parseInt(h.slice(0,2),16), g: parseInt(h.slice(2,4),16), b: parseInt(h.slice(4,6),16) };
+  }
+  function courtNum(pos) { return parseInt(pos.replace(/\D/g,'')) || 1; }
+  // position の方角部分（数字除去）
+  function posDir(pos) { return String(pos).replace(/\d/g,''); }
+
+  // ────────────────────────────────────────────────
+  // データ取得
+  // ────────────────────────────────────────────────
+  async function loadData() {
+    try {
+      const [recentRes, rankRes, personalRes, teamRes] = await Promise.all([
+        fetch('data/recent_result.json'),
+        fetch('data/ranking.json'),
+        fetch('data/players_ranking.json'),
+        fetch('data/team.json')
+      ]);
+      const recentData   = await recentRes.json();
+      const rankingData  = await rankRes.json();
+      const personalData = await personalRes.json();
+      const teamData     = await teamRes.json();
+
+      // players.json は graceful fallback（立ち絵用）
+      let players = [];
+      try {
+        const pRes = await fetch('data/players.json');
+        if (pRes.ok) players = await pRes.json();
+      } catch(_) { /* players.json 未プッシュなら空 */ }
+
+      const teamMap = {};
+      teamData.forEach(t => {
+        teamMap[t.name] = { image_url: t.image_url || null, color: normalizeColor(t.color) };
+      });
+
+      // playerMap: 選手名 → {image_url（立ち絵）}
+      const playerMap = {};
+      players.forEach(p => {
+        if (p.player) playerMap[p.player] = { image_url: p.image_url || null };
+      });
+
+      renderRecent(recentData, teamMap, playerMap);
+      renderRankingSVG(rankingData, teamMap);
+      renderPersonalSVG(personalData, teamMap);
+    } catch(e) {
+      console.error(e);
+      ['recent-container','ranking-svg-container','personal-svg-container'].forEach(id => {
+        document.getElementById(id).innerHTML = '<div class="error-msg">データの読み込みに失敗しました</div>';
+      });
+    }
+  }
+
+  // ────────────────────────────────────────────────
+  // ① 前回の結果（match の対戦カードデザイン + 着順 + スコア）
+  // ────────────────────────────────────────────────
+  function renderRecent(data, teamMap, playerMap) {
+    const container = document.getElementById('recent-container');
+    container.innerHTML = '';
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<div class="error-msg">前回の結果がありません</div>';
+      return;
+    }
+
+    // 卓ごとにグループ化
+    const courtMap = {};
+    data.forEach(r => {
+      const n = courtNum(r.position || '1');
+      if (!courtMap[n]) courtMap[n] = { label: r.cardname || `${n}卓`, entries: [] };
+      courtMap[n].entries.push(r);
+    });
+
+    // matchと同じ position 順（upleft→upright→bottomleft→bottomright）で並べる
+    const ORDER = ['upleft','upright','bottomleft','bottomright'];
+
+    Object.values(courtMap).forEach((court, ci) => {
+      // ORDER順に並べ、足りない場所は null、ORDERにない position は末尾補完
+      const sortedByPos = ORDER
+        .map(dir => court.entries.find(e => posDir(e.position || '') === dir))
+        .filter(Boolean);
+      court.entries.forEach(e => { if (!sortedByPos.includes(e)) sortedByPos.push(e); });
+
+      const block = document.createElement('div');
+      block.className = 'court-block';
+      block.style.animation = 'fadeUp 0.4s ease both';
+      block.style.animationDelay = `${ci * 0.1}s`;
+
+      // 卓見出し
+      block.appendChild(buildCourtHeader(court.label));
+
+      // 16:9 の 2×2 ボード
+      const board = document.createElement('div');
+      board.className = 'court-board';
+      for (let i = 0; i < 4; i++) {
+        const entry = sortedByPos[i] || null;
+        board.appendChild(buildResultCard(entry, teamMap, playerMap));
+      }
+      block.appendChild(board);
+
+      container.appendChild(block);
+    });
+  }
+
+  // 卓見出しフレーム
+  function buildCourtHeader(label) {
+    const header = document.createElement('div');
+    header.className = 'court-header';
+    const text = document.createElement('div');
+    text.className = 'court-header-text';
+    text.textContent = label || '';
+    header.appendChild(text);
+    return header;
+  }
+
+  // matchのbuildPlayerCardベース + 着順バッジ + スコア
+  function buildResultCard(entry, teamMap, playerMap) {
+    const info  = entry ? (teamMap[entry.team] || {}) : {};
+    const color = info.color || '#444444';
+    const {r,g,b} = hexToRgb(color);
+
+    const card = document.createElement('div');
+    card.className = 'player-card';
+
+    if (!entry) {
+      card.innerHTML = '<div style="color:var(--text-dim);font-size:11px;letter-spacing:.2em;padding:12px">―</div>';
+      return card;
+    }
+
+    // ── レイヤー1: メインビジュアル（立ち絵 → チームロゴ → なし）
+    const pName     = (entry.player || '').trim();
+    const pInfo     = playerMap[pName] || {};
+    const tachieUrl = pInfo.image_url || null;
+
+    if (tachieUrl) {
+      const wrap = document.createElement('div');
+      wrap.className = 'pc-visual is-tachie';
+      const img = document.createElement('img');
+      img.src = tachieUrl; img.alt = pName; img.loading = 'lazy';
+      img.onerror = () => {
+        wrap.classList.remove('is-tachie');
+        wrap.innerHTML = '';
+        if (info.image_url) {
+          wrap.classList.add('is-logo');
+          const fb = document.createElement('img');
+          fb.src = info.image_url; fb.alt = entry.team; fb.loading = 'lazy';
+          fb.onerror = () => { wrap.remove(); };
+          wrap.appendChild(fb);
+        } else {
+          wrap.remove();
+        }
+      };
+      wrap.appendChild(img);
+      card.appendChild(wrap);
+    } else if (info.image_url) {
+      const wrap = document.createElement('div');
+      wrap.className = 'pc-visual is-logo';
+      const img = document.createElement('img');
+      img.src = info.image_url; img.alt = entry.team; img.loading = 'lazy';
+      img.onerror = () => { wrap.remove(); };
+      wrap.appendChild(img);
+      card.appendChild(wrap);
+    }
+
+    // ── レイヤー2: カラーオーバーレイ
+    const overlay = document.createElement('div');
+    overlay.className = 'pc-color-overlay';
+    overlay.style.background = `
+      linear-gradient(
+        to top,
+        rgba(${r},${g},${b},0.55) 0%,
+        rgba(${r},${g},${b},0.18) 45%,
+        rgba(0,0,0,0.15) 100%
+      )
+    `;
+    card.appendChild(overlay);
+
+    // ── レイヤー3: 上辺カラーバー
+    const bar = document.createElement('div');
+    bar.className = 'pc-colorbar';
+    bar.style.background = `linear-gradient(90deg, rgba(${r},${g},${b},0.95), rgba(${r},${g},${b},0.2))`;
+    card.appendChild(bar);
+
+    // ── 着順バッジ（左上）
+    const rank = parseInt(entry.rank) || 4;
+    const rankClass = (rank >= 1 && rank <= 4) ? rank : 4;
+    const badge = document.createElement('div');
+    badge.className = `pc-rank-badge pc-rank-${rankClass}`;
+    badge.textContent = entry.rank || '-';
+    card.appendChild(badge);
+
+    // ── テキストエリア（下部）
+    const textArea = document.createElement('div');
+    textArea.className = 'pc-text';
+
+    // チームロゴ（小）＋チーム名
+    const teamRow = document.createElement('div');
+    teamRow.className = 'pc-team-row';
+
+    const miniLogo = document.createElement('div');
+    miniLogo.className = 'pc-mini-logo';
+    miniLogo.style.borderColor = `rgba(${r},${g},${b},0.6)`;
+    miniLogo.style.boxShadow   = `0 0 8px rgba(${r},${g},${b},0.4)`;
+    if (info.image_url) {
+      const mImg = document.createElement('img');
+      mImg.src = info.image_url; mImg.alt = entry.team;
+      miniLogo.appendChild(mImg);
+    } else {
+      const sp = document.createElement('span');
+      sp.textContent = (entry.team || '?').charAt(0);
+      miniLogo.appendChild(sp);
+    }
+
+    const teamNameEl = document.createElement('div');
+    teamNameEl.className = 'pc-team-name';
+    teamNameEl.textContent = entry.team || '';
+
+    teamRow.appendChild(miniLogo);
+    teamRow.appendChild(teamNameEl);
+    textArea.appendChild(teamRow);
+
+    // 選手名 + スコアの行
+    const nameScoreRow = document.createElement('div');
+    nameScoreRow.className = 'pc-name-score-row';
+
+    const isUndecided = !pName || pName === '未定' || pName === '-';
+    const nameEl = document.createElement('div');
+    nameEl.className = 'pc-player-name';
+    nameEl.textContent = isUndecided ? '―' : pName;
+    if (!isUndecided) {
+      nameEl.style.textShadow = `0 0 20px rgba(0,0,0,0.9), 0 0 40px rgba(${r},${g},${b},0.3)`;
+    }
+
+    const score = parseFloat(entry.score) || 0;
+    const scoreEl = document.createElement('div');
+    scoreEl.className = 'pc-score ' + (score > 0 ? 'positive' : score < 0 ? 'negative' : 'zero');
+    scoreEl.textContent = (score > 0 ? '+' : '') + score.toLocaleString();
+
+    nameScoreRow.appendChild(nameEl);
+    nameScoreRow.appendChild(scoreEl);
+    textArea.appendChild(nameScoreRow);
+
+    card.appendChild(textArea);
+    return card;
+  }
+
+  // ────────────────────────────────────────────────
+  // ② チーム順位表（SVG）
+  // ranking.json: rank, team, score
+  // ────────────────────────────────────────────────
+  function renderRankingSVG(data, teamMap) {
+    const container = document.getElementById('ranking-svg-container');
+    const sorted = [...data].sort((a,b) => (a.rank||99) - (b.rank||99));
+
+    const W = 800, HEADER = 100, ROW_H = 64, PAD = 32;
+    const H = HEADER + ROW_H * sorted.length + PAD;
+
+    let svgRows = '';
+    sorted.forEach((item, i) => {
+      const info = teamMap[item.team] || {};
+      const color = info.color || '#888888';
+      const {r,g,b} = hexToRgb(color);
+      const y = HEADER + i * ROW_H;
+      const score = parseFloat(item.score) || 0;
+      const isPos = score >= 0;
+
+      // 着順メダル色
+      const medalFill = i===0 ? '#c8a84b' : i===1 ? '#a0a0a8' : i===2 ? '#b07840' : '#404050';
+      const medalStroke = i===0 ? 'rgba(200,168,75,0.8)' : i===1 ? 'rgba(160,160,168,0.6)' : i===2 ? '#906030' : '#303040';
+
+      svgRows += `
+        <!-- Row ${i} -->
+        <rect x="0" y="${y}" width="${W}" height="${ROW_H}"
+          fill="rgba(${r},${g},${b},0.04)" />
+        <rect x="0" y="${y}" width="4" height="${ROW_H}"
+          fill="rgba(${r},${g},${b},0.7)" rx="0"/>
+        <line x1="0" y1="${y + ROW_H}" x2="${W}" y2="${y + ROW_H}"
+          stroke="rgba(200,168,75,0.08)" stroke-width="1"/>
+
+        <!-- 着順メダル -->
+        <circle cx="44" cy="${y + ROW_H/2}" r="16"
+          fill="${medalFill}" fill-opacity="0.18"
+          stroke="${medalStroke}" stroke-width="1"/>
+        <text x="44" y="${y + ROW_H/2 + 5}"
+          font-family="Cormorant Garamond, serif" font-size="16" font-weight="600"
+          fill="${medalFill}" text-anchor="middle">${item.rank || i+1}</text>
+
+        <!-- チームロゴ -->
+        ${info.image_url
+          ? `<clipPath id="clip-r${i}"><circle cx="88" cy="${y + ROW_H/2}" r="22"/></clipPath>
+             <image href="${info.image_url}" x="66" y="${y + ROW_H/2 - 22}"
+               width="44" height="44" clip-path="url(#clip-r${i})" preserveAspectRatio="xMidYMid slice"/>
+             <circle cx="88" cy="${y + ROW_H/2}" r="22" fill="none"
+               stroke="rgba(${r},${g},${b},0.7)" stroke-width="1.5"/>`
+          : `<circle cx="88" cy="${y + ROW_H/2}" r="22"
+               fill="rgba(${r},${g},${b},0.12)" stroke="rgba(${r},${g},${b},0.5)" stroke-width="1.5"/>
+             <text x="88" y="${y + ROW_H/2 + 7}" font-family="Cormorant Garamond, serif"
+               font-size="18" fill="rgba(${r},${g},${b},0.8)" text-anchor="middle">
+               ${(item.team||'?').charAt(0)}</text>`
+        }
+
+        <!-- チーム名（行縦中央） -->
+        <text x="124" y="${y + ROW_H/2 + 5}"
+          font-family="Noto Serif JP, serif" font-size="14" fill="#e8e0d0"
+          dominant-baseline="auto">${item.team || ''}</text>
+
+        <!-- スコア数値（行縦中央） -->
+        <text x="${W - PAD}" y="${y + ROW_H/2 + 8}"
+          font-family="Cormorant Garamond, serif" font-size="24" font-weight="400"
+          fill="${isPos ? 'rgba(200,168,75,0.95)' : '#e06060'}"
+          text-anchor="end">${(score > 0 ? '+' : '') + score.toLocaleString()}</text>
+      `;
+    });
+
+    // ヘッダ
+    const headerSVG = `
+      <!-- ヘッダ枠 -->
+      <rect x="0" y="0" width="${W}" height="${HEADER}" fill="rgba(200,168,75,0.04)"/>
+      <rect x="0" y="${HEADER - 1}" width="${W}" height="1" fill="rgba(200,168,75,0.25)"/>
+
+      <!-- タイトル装飾ライン -->
+      <line x1="32" y1="${HEADER/2}" x2="${W - 32}" y2="${HEADER/2}" stroke="rgba(200,168,75,0.15)" stroke-width="1"/>
+
+      <!-- TEAM RANKING テキスト -->
+      <text x="${W/2}" y="${HEADER/2 - 8}"
+        font-family="Cormorant Garamond, serif" font-size="20" font-weight="300"
+        fill="rgba(200,168,75,0.85)" text-anchor="middle" letter-spacing="8">
+        TEAM RANKING</text>
+      <text x="${W/2}" y="${HEADER/2 + 22}"
+        font-family="Noto Serif JP, serif" font-size="10"
+        fill="rgba(200,168,75,0.4)" text-anchor="middle" letter-spacing="6">
+        チーム順位表</text>
+
+      <!-- コーナーデコ -->
+      <polyline points="0,0 16,0 16,2 2,2 2,16 0,16" fill="rgba(200,168,75,0.3)"/>
+      <polyline points="${W},0 ${W-16},0 ${W-16},2 ${W-2},2 ${W-2},16 ${W},16" fill="rgba(200,168,75,0.3)"/>
+      <polyline points="0,${H} 16,${H} 16,${H-2} 2,${H-2} 2,${H-16} 0,${H-16}" fill="rgba(200,168,75,0.3)"/>
+      <polyline points="${W},${H} ${W-16},${H} ${W-16},${H-2} ${W-2},${H-2} ${W-2},${H-16} ${W},${H-16}" fill="rgba(200,168,75,0.3)"/>
+    `;
+
+    // 外枠
+    const borderSVG = `
+      <rect x="0.5" y="0.5" width="${W-1}" height="${H-1}" rx="3"
+        fill="none" stroke="rgba(200,168,75,0.3)" stroke-width="1"/>
+    `;
+
+    const svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"
+      style="width:100%;height:auto;display:block;">
+      <!-- 背景 -->
+      <rect width="${W}" height="${H}" fill="#06020e" rx="3"/>
+      <!-- 微細ノイズ風グリッド -->
+      ${Array.from({length: Math.ceil(H/40)}, (_,i) =>
+        `<line x1="0" y1="${i*40}" x2="${W}" y2="${i*40}" stroke="rgba(255,255,255,0.015)" stroke-width="1"/>`
+      ).join('')}
+      ${headerSVG}
+      ${svgRows}
+      ${borderSVG}
+    </svg>`;
+
+    container.innerHTML = svg;
+  }
+
+  // ────────────────────────────────────────────────
+  // ③ 個人ランキング（SVG）
+  // players_ranking.json: rank, name, score
+  // ────────────────────────────────────────────────
+  function renderPersonalSVG(data, teamMap) {
+    const container = document.getElementById('personal-svg-container');
+    const sorted = [...data].sort((a,b) => (a.rank||99) - (b.rank||99));
+
+    const W = 720, HEADER = 90, ROW_H = 52, PAD = 24;
+    const H = HEADER + ROW_H * sorted.length + PAD;
+
+    // TOP3 のハイライト色
+    const TOP_COLORS = ['#c8a84b','#a0a0a8','#b07840'];
+
+    let svgRows = '';
+
+    sorted.forEach((item, i) => {
+      const y = HEADER + i * ROW_H;
+      const score = parseFloat(item.score) || 0;
+      const isTop3 = i < 3;
+      const accent = isTop3 ? TOP_COLORS[i] : 'rgba(200,168,75,0.4)';
+
+      // 行背景
+      const rowBg = isTop3
+        ? `rgba(200,168,75,0.04)`
+        : `rgba(255,255,255,0.015)`;
+
+      svgRows += `
+        <!-- Row ${i}: ${item.name} -->
+        <rect x="0" y="${y}" width="${W}" height="${ROW_H}" fill="${rowBg}"/>
+        ${isTop3 ? `<rect x="0" y="${y}" width="3" height="${ROW_H}" fill="${accent}" opacity="0.8"/>` : ''}
+        <line x1="0" y1="${y + ROW_H}" x2="${W}" y2="${y + ROW_H}"
+          stroke="rgba(200,168,75,0.06)" stroke-width="1"/>
+
+        <!-- 順位 -->
+        ${isTop3
+          ? `<circle cx="40" cy="${y + ROW_H/2}" r="18"
+               fill="${accent}" fill-opacity="0.15"
+               stroke="${accent}" stroke-width="1.5"/>
+             <text x="40" y="${y + ROW_H/2 + 6}"
+               font-family="Cormorant Garamond, serif" font-size="18" font-weight="600"
+               fill="${accent}" text-anchor="middle">${item.rank}</text>`
+          : `<text x="40" y="${y + ROW_H/2 + 5}"
+               font-family="Cormorant Garamond, serif" font-size="15"
+               fill="rgba(200,168,75,0.4)" text-anchor="middle">${item.rank}</text>`
+        }
+
+        <!-- 名前（行縦中央） -->
+        <text x="72" y="${y + ROW_H/2 + 5}"
+          font-family="Noto Serif JP, serif" font-size="${isTop3 ? 15 : 13}"
+          fill="${isTop3 ? '#e8e0d0' : 'rgba(232,224,208,0.8)'}"
+          dominant-baseline="auto">${item.name || ''}</text>
+
+        <!-- スコア数値（行縦中央） -->
+        <text x="${W - 24}" y="${y + ROW_H/2 + 7}"
+          font-family="Cormorant Garamond, serif" font-size="${isTop3 ? 22 : 18}" font-weight="400"
+          fill="${score >= 0 ? accent : '#e06060'}"
+          text-anchor="end">${(score > 0 ? '+' : '') + score.toLocaleString()}</text>
+      `;
+    });
+
+    const headerSVG = `
+      <rect x="0" y="0" width="${W}" height="${HEADER}" fill="rgba(200,168,75,0.03)"/>
+      <rect x="0" y="${HEADER-1}" width="${W}" height="1" fill="rgba(200,168,75,0.2)"/>
+
+      <line x1="28" y1="${HEADER/2}" x2="${W - 28}" y2="${HEADER/2}" stroke="rgba(200,168,75,0.12)" stroke-width="1"/>
+
+      <text x="${W/2}" y="${HEADER/2 - 8}"
+        font-family="Cormorant Garamond, serif" font-size="18" font-weight="300"
+        fill="rgba(200,168,75,0.85)" text-anchor="middle" letter-spacing="7">
+        INDIVIDUAL RANKING</text>
+      <text x="${W/2}" y="${HEADER/2 + 20}"
+        font-family="Noto Serif JP, serif" font-size="10"
+        fill="rgba(200,168,75,0.4)" text-anchor="middle" letter-spacing="6">
+        個人ランキング</text>
+
+      <polyline points="0,0 14,0 14,2 2,2 2,14 0,14" fill="rgba(200,168,75,0.3)"/>
+      <polyline points="${W},0 ${W-14},0 ${W-14},2 ${W-2},2 ${W-2},14 ${W},14" fill="rgba(200,168,75,0.3)"/>
+      <polyline points="0,${H} 14,${H} 14,${H-2} 2,${H-2} 2,${H-14} 0,${H-14}" fill="rgba(200,168,75,0.3)"/>
+      <polyline points="${W},${H} ${W-14},${H} ${W-14},${H-2} ${W-2},${H-2} ${W-2},${H-14} ${W},${H-14}" fill="rgba(200,168,75,0.3)"/>
+    `;
+
+    const svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"
+      style="width:100%;height:auto;display:block;">
+      <rect width="${W}" height="${H}" fill="#06020e" rx="3"/>
+      ${Array.from({length: Math.ceil(H/36)}, (_,i) =>
+        `<line x1="0" y1="${i*36}" x2="${W}" y2="${i*36}" stroke="rgba(255,255,255,0.012)" stroke-width="1"/>`
+      ).join('')}
+      ${headerSVG}
+      ${svgRows}
+      <rect x="0.5" y="0.5" width="${W-1}" height="${H-1}" rx="3"
+        fill="none" stroke="rgba(200,168,75,0.25)" stroke-width="1"/>
+    </svg>`;
+
+    container.innerHTML = svg;
+  }
+
+  // ────────────────────────────────────────────────
+  // 初期化
+  // ────────────────────────────────────────────────
+  window.addEventListener('pageshow', () => document.body.classList.add('visible'));
+  loadData();
+  </script>
 </body>
 </html>
