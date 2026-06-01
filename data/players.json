@@ -94,18 +94,18 @@
     "team": 4,
     "player": "ゆうれいいか",
     "grade": "八段",
-    "image_id": null,
+    "image_id": 31,
     "comment": "最高の舞台で最高のチームメイトと共に成長しながら優勝を目指したいです。\nすべてを超えていきましょう💪",
-    "image_url": null
+    "image_url": "assets/images/31.png"
   },
   {
     "id": 12,
     "team": 4,
     "player": "饒舌",
     "grade": "八段",
-    "image_id": null,
+    "image_id": 33,
     "comment": "人並みに鳴いて、人並みに染めて、人並みに曲げて、人並みに放銃する。見た目は地味な麻雀だけど、それでもひたすら勝利を重ねていくシンプルイズザベストの真骨頂でチームを優勝に導けるよう頑張ります！！",
-    "image_url": null
+    "image_url": "assets/images/33.png"
   },
   {
     "id": 13,
@@ -130,18 +130,18 @@
     "team": 1,
     "player": "なぽ",
     "grade": "魂天",
-    "image_id": null,
+    "image_id": 32,
     "comment": "デジタルクルーズ所属のなぽと申します！\n優勝と雀力向上を目指して精一杯頑張ります\nよろしくお願いします！",
-    "image_url": null
+    "image_url": "assets/images/32.png"
   },
   {
     "id": 16,
     "team": 1,
     "player": "ゆきこ",
     "grade": "七段",
-    "image_id": null,
+    "image_id": 34,
     "comment": "リツミさん率いるデジタルクルーズにご指名していただきました、ゆきこと申します!\n私設リーグ自体初めてで初めましての方ばかりですごく緊張しています\nですが今までの力を発揮してさらに成長できる貴重な機会を頂いたので、全力で優勝目指して色々な考えを吸収できるようにチームの皆さんと頑張りたいと思います！",
-    "image_url": null
+    "image_url": "assets/images/34.png"
   },
   {
     "id": 17,
@@ -211,9 +211,9 @@
     "team": 3,
     "player": "かなへび",
     "grade": "九段",
-    "image_id": null,
+    "image_id": 30,
     "comment": null,
-    "image_url": null
+    "image_url": "assets/images/30.png"
   },
   {
     "id": 25,
