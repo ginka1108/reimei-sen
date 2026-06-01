@@ -3,7 +3,7 @@
     "id": 1,
     "position": "upleft1",
     "team": "抜天ステージ",
-    "player": "かなへび",
+    "player": null,
     "cardname": "天卓",
     "": null
   },
@@ -11,7 +11,7 @@
     "id": 2,
     "position": "upright1",
     "team": "すべてを超えていけ",
-    "player": "ゆうれいいか",
+    "player": null,
     "cardname": "天卓",
     "": null
   },
@@ -19,7 +19,7 @@
     "id": 3,
     "position": "bottomleft1",
     "team": "旭光一閃",
-    "player": "黒羽織",
+    "player": null,
     "cardname": "天卓",
     "": null
   },
@@ -27,7 +27,7 @@
     "id": 4,
     "position": "bottomright1",
     "team": "デジタルクルーズ",
-    "player": "なぽ",
+    "player": null,
     "cardname": "天卓",
     "": null
   },
@@ -35,7 +35,7 @@
     "id": 5,
     "position": "upleft2",
     "team": "抜天ステージ",
-    "player": "日菜むい",
+    "player": null,
     "cardname": "元卓",
     "": null
   },
@@ -43,7 +43,7 @@
     "id": 6,
     "position": "upright2",
     "team": "すべてを超えていけ",
-    "player": "饒舌",
+    "player": null,
     "cardname": "元卓",
     "": null
   },
@@ -51,7 +51,7 @@
     "id": 7,
     "position": "bottomleft2",
     "team": "旭光一閃",
-    "player": "せどなりあん",
+    "player": null,
     "cardname": "元卓",
     "": null
   },
@@ -59,7 +59,7 @@
     "id": 8,
     "position": "bottomright2",
     "team": "デジタルクルーズ",
-    "player": "ゆきこ",
+    "player": null,
     "cardname": "元卓",
     "": null
   }
