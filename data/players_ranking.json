@@ -1,42 +1,77 @@
 [
   {
     "rank": 1,
+    "name": "せどなりあん",
+    "score": 103.1
+  },
+  {
+    "rank": 2,
+    "name": "ゆうれいいか",
+    "score": 68
+  },
+  {
+    "rank": 3,
     "name": "高良匡史",
     "score": 58.1
   },
   {
-    "rank": 2,
+    "rank": 4,
     "name": "ren",
     "score": 55.3
   },
   {
-    "rank": 3,
-    "name": "日菜むい",
-    "score": 8.6
+    "rank": 5,
+    "name": "黒羽織",
+    "score": 18.4
   },
   {
-    "rank": 4,
+    "rank": 6,
     "name": "民芸",
     "score": 6.7
   },
   {
-    "rank": 5,
+    "rank": 7,
+    "name": "ゆきこ",
+    "score": 4.5
+  },
+  {
+    "rank": 8,
+    "name": "なぽ",
+    "score": -11
+  },
+  {
+    "rank": 9,
     "name": "げんぶ",
     "score": -15.3
   },
   {
-    "rank": 6,
+    "rank": 10,
     "name": "比嘉秀仁",
     "score": -20.6
   },
   {
-    "rank": 7,
+    "rank": 11,
+    "name": "饒舌",
+    "score": -37.5
+  },
+  {
+    "rank": 12,
     "name": "ようへー",
     "score": -43.3
   },
   {
-    "rank": 8,
+    "rank": 13,
     "name": "神仙酵母",
     "score": -49.5
+  },
+  {
+    "rank": 14,
+    "name": "日菜むい",
+    "score": -61.49999999999999
+  },
+  {
+    "rank": 15,
+    "name": "かなへび",
+    "score": -75.4
   }
 ]
