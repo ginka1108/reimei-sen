@@ -270,5 +270,21 @@
     "googleDriveURL": "https://drive.google.com/file/d/1ppPWPFALgyRatCdZhaStDs2AkJYKjzE_/view?usp=drive_link",
     "filename": "34.png",
     "image_url": "assets/images/34.png"
+  },
+  {
+    "id": 35,
+    "name": "ヨーテル",
+    "url": "1N0JyQ-McmS1dOpKCIDq_iCykhzKmnVCF",
+    "googleDriveURL": "https://drive.google.com/file/d/1N0JyQ-McmS1dOpKCIDq_iCykhzKmnVCF/view?usp=drive_link",
+    "filename": "35.png",
+    "image_url": "assets/images/35.png"
+  },
+  {
+    "id": 36,
+    "name": "べるふぇごーる",
+    "url": "1Gf-NzdwwqIB5iDJB0jk_GM-yIKb2mtih",
+    "googleDriveURL": "https://drive.google.com/file/d/1Gf-NzdwwqIB5iDJB0jk_GM-yIKb2mtih/view?usp=drive_link",
+    "filename": "36.png",
+    "image_url": "assets/images/36.png"
   }
 ]
