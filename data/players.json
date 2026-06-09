@@ -86,7 +86,7 @@
     "player": "神仙酵母",
     "grade": "十段",
     "image_id": 29,
-    "comment": null,
+    "comment": "とりあえず優勝目指します！それと、チーム戦の経験を積めるように頑張ります！",
     "image_url": "assets/images/29.png"
   },
   {
@@ -112,18 +112,18 @@
     "team": 4,
     "player": "結宮れちょ",
     "grade": "雀聖1",
-    "image_id": null,
-    "comment": null,
-    "image_url": null
+    "image_id": 40,
+    "comment": "すべ超えのサポーターに選んでいただきとても嬉しく思います！\nチームメンバーの思考や技術を吸収して強くなりつつ、配信などの面でサポートも頑張っていこうと思います！\n何卒よろしくお願いいたします！",
+    "image_url": "assets/images/40.png"
   },
   {
     "id": 14,
     "team": 1,
     "player": "まーぶりん",
     "grade": "七段",
-    "image_id": null,
+    "image_id": 38,
     "comment": "このたびデジタルクルーズから指名をいただきましたまーぶりんと申します！目指すところは、リーグ優勝！ももちろんですが、たくさん学んで黎明戦を通してみんなで成長していけたら嬉しいです✨",
-    "image_url": null
+    "image_url": "assets/images/38.png"
   },
   {
     "id": 15,
@@ -148,9 +148,9 @@
     "team": 1,
     "player": "安住太一",
     "grade": "魂天",
-    "image_id": null,
+    "image_id": 39,
     "comment": "サポーターを担当させていただく、日本プロ麻雀協会の安住太一と申します。\n「あじゅ」と呼んでいただけると嬉しいです！\n\nデジタルクルーズの優勝に向けて、各選手の素晴らしい要素をたくさん取り入れ、私自身も引き締まった麻雀を披露できるように日々勉強してまいります！",
-    "image_url": null
+    "image_url": "assets/images/39.png"
   },
   {
     "id": 18,
@@ -184,9 +184,9 @@
     "team": 2,
     "player": "いのっち",
     "grade": "魂天",
-    "image_id": null,
+    "image_id": 37,
     "comment": "サポーターとして、選手のみんなが気持ちよく戦えるよう、検討・配信・裏方含め全力で支えていきます！検討や配信では積極的に意見を出しつつ、みんなの考えを引き出せるような雰囲気作りも頑張ります！",
-    "image_url": null
+    "image_url": "assets/images/37.png"
   },
   {
     "id": 22,
@@ -202,9 +202,9 @@
     "team": 3,
     "player": "ぶる",
     "grade": "雀聖3",
-    "image_id": null,
+    "image_id": 41,
     "comment": "前期に引き続き、今期も素敵なチームに入れてもらえてとっても嬉しいです！\n前期成しえなかった優勝目指して今期も頑張ります！\nあとは、りつみさんを倒したいです！",
-    "image_url": null
+    "image_url": "assets/images/41.png"
   },
   {
     "id": 24,
@@ -220,8 +220,8 @@
     "team": 3,
     "player": "りくまる",
     "grade": "八段",
-    "image_id": null,
+    "image_id": 42,
     "comment": "配信も出来ず、その他大した能力もない自分がどうやってチームに貢献出来るかを考えたのですが、結局麻雀を打つことしか思い浮かびませんでした。メンバーが麻雀で苦しんでいる時には同じくらい泣き言を言いながらも並走します。苦しいこともあったけど楽しかった、そんな風に最後は笑えるチームにしたいです！",
-    "image_url": null
+    "image_url": "assets/images/42.png"
   }
 ]

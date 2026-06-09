@@ -82,8 +82,8 @@
   {
     "id": 11,
     "name": "リツミさん",
-    "url": "1r264MPoqYRl4k4sFGCwgAAJLFx4EdI-G",
-    "googleDriveURL": "https://drive.google.com/file/d/1r264MPoqYRl4k4sFGCwgAAJLFx4EdI-G/view?usp=drive_link",
+    "url": "1NpQua41Dcd2GkkMnYCHN_2iy-VP5o8zO",
+    "googleDriveURL": "https://drive.google.com/file/d/1NpQua41Dcd2GkkMnYCHN_2iy-VP5o8zO/view?usp=drive_link",
     "filename": "11.png",
     "image_url": "assets/images/11.png"
   },
@@ -286,5 +286,53 @@
     "googleDriveURL": "https://drive.google.com/file/d/1Gf-NzdwwqIB5iDJB0jk_GM-yIKb2mtih/view?usp=drive_link",
     "filename": "36.png",
     "image_url": "assets/images/36.png"
+  },
+  {
+    "id": 37,
+    "name": "いのっち",
+    "url": null,
+    "googleDriveURL": null,
+    "filename": "37.png",
+    "image_url": "assets/images/37.png"
+  },
+  {
+    "id": 39,
+    "name": "まーぶりん",
+    "url": "1RTZWYDFJ_5liXQewKzeRMIRE_QBotHh_",
+    "googleDriveURL": "https://drive.google.com/file/d/1RTZWYDFJ_5liXQewKzeRMIRE_QBotHh_/view?usp=drive_link",
+    "filename": "39.png",
+    "image_url": "assets/images/39.png"
+  },
+  {
+    "id": 38,
+    "name": "安住太一",
+    "url": "1ZgvzKpNNYC7yXP-MReWnH3q9JXNpuksw",
+    "googleDriveURL": "https://drive.google.com/file/d/1ZgvzKpNNYC7yXP-MReWnH3q9JXNpuksw/view?usp=drive_link",
+    "filename": "38.png",
+    "image_url": "assets/images/38.png"
+  },
+  {
+    "id": 40,
+    "name": "結宮れちょ",
+    "url": "1tt3n7bj2VZBM_nc3ZumbVIfIP0UkUubp",
+    "googleDriveURL": "https://drive.google.com/file/d/1tt3n7bj2VZBM_nc3ZumbVIfIP0UkUubp/view?usp=drive_link",
+    "filename": "40.png",
+    "image_url": "assets/images/40.png"
+  },
+  {
+    "id": 41,
+    "name": "ぶる",
+    "url": "1sJLMqplaLMOTCCphxhpphDD1G7PgpIWV",
+    "googleDriveURL": "https://drive.google.com/file/d/1sJLMqplaLMOTCCphxhpphDD1G7PgpIWV/view?usp=drive_link",
+    "filename": "41.png",
+    "image_url": "assets/images/41.png"
+  },
+  {
+    "id": 42,
+    "name": "りくまる",
+    "url": "1lYAOFZZRVKYHVrjt3nzEXMj5GujHyKPK",
+    "googleDriveURL": "https://drive.google.com/file/d/1lYAOFZZRVKYHVrjt3nzEXMj5GujHyKPK/view?usp=drive_link",
+    "filename": "42.png",
+    "image_url": "assets/images/42.png"
   }
 ]
