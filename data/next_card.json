@@ -11,7 +11,7 @@
     "id": 2,
     "position": "upright1",
     "team": "デジタルクルーズ",
-    "player": null,
+    "player": "ゆきこ",
     "cardname": "天卓",
     "": 2
   },
@@ -43,7 +43,7 @@
     "id": 6,
     "position": "upright2",
     "team": "デジタルクルーズ",
-    "player": null,
+    "player": "まーぶりん",
     "cardname": "元卓",
     "": null
   },
@@ -59,7 +59,7 @@
     "id": 8,
     "position": "bottomright2",
     "team": "抜天ステージ",
-    "player": "かなへび",
+    "player": "民芸",
     "cardname": "元卓",
     "": null
   }
