@@ -6,23 +6,23 @@
   },
   {
     "rank": 2,
-    "name": "あまあん",
-    "score": 72.1
-  },
-  {
-    "rank": 3,
     "name": "ゆうれいいか",
     "score": 68
   },
   {
-    "rank": 4,
+    "rank": 3,
     "name": "高良匡史",
-    "score": 58.1
+    "score": 67
+  },
+  {
+    "rank": 4,
+    "name": "ゆきこ",
+    "score": 55.6
   },
   {
     "rank": 5,
     "name": "ren",
-    "score": 55.3
+    "score": 43.199999999999996
   },
   {
     "rank": 6,
@@ -31,66 +31,76 @@
   },
   {
     "rank": 7,
-    "name": "民芸",
-    "score": 6.7
+    "name": "あまあん",
+    "score": 25.299999999999997
   },
   {
     "rank": 8,
-    "name": "ゆきこ",
-    "score": 4.5
+    "name": "民芸",
+    "score": 15.600000000000001
   },
   {
     "rank": 9,
+    "name": "ようへー",
+    "score": 8.900000000000006
+  },
+  {
+    "rank": 10,
     "name": "リツミさん",
     "score": 1.8
   },
   {
-    "rank": 10,
+    "rank": 11,
+    "name": "ぶる",
+    "score": -13.2
+  },
+  {
+    "rank": 12,
     "name": "げんぶ",
     "score": -15.3
   },
   {
-    "rank": 11,
+    "rank": 13,
     "name": "べるふぇごーる",
     "score": -20
   },
   {
-    "rank": 12,
+    "rank": 14,
     "name": "比嘉秀仁",
     "score": -20.6
   },
   {
-    "rank": 13,
+    "rank": 15,
     "name": "ヨーテル",
     "score": -23
   },
   {
-    "rank": 14,
+    "rank": 16,
     "name": "黒羽織",
     "score": -27.5
   },
   {
-    "rank": 15,
-    "name": "ようへー",
-    "score": -43.3
-  },
-  {
-    "rank": 16,
+    "rank": 17,
     "name": "神仙酵母",
     "score": -48.6
   },
   {
-    "rank": 17,
+    "rank": 18,
+    "name": "まーぶりん",
+    "score": -49
+  },
+  {
+    "rank": 19,
     "name": "なぽ",
     "score": -61
   },
   {
-    "rank": 18,
+    "rank": 20,
     "name": "日菜むい",
     "score": -61.49999999999999
   },
   {
-    "rank": 19,
+    "rank": 21,
     "name": "かなへび",
     "score": -75.4
   }
