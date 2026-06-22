@@ -3,7 +3,7 @@
     "id": 1,
     "position": "upleft1",
     "team": "デジタルクルーズ",
-    "player": "あまあん",
+    "player": "まーぶりん",
     "cardname": "天卓",
     "": "今日の曜日と表示判定フラグ"
   },
@@ -11,7 +11,7 @@
     "id": 2,
     "position": "upright1",
     "team": "暁",
-    "player": "ゆきこ",
+    "player": "ヨーテル",
     "cardname": "天卓",
     "": 2
   },
@@ -19,7 +19,7 @@
     "id": 3,
     "position": "bottomleft1",
     "team": "抜天ステージ",
-    "player": "高良匡史",
+    "player": "日菜むい",
     "cardname": "天卓",
     "": 1
   },
@@ -27,7 +27,7 @@
     "id": 4,
     "position": "bottomright1",
     "team": "すべてを超えていけ",
-    "player": "ぶる",
+    "player": "比嘉秀仁",
     "cardname": "天卓",
     "": null
   },
@@ -43,7 +43,7 @@
     "id": 6,
     "position": "upright2",
     "team": "暁",
-    "player": "まーぶりん",
+    "player": "べるふぇごーる",
     "cardname": "元卓",
     "": null
   },
@@ -51,7 +51,7 @@
     "id": 7,
     "position": "bottomleft2",
     "team": "抜天ステージ",
-    "player": "ren",
+    "player": "かなへび",
     "cardname": "元卓",
     "": null
   },
@@ -59,7 +59,7 @@
     "id": 8,
     "position": "bottomright2",
     "team": "すべてを超えていけ",
-    "player": "民芸",
+    "player": "ゆうれいいか",
     "cardname": "元卓",
     "": null
   }
