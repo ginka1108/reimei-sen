@@ -6,7 +6,7 @@
     "player": "比嘉秀仁",
     "cardname": "天卓",
     "rank": 4,
-    "score": -23.2
+    "score": -49.6
   },
   {
     "id": 2,
@@ -15,7 +15,7 @@
     "player": "あまあん",
     "cardname": "天卓",
     "rank": 2,
-    "score": -2.2
+    "score": 10.6
   },
   {
     "id": 3,
@@ -24,7 +24,7 @@
     "player": "まーぶりん",
     "cardname": "天卓",
     "rank": 1,
-    "score": 70.5
+    "score": 54.3
   },
   {
     "id": 4,
@@ -33,7 +33,7 @@
     "player": "べるふぇごーる",
     "cardname": "天卓",
     "rank": 3,
-    "score": -45.1
+    "score": -15.3
   },
   {
     "id": 5,
@@ -42,7 +42,7 @@
     "player": "饒舌",
     "cardname": "元卓",
     "rank": 4,
-    "score": -49.6
+    "score": -40.8
   },
   {
     "id": 6,
@@ -51,7 +51,7 @@
     "player": "げんぶ",
     "cardname": "元卓",
     "rank": 2,
-    "score": 59.5
+    "score": 7.9
   },
   {
     "id": 7,
@@ -60,7 +60,7 @@
     "player": "ゆきこ",
     "cardname": "元卓",
     "rank": 1,
-    "score": -21.6
+    "score": 51.5
   },
   {
     "id": 8,
@@ -69,6 +69,6 @@
     "player": "高良匡史",
     "cardname": "元卓",
     "rank": 3,
-    "score": 11.7
+    "score": -18.6
   }
 ]
