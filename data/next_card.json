@@ -2,64 +2,64 @@
   {
     "id": 1,
     "position": "upleft1",
-    "team": "旭光一閃",
-    "player": "ようへー",
+    "team": "デジタルクルーズ",
+    "player": null,
     "cardname": "天卓",
     "": "今日の曜日と表示判定フラグ"
   },
   {
     "id": 2,
     "position": "upright1",
-    "team": "デジタルクルーズ",
-    "player": "なぽ",
+    "team": "暁",
+    "player": null,
     "cardname": "天卓",
-    "": 2
+    "": 4
   },
   {
     "id": 3,
     "position": "bottomleft1",
-    "team": "暁",
-    "player": "ヨーテル",
+    "team": "抜天ステージ",
+    "player": null,
     "cardname": "天卓",
-    "": 1
+    "": null
   },
   {
     "id": 4,
     "position": "bottomright1",
-    "team": "抜天ステージ",
-    "player": "かなへび",
+    "team": "すべてを超えていけ",
+    "player": null,
     "cardname": "天卓",
     "": null
   },
   {
     "id": 5,
     "position": "upleft2",
-    "team": "旭光一閃",
-    "player": "せどなりあん",
+    "team": "デジタルクルーズ",
+    "player": null,
     "cardname": "元卓",
     "": null
   },
   {
     "id": 6,
     "position": "upright2",
-    "team": "デジタルクルーズ",
-    "player": "まーぶりん",
+    "team": "暁",
+    "player": null,
     "cardname": "元卓",
     "": null
   },
   {
     "id": 7,
     "position": "bottomleft2",
-    "team": "暁",
-    "player": "ren",
+    "team": "抜天ステージ",
+    "player": null,
     "cardname": "元卓",
     "": null
   },
   {
     "id": 8,
     "position": "bottomright2",
-    "team": "抜天ステージ",
-    "player": "ぶる",
+    "team": "すべてを超えていけ",
+    "player": null,
     "cardname": "元卓",
     "": null
   }
