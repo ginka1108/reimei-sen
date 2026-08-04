@@ -2,73 +2,73 @@
   {
     "id": 1,
     "position": "upleft1",
-    "team": "デジタルクルーズ",
-    "player": "リツミさん",
+    "team": "暁",
+    "player": "べるふぇごーる",
     "cardname": "天卓",
     "rank": 4,
-    "score": -43.7
+    "score": -54
   },
   {
     "id": 2,
     "position": "upright1",
-    "team": "暁",
-    "player": "高良匡史",
+    "team": "抜天ステージ",
+    "player": "かなへび",
     "cardname": "天卓",
-    "rank": 3,
-    "score": -17.3
+    "rank": 1,
+    "score": 63.9
   },
   {
     "id": 3,
     "position": "bottomleft1",
-    "team": "抜天ステージ",
-    "player": "民芸",
+    "team": "すべてを超えていけ",
+    "player": "饒舌",
     "cardname": "天卓",
-    "rank": 1,
-    "score": 53
+    "rank": 3,
+    "score": -24.1
   },
   {
     "id": 4,
     "position": "bottomright1",
-    "team": "すべてを超えていけ",
-    "player": "神仙酵母",
+    "team": "旭光一閃",
+    "player": "あまあん",
     "cardname": "天卓",
     "rank": 2,
-    "score": 8
+    "score": 14.2
   },
   {
     "id": 5,
     "position": "upleft2",
-    "team": "デジタルクルーズ",
-    "player": "なぽ",
+    "team": "暁",
+    "player": "高良匡史",
     "cardname": "元卓",
-    "rank": 4,
-    "score": -81
+    "rank": 1,
+    "score": 52.6
   },
   {
     "id": 6,
     "position": "upright2",
-    "team": "暁",
-    "player": "ヨーテル",
+    "team": "抜天ステージ",
+    "player": "民芸",
     "cardname": "元卓",
-    "rank": 1,
-    "score": 80.5
+    "rank": 3,
+    "score": -15.3
   },
   {
     "id": 7,
     "position": "bottomleft2",
-    "team": "抜天ステージ",
-    "player": "日菜むい",
+    "team": "すべてを超えていけ",
+    "player": "神仙酵母",
     "cardname": "元卓",
-    "rank": 3,
-    "score": -19.3
+    "rank": 2,
+    "score": 5.2
   },
   {
     "id": 8,
     "position": "bottomright2",
-    "team": "すべてを超えていけ",
-    "player": "ゆうれいいか",
+    "team": "旭光一閃",
+    "player": "げんぶ",
     "cardname": "元卓",
-    "rank": 2,
-    "score": 19.8
+    "rank": 4,
+    "score": -42.5
   }
 ]
