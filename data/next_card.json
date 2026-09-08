@@ -2,7 +2,7 @@
   {
     "id": 1,
     "position": "upleft1",
-    "team": "A",
+    "team": "デジタルクルーズ",
     "player": null,
     "cardname": "天卓",
     "": "今日の曜日と表示判定フラグ"
@@ -10,7 +10,7 @@
   {
     "id": 2,
     "position": "upright1",
-    "team": "B",
+    "team": "抜天ステージ",
     "player": null,
     "cardname": "天卓",
     "": 4
@@ -18,7 +18,7 @@
   {
     "id": 3,
     "position": "bottomleft1",
-    "team": "C",
+    "team": "暁",
     "player": null,
     "cardname": "天卓",
     "": null
@@ -26,7 +26,7 @@
   {
     "id": 4,
     "position": "bottomright1",
-    "team": "D",
+    "team": "すべてを超えていけ",
     "player": null,
     "cardname": "天卓",
     "": null
@@ -34,7 +34,7 @@
   {
     "id": 5,
     "position": "upleft2",
-    "team": "A",
+    "team": "デジタルクルーズ",
     "player": null,
     "cardname": "元卓",
     "": null
@@ -42,7 +42,7 @@
   {
     "id": 6,
     "position": "upright2",
-    "team": "B",
+    "team": "抜天ステージ",
     "player": null,
     "cardname": "元卓",
     "": null
@@ -50,7 +50,7 @@
   {
     "id": 7,
     "position": "bottomleft2",
-    "team": "C",
+    "team": "暁",
     "player": null,
     "cardname": "元卓",
     "": null
@@ -58,7 +58,7 @@
   {
     "id": 8,
     "position": "bottomright2",
-    "team": "D",
+    "team": "すべてを超えていけ",
     "player": null,
     "cardname": "元卓",
     "": null
