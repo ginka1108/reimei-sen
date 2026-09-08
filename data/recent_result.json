@@ -2,73 +2,73 @@
   {
     "id": 1,
     "position": "upleft1",
-    "team": "旭光一閃",
-    "player": "げんぶ",
+    "team": "デジタルクルーズ",
+    "player": "リツミさん",
     "cardname": "天卓",
-    "rank": 4,
-    "score": -52.6
+    "rank": 1,
+    "score": 57.7
   },
   {
     "id": 2,
     "position": "upright1",
-    "team": "デジタルクルーズ",
-    "player": "なぽ",
+    "team": "暁",
+    "player": "高良匡史",
     "cardname": "天卓",
-    "rank": 3,
-    "score": -23.5
+    "rank": 2,
+    "score": 13.8
   },
   {
     "id": 3,
     "position": "bottomleft1",
-    "team": "暁",
-    "player": "べるふぇごーる",
+    "team": "抜天ステージ",
+    "player": "日菜むい",
     "cardname": "天卓",
-    "rank": 1,
-    "score": 67.2
+    "rank": 3,
+    "score": -22.1
   },
   {
     "id": 4,
     "position": "bottomright1",
-    "team": "抜天ステージ",
-    "player": "民芸",
+    "team": "すべてを超えていけ",
+    "player": "比嘉秀仁",
     "cardname": "天卓",
-    "rank": 2,
-    "score": 8.9
+    "rank": 4,
+    "score": -49.4
   },
   {
     "id": 5,
     "position": "upleft2",
-    "team": "旭光一閃",
-    "player": "ようへー",
+    "team": "デジタルクルーズ",
+    "player": "なぽ",
     "cardname": "元卓",
-    "rank": 1,
-    "score": 70.7
+    "rank": 4,
+    "score": -45.2
   },
   {
     "id": 6,
     "position": "upright2",
-    "team": "デジタルクルーズ",
-    "player": "まーぶりん",
+    "team": "暁",
+    "player": "ヨーテル",
     "cardname": "元卓",
     "rank": 3,
-    "score": -22.3
+    "score": -17.7
   },
   {
     "id": 7,
     "position": "bottomleft2",
-    "team": "暁",
-    "player": "ren",
+    "team": "抜天ステージ",
+    "player": "ぶる",
     "cardname": "元卓",
-    "rank": 4,
-    "score": -56.2
+    "rank": 2,
+    "score": 8.2
   },
   {
     "id": 8,
     "position": "bottomright2",
-    "team": "抜天ステージ",
-    "player": "かなへび",
+    "team": "すべてを超えていけ",
+    "player": "神仙酵母",
     "cardname": "元卓",
-    "rank": 2,
-    "score": 7.8
+    "rank": 1,
+    "score": 54.7
   }
 ]
