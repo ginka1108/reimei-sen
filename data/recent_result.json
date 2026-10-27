@@ -6,8 +6,7 @@
     "player": "ようへー",
     "cardname": "天卓",
     "rank": 1,
-    "score": 63.8,
-    "": "なぽ"
+    "score": 63.8
   },
   {
     "id": 2,
@@ -16,8 +15,7 @@
     "player": "民芸",
     "cardname": "天卓",
     "rank": 2,
-    "score": 9.2,
-    "": -11.3
+    "score": 9.2
   },
   {
     "id": 3,
@@ -26,8 +24,7 @@
     "player": "ゆうれいいか",
     "cardname": "天卓",
     "rank": 4,
-    "score": -61.7,
-    "": "デジタルクルーズ"
+    "score": -61.7
   },
   {
     "id": 4,
@@ -36,47 +33,42 @@
     "player": "なぽ",
     "cardname": "天卓",
     "rank": 3,
-    "score": -11.3,
-    "": null
+    "score": -11.3
   },
   {
     "id": 5,
     "position": "upleft2",
-    "team": null,
-    "player": null,
-    "cardname": null,
-    "rank": null,
-    "score": null,
-    "": null
+    "team": "未定",
+    "player": "未定",
+    "cardname": "元卓",
+    "rank": 1,
+    "score": 0
   },
   {
     "id": 6,
     "position": "upright2",
-    "team": null,
-    "player": null,
-    "cardname": null,
-    "rank": null,
-    "score": null,
-    "": null
+    "team": "未定",
+    "player": "未定",
+    "cardname": "元卓",
+    "rank": 2,
+    "score": 0
   },
   {
     "id": 7,
     "position": "bottomleft2",
-    "team": null,
-    "player": null,
-    "cardname": null,
-    "rank": null,
-    "score": null,
-    "": null
+    "team": "未定",
+    "player": "未定",
+    "cardname": "元卓",
+    "rank": 3,
+    "score": 0
   },
   {
     "id": 8,
     "position": "bottomright2",
-    "team": null,
-    "player": null,
-    "cardname": null,
-    "rank": null,
-    "score": null,
-    "": null
+    "team": "未定",
+    "player": "未定",
+    "cardname": "元卓",
+    "rank": 4,
+    "score": 0
   }
 ]
