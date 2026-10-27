@@ -398,5 +398,25 @@
     "upright2_image": null,
     "bottomleft2_image": null,
     "bottomright2_image": null
+  },
+  {
+    "date": "2026-10-27",
+    "section": "月1節",
+    "upleft1": "旭光一閃",
+    "upright1": "抜天ステージ",
+    "bottomleft1": "すべてを超えていけ",
+    "bottomright1": "デジタルクルーズ",
+    "upleft2": null,
+    "upright2": null,
+    "bottomleft2": null,
+    "bottomright2": null,
+    "upleft1_image": "assets/images/4.png",
+    "upright1_image": "assets/images/5.png",
+    "bottomleft1_image": "assets/images/2.png",
+    "bottomright1_image": "assets/images/3.png",
+    "upleft2_image": null,
+    "upright2_image": null,
+    "bottomleft2_image": null,
+    "bottomright2_image": null
   }
 ]
