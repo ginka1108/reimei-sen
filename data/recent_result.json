@@ -2,73 +2,73 @@
   {
     "id": 1,
     "position": "upleft1",
-    "team": "暁",
-    "player": "ren",
+    "team": null,
+    "player": null,
     "cardname": "天卓",
-    "rank": 3,
-    "score": -34.5
+    "rank": null,
+    "score": null
   },
   {
     "id": 2,
     "position": "upright1",
-    "team": "旭光一閃",
-    "player": "せどなりあん",
+    "team": null,
+    "player": null,
     "cardname": "天卓",
-    "rank": 1,
-    "score": 78.5
+    "rank": null,
+    "score": null
   },
   {
     "id": 3,
     "position": "bottomleft1",
-    "team": "すべてを超えていけ",
-    "player": "ゆうれいいか",
+    "team": null,
+    "player": null,
     "cardname": "天卓",
-    "rank": 2,
-    "score": 28.3
+    "rank": null,
+    "score": null
   },
   {
     "id": 4,
     "position": "bottomright1",
-    "team": "抜天ステージ",
-    "player": "日菜むい",
+    "team": null,
+    "player": null,
     "cardname": "天卓",
-    "rank": 4,
-    "score": -72.3
+    "rank": null,
+    "score": null
   },
   {
     "id": 5,
     "position": "upleft2",
-    "team": "暁",
-    "player": "べるふぇごーる",
+    "team": null,
+    "player": null,
     "cardname": "元卓",
-    "rank": 4,
-    "score": -54.6
+    "rank": null,
+    "score": null
   },
   {
     "id": 6,
     "position": "upright2",
-    "team": "旭光一閃",
-    "player": "ようへー",
+    "team": null,
+    "player": null,
     "cardname": "元卓",
-    "rank": 2,
-    "score": 12.3
+    "rank": null,
+    "score": null
   },
   {
     "id": 7,
     "position": "bottomleft2",
-    "team": "すべてを超えていけ",
-    "player": "比嘉秀仁",
+    "team": null,
+    "player": null,
     "cardname": "元卓",
-    "rank": 1,
-    "score": 72.5
+    "rank": null,
+    "score": null
   },
   {
     "id": 8,
     "position": "bottomright2",
-    "team": "抜天ステージ",
-    "player": "民芸",
+    "team": null,
+    "player": null,
     "cardname": "元卓",
-    "rank": 3,
-    "score": -30.2
+    "rank": null,
+    "score": null
   }
 ]
