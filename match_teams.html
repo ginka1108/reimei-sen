@@ -226,7 +226,14 @@
       .map(row => ({ ...row, _ymd: normalizeDateStr(row.date) }))
       .filter(row => row._ymd && row._ymd >= today)   // 文字列比較で「今日以降」
       .sort((a, b) => (a._ymd < b._ymd ? -1 : a._ymd > b._ymd ? 1 : 0));
-    return upcoming[0] || null;
+    if (upcoming[0]) return upcoming[0];
+
+    // 今日以降の節が無い場合は、直近の過去節を返す（例：最終節の翌日以降）
+    const past = scheduleData
+      .map(row => ({ ...row, _ymd: normalizeDateStr(row.date) }))
+      .filter(row => row._ymd && row._ymd < today)
+      .sort((a, b) => (a._ymd > b._ymd ? -1 : a._ymd < b._ymd ? 1 : 0));
+    return past[0] || null;
   }
 
   function fitPreview() {
