@@ -5,8 +5,8 @@
     "team": "暁",
     "player": "ヨーテル",
     "cardname": "天卓",
-    "rank": null,
-    "score": null
+    "rank": 3,
+    "score": -21.2
   },
   {
     "id": 2,
@@ -14,8 +14,8 @@
     "team": "旭光一閃",
     "player": "黒羽織",
     "cardname": "天卓",
-    "rank": null,
-    "score": null
+    "rank": 2,
+    "score": 14.8
   },
   {
     "id": 3,
@@ -23,8 +23,8 @@
     "team": "すべてを超えていけ",
     "player": "饒舌",
     "cardname": "天卓",
-    "rank": null,
-    "score": null
+    "rank": 1,
+    "score": 56.3
   },
   {
     "id": 4,
@@ -32,8 +32,8 @@
     "team": "抜天ステージ",
     "player": "かなへび",
     "cardname": "天卓",
-    "rank": null,
-    "score": null
+    "rank": 4,
+    "score": -49.9
   },
   {
     "id": 5,
@@ -41,8 +41,8 @@
     "team": "暁",
     "player": "高良匡史",
     "cardname": "元卓",
-    "rank": null,
-    "score": null
+    "rank": 1,
+    "score": 55.9
   },
   {
     "id": 6,
@@ -50,8 +50,8 @@
     "team": "旭光一閃",
     "player": "げんぶ",
     "cardname": "元卓",
-    "rank": null,
-    "score": null
+    "rank": 2,
+    "score": 8.3
   },
   {
     "id": 7,
@@ -59,8 +59,8 @@
     "team": "すべてを超えていけ",
     "player": "神仙酵母",
     "cardname": "元卓",
-    "rank": null,
-    "score": null
+    "rank": 4,
+    "score": -48
   },
   {
     "id": 8,
@@ -68,7 +68,7 @@
     "team": "抜天ステージ",
     "player": "ぶる",
     "cardname": "元卓",
-    "rank": null,
-    "score": null
+    "rank": 3,
+    "score": -16.2
   }
 ]
